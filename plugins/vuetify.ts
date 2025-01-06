@@ -12,7 +12,10 @@ export default defineNuxtPlugin((app) => {
       themes: {
         light: {
           dark: false,
-          colors: {},
+          colors: {
+            primary: "#053CC7",
+            'font-primary-10': "#FFFFFF"
+          },
         },
       },
     },
