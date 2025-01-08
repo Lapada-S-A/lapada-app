@@ -12,6 +12,12 @@ body {
     &-normal {
         font-size: $font-size-normal !important;
     }
+    &-smaller {
+        font-size: $font-size-smaller !important;
+    }
+    &-weight-semibold {
+        font-weight: $font-weight-semibold !important;
+    }
     &-weight-black {
         font-weight: $font-weight-black !important;
     }

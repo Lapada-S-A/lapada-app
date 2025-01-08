@@ -1,9 +1,9 @@
 <template>
-  <v-layout>
+  <v-layout class="h-100">
     <LayoutsDefaultNavigationDrawer />
     <LayoutsDefaultAppBar />
-    <v-main class="d-flex align-center justify-center ml-4">
-      <v-container fluid>
+    <v-main>
+      <v-container class="d-flex justify-center align-center px-8" fluid>
         <slot />
       </v-container>
     </v-main>
@@ -13,5 +13,16 @@
 <style scoped>
 :deep(.v-application__wrap) {
   min-height: 0;
+}
+
+:deep(.v-container) {
+  width: 100%;
+  height: calc(100vh - 64px);
+  margin-left: 0;
+  margin-right: 0;
+  background-image: url("@/assets/images/background.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 </style>
