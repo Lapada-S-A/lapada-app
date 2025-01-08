@@ -7,7 +7,8 @@
         </template>
         <template #title>
           <v-img
-            src="~/assets/images/title-logo.svg"
+            id="title-btn"
+            src="~/assets/images/title-white.svg"
             max-width="120"
             class="cursor-pointer"
             @click="$router.push('/')"
@@ -19,6 +20,7 @@
     <v-list>
       <v-list-item
         v-for="(action, index) in userActionsStore.userActions"
+        :id="`${action.route.split('/')[1]}-btn`"
         :key="index"
         :active="isOptionActive(action.route)"
         variant="text"
@@ -36,6 +38,12 @@
         </template>
       </v-list-item>
     </v-list>
+
+    <template #append>
+      <div class="d-flex justify-center mb-4">
+        <v-img src="~/assets/images/logo-white.svg" max-width="24" />
+      </div>
+    </template>
   </v-navigation-drawer>
 </template>
 
