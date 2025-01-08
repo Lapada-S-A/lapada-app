@@ -2,6 +2,7 @@ import { it, expect, describe, beforeEach, vi } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import App from "@/app.vue";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let wrapper: any;
 
 const ResizeObserverMock = vi.fn(() => ({
