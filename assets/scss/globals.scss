@@ -6,7 +6,13 @@ body {
 }
 
 .font {
+    &-subtitle {
+        font-size: $font-size-subtitle !important;
+    }
     &-normal {
         font-size: $font-size-normal !important;
+    }
+    &-weight-black {
+        font-weight: $font-weight-black !important;
     }
 }

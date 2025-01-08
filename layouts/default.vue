@@ -1,10 +1,17 @@
 <template>
-    <v-layout>
-        <LayoutsDefaultNavigationDrawer />
-        <v-main class="d-flex align-center justify-center">
-            <v-container class="h-100" fluid>
-                <slot />
-            </v-container>
-        </v-main>
-    </v-layout>
+  <v-layout>
+    <LayoutsDefaultNavigationDrawer />
+    <LayoutsDefaultAppBar />
+    <v-main class="d-flex align-center justify-center ml-4">
+      <v-container fluid>
+        <slot />
+      </v-container>
+    </v-main>
+  </v-layout>
 </template>
+
+<style scoped>
+:deep(.v-application__wrap) {
+  min-height: 0;
+}
+</style>
