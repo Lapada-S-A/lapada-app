@@ -14,7 +14,7 @@
       </v-btn>
     </template>
 
-    <v-card class="pt-2" max-width="250px" elevation="2">
+    <v-card class="pt-3" max-width="250px" elevation="1">
       <v-list class="pl-2 pr-8 py-0">
         <v-list-item class="py-0">
           <template #prepend>
@@ -32,14 +32,16 @@
         </v-list-item>
       </v-list>
 
-      <v-divider class="mt-2" />
+      <v-divider class="mt-3" />
 
-      <v-list class="py-0">
+      <v-list class="pb-2">
         <v-list-item
           v-for="item of menuItems"
           :id="item.buttonId"
           :key="item.title"
-          class="px-6 py-2"
+          class="px-6"
+          variant="plain"
+          :ripple="false"
           @click="item.click"
         >
           <template #prepend>
@@ -80,6 +82,14 @@ const menuItems = ref([
 
 :deep(.v-list-item__prepend i, .v-list-item__content span) {
   opacity: 1 !important;
+}
+
+:deep(.v-list-item--variant-plain) {
+  opacity: 1 !important;
+
+  &:hover {
+    opacity: 0.8 !important;
+  }
 }
 
 .negative-spacing {
