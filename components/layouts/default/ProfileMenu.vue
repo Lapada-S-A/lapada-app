@@ -2,6 +2,7 @@
   <v-menu v-model="menu" :close-on-content-click="false" offset="-15, -15">
     <template #activator="{ props }">
       <v-btn
+        id="menu-btn"
         v-bind="props"
         class="rounded-circle bg-secondary mr-6"
         icon
@@ -55,7 +56,6 @@
 
 <script setup lang="ts">
 const router = useRouter();
-
 const menu = ref(false);
 const menuItems = ref([
   {

@@ -7,6 +7,7 @@
         </template>
         <template #title>
           <v-img
+            id="title-btn"
             src="~/assets/images/title-white.svg"
             max-width="120"
             class="cursor-pointer"
@@ -19,6 +20,7 @@
     <v-list>
       <v-list-item
         v-for="(action, index) in userActionsStore.userActions"
+        :id="`${action.route.split('/')[1]}-btn`"
         :key="index"
         :active="isOptionActive(action.route)"
         variant="text"
