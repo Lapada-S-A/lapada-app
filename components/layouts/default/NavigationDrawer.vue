@@ -19,7 +19,7 @@
 
     <v-list>
       <v-list-item
-        v-for="(action, index) in userActionsStore.userActions"
+        v-for="(action, index) in routesStore.menuRoutes"
         :id="`${action.route.split('/')[1]}-btn`"
         :key="index"
         :active="isOptionActive(action.route)"
@@ -27,6 +27,7 @@
         @click="$router.push(action.route)"
       >
         <template #prepend>
+          <div v-if="isOptionActive(action.route)" class="active-indicator" />
           <v-icon>{{
             isOptionActive(action.route)
               ? action.icon
@@ -49,7 +50,7 @@
 
 <script setup lang="ts">
 const router = useRouter();
-const userActionsStore = useUserActionsStore();
+const routesStore = useRoutesStore();
 
 function isOptionActive(route: string): boolean {
   return router.currentRoute.value.path === route;
@@ -61,7 +62,19 @@ function isOptionActive(route: string): boolean {
   opacity: 1;
 }
 
+:deep(.v-list-item--variant-text .v-list-item__overlay) {
+  background: none;
+}
+
 :deep(.v-list-item--active .v-list-item-title) {
   font-weight: bold !important;
+}
+
+.active-indicator {
+  width: 4px;
+  height: 40px;
+  background-color: rgba(var(--v-theme-font-10));
+  margin-right: 10px;
+  margin-left: -16px;
 }
 </style>

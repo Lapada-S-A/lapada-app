@@ -40,4 +40,7 @@ export default defineNuxtConfig({
       },
     },
   },
+  imports: {
+    dirs: ["interfaces/*.ts"],
+  },
 });
