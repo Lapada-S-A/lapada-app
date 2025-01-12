@@ -6,7 +6,6 @@
         :type="auction.type"
         :remaining-time="auction.remainingTime"
         :highest-bid="auction.highestBid"
-        :width="auction.width"
       />
     </div>
   </div>
@@ -19,26 +18,26 @@ const auctions = [
   {
     title: "Pintura de Paisagem do Século XIX",
     type: "Leilão invertido",
-    remainingTime: "2d3h",
-    highestBid: "280.000",
+    remainingTime: 97645,
+    highestBid: 2800000000,
   },
   {
     title: "Escultura de Mármore",
     type: "Leilão tradicional",
-    remainingTime: "5h30m",
-    highestBid: "150.000",
+    remainingTime: 2456,
+    highestBid: 0,
   },
   {
     title: "Relógio de Ouro Antigo",
     type: "Leilão por proximidade",
-    remainingTime: "1d12h",
-    highestBid: "500.000",
+    remainingTime: 34567,
+    highestBid: 500000,
   },
   {
     title: "Carro Clássico",
     type: "Leilão invertido",
-    remainingTime: "3d1h",
-    highestBid: "1.200.000",
+    remainingTime: 0,
+    highestBid: 12000,
   },
 ];
 </script>

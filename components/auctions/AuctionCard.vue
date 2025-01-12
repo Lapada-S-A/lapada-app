@@ -11,15 +11,21 @@
         </div>
       </div>
 
-      <!-- Time and bid at the bottom -->
       <div class="d-flex justify-space-between font-small font-weight-bold">
         <div class="d-flex align-center ga-1">
           <v-icon color="secondary">mdi-clock-fast</v-icon>
-          {{ remainingTime }}
+          {{
+            remainingTime > 0 ? formatSecondsToTimeString(remainingTime) : "---"
+          }}
         </div>
-        <div class="d-flex align-center ga-1">
+        <div
+          class="d-flex align-center ga-1"
+          :class="{ 'mr-2': highestBid === 0 }"
+        >
           <v-icon color="secondary">mdi-cash-multiple</v-icon>
-          {{ highestBid }}
+          <div class="text-truncate bid">
+            {{ highestBid > 0 ? formatCurrency(highestBid) : "---" }}
+          </div>
         </div>
       </div>
     </v-card>
@@ -30,8 +36,8 @@
 defineProps<{
   title: string;
   type: string;
-  remainingTime: string;
-  highestBid: string;
+  remainingTime: number;
+  highestBid: number;
 }>();
 </script>
 
@@ -49,5 +55,9 @@ defineProps<{
   white-space: normal;
   line-clamp: 2;
   -webkit-line-clamp: 2;
+}
+
+.bid {
+  max-width: 120px;
 }
 </style>
