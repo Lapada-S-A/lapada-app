@@ -9,8 +9,14 @@ body {
     &-subtitle {
         font-size: $font-size-subtitle !important;
     }
+    &-large {
+        font-size: $font-size-large !important;
+    }
     &-normal {
         font-size: $font-size-normal !important;
+    }
+    &-small {
+        font-size: $font-size-small !important;
     }
     &-smaller {
         font-size: $font-size-smaller !important;
