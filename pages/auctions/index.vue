@@ -1,5 +1,6 @@
 <template>
-  <div class="d-flex flex-wrap ga-4">
+  <div>
+    <div class="d-flex flex-wrap ga-4">
     <div v-for="auction in auctions" :key="auction.title">
       <AuctionCard
         :title="auction.title"
@@ -8,6 +9,11 @@
         :highest-bid="auction.highestBid"
       />
     </div>
+  </div>
+  <div class="d-flex justify-center ga-2 mt-16">
+    <v-btn class="btn btn-secondary font-small" height="32" width="85">Anterior</v-btn>
+    <v-btn class="btn btn-primary font-small" height="32" width="85">Próxima</v-btn>
+  </div>
   </div>
 </template>
 
