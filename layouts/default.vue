@@ -24,7 +24,7 @@
 
 :deep(.v-container) {
   width: 100%;
-  height: calc(100vh - 64px);
+  height: 100%;
   margin-left: 0;
   margin-right: 0;
   background-image: url("@/assets/images/background.svg");
