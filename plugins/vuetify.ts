@@ -25,6 +25,8 @@ export default defineNuxtPlugin((app) => {
             "font-100": "#121212",
             "font-60": "#A4A4A4",
             "font-10": "#FFFFFF",
+            "red-rose": "#DA5E5E",
+            "green-jade": "#62A74B"
           },
         },
       },
