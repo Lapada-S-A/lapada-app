@@ -13,13 +13,13 @@
   </v-layout>
 </template>
 
-<style scoped>
+<style scoped>s
 :deep(.v-application__wrap) {
   min-height: 0;
 }
 
 :deep(.v-application) {
-  background: transparent;
+  background-color: transparent !important;
 }
 
 :deep(.v-container) {
