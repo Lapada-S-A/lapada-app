@@ -11,23 +11,23 @@
       />
     </template>
 
-    <v-card class="rounded-lg pa-3">
-      <div class="px-4">
-        <v-card-title class="d-flex justify-space-between align-center py-5">
-          <h3>Filtrar Leilões</h3>
+    <v-card class="rounded-lg pa-4">
+      <div>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <div class="font-subtitle font-weight-bold">Filtrar Leilões</div>
           <v-btn
             id="close-filter-button"
-            icon="mdi-close"
             class="rounded-xl"
             variant="plain"
             :ripple="false"
-            size="35"
+            size="22"
             @click="closeModal"
-          />
+            ><v-icon> mdi-close</v-icon></v-btn
+          >
         </v-card-title>
       </div>
 
-      <v-card-text>
+      <v-card-text class="px-1 py-6">
         <v-container>
           <v-row>
             <v-col cols="4">
@@ -161,12 +161,12 @@
         </v-container>
       </v-card-text>
 
-      <v-card-actions>
+      <v-card-actions class="px-4">
         <v-spacer />
-        <v-btn variant="plain" :ripple="false" @click="clearFilters"
+        <v-btn variant="plain" class="text-none ml-2" :ripple="false" @click="clearFilters"
           >Limpar</v-btn
         >
-        <v-btn class="bg-primary px-6 ml-2" @click="applyFilters"
+        <v-btn class="bg-primary px-6 ml-2 text-none font-weight-semibold" @click="applyFilters"
           >Aplicar</v-btn
         >
       </v-card-actions>
@@ -174,13 +174,20 @@
   </v-dialog>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+type FilterType = {
+  category: string | null;
+  auctionType: string | null;
+  status: string | null;
+  minBid: number | null;
+  maxBid: number | null;
+  endDate: string | null;
+};
 
-const isOpen = ref(false);
-const dateMenu = ref(false);
-const tempDate = ref(null);
-const filters = ref({
+const isOpen = ref<boolean>(false);
+const dateMenu = ref<boolean>(false);
+const tempDate = ref<string | null>(null);
+const filters = ref<FilterType>({
   category: null,
   auctionType: null,
   status: null,
@@ -189,17 +196,14 @@ const filters = ref({
   endDate: null,
 });
 
-const categories = ["Eletrônicos", "Imóveis", "Veículos"];
-const auctionTypes = ["Comum", "Reverso"];
-const statuses = ["Aberto", "Encerrado", "Pendente"];
+const categories = ref<string[]>(["Eletrônicos", "Imóveis", "Veículos"]);
+const auctionTypes = ref<string[]>(["Comum", "Reverso"]);
+const statuses = ref<string[]>(["Aberto", "Encerrado", "Pendente"]);
 
-const formatDate = (date) => {
+const formatDate = (date: string | null): string | null => {
   if (!date) return null;
   const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
+  return `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getFullYear()}`;
 };
 
 const openModal = () => {
@@ -246,5 +250,10 @@ const applyFilters = () => {
 
 .v-col {
   padding: 0 10px;
+}
+
+:deep(.v-picker__actions .v-btn) {
+  text-transform: none;
+  padding: 0 16px;
 }
 </style>
