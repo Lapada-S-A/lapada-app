@@ -15,7 +15,14 @@ vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 
 describe("AuctionCard", () => {
   beforeEach(async () => {
-    wrapper = await mountSuspended(AuctionCard, {});
+    wrapper = await mountSuspended(AuctionCard, {
+      props: {
+        title: "Relógio de Ouro Antigo",
+        type: "Leilão por proximidade",
+        remainingTime: 34567,
+        highestBid: 500000,
+      },
+    });
   });
 
   it("should render the AuctionCard component", () => {
