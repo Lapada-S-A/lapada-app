@@ -25,10 +25,10 @@
       </div>
 
       <div class="d-flex justify-center ga-2 mt-16">
-        <v-btn class="btn btn-secondary font-small" height="32" width="85">
+        <v-btn id="previous-auctions-page-btn" class="btn btn-secondary font-small" height="32" width="85">
           Anterior
         </v-btn>
-        <v-btn class="btn btn-primary font-small" height="32" width="85">
+        <v-btn id="next-auctions-page-btn" class="btn btn-primary font-small" height="32" width="85">
           Próxima
         </v-btn>
       </div>
