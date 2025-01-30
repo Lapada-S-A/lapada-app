@@ -2,7 +2,7 @@
     <v-btn
       v-if="showButton"
       :id="buttonId"
-      class="rounded-lg border d-flex flex-column align-center justify-center large-square-btn ma-2"
+      class="rounded-lg border d-flex flex-column align-center justify-center large-square-btn ma-2 opacity-70"
       :color="color"
       stacked
       :elevation="elevation"
@@ -11,7 +11,7 @@
       @click="handleClick"
     >
       <v-icon v-if="icon" :size="iconSize" class="mb-2">{{ icon }}</v-icon>
-      <div  class="text-center" >{{ label }}</div>
+      <div  class="text-center font-weight-black font-large" >{{ label }}</div>
     </v-btn>
   </template>
   
@@ -27,7 +27,7 @@
     },
     iconSize: {
       type: [Number, String],
-      default: 40,
+      default: 60,
     },
     color: {
       type: String,
