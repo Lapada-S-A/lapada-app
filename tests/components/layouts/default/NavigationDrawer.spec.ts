@@ -14,11 +14,11 @@ const ResizeObserverMock = vi.fn(() => ({
 
 vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 
-vi.mock("@/stores/user-actions", () => ({
-  useUserActionsStore: vi.fn(() => ({
-    userActions: [
-      { label: "Dashboard", route: "/dashboard", icon: "mdi-view-dashboard" },
-      { label: "Settings", route: "/settings", icon: "mdi-cog" },
+vi.mock("@/stores/routes", () => ({
+  useRoutesStore: vi.fn(() => ({
+    menuRoutes: [
+      { label: "Dashboard", to: "/dashboard", menu: true },
+      { label: "Settings", to: "/settings", menu: true },
     ],
   })),
 }));
@@ -43,10 +43,10 @@ describe("NavigationDrawer", () => {
   });
 
   it("should navigate to / route when the title logo is clicked", async () => {
-    const dashboardItem = wrapper.find("#title-btn");
+    const logoItem = wrapper.find("#title-btn");
     const routerPushSpy = vi.spyOn(useNuxtApp().$router, "push");
 
-    await dashboardItem.trigger("click");
+    await logoItem.trigger("click");
 
     expect(routerPushSpy).toHaveBeenCalledWith("/");
   });

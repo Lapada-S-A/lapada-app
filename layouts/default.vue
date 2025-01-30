@@ -3,7 +3,10 @@
     <LayoutsDefaultNavigationDrawer />
     <LayoutsDefaultAppBar />
     <v-main>
-      <v-container class="d-flex justify-center align-center px-8" fluid>
+      <v-container
+        class="d-flex justify-center align-center px-8 bg-transparent"
+        fluid
+      >
         <slot />
       </v-container>
     </v-main>
@@ -13,6 +16,10 @@
 <style scoped>
 :deep(.v-application__wrap) {
   min-height: 0;
+}
+
+:deep(.v-application) {
+  background: transparent;
 }
 
 :deep(.v-container) {

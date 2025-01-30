@@ -24,6 +24,11 @@ export default defineNuxtPlugin((app) => {
         },
       },
     },
+    defaults: {
+      VBtn: {
+        variant: "flat",
+      },
+    },
   });
   app.vueApp.use(vuetify);
 });

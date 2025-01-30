@@ -9,8 +9,14 @@ body {
     &-subtitle {
         font-size: $font-size-subtitle !important;
     }
+    &-large {
+        font-size: $font-size-large !important;
+    }
     &-normal {
         font-size: $font-size-normal !important;
+    }
+    &-small {
+        font-size: $font-size-small !important;
     }
     &-smaller {
         font-size: $font-size-smaller !important;
@@ -20,5 +26,27 @@ body {
     }
     &-weight-black {
         font-weight: $font-weight-black !important;
+    }
+}
+
+.btn {
+    text-transform: none !important;
+    font-weight: $font-weight-semibold !important;
+    border-radius: 6px !important;
+    padding: 0 18px !important;
+
+    &-primary {
+        background-color: $color-primary !important;
+        color: $color-font-10 !important;
+    }
+    &-secondary {
+        background-color: $color-font-10 !important;
+        color: $color-primary !important;
+        border: 2px solid $color-primary !important;
+    }
+    &-disabled {
+        opacity: 0.6;
+        pointer-events: none;
+        cursor: default;
     }
 }
