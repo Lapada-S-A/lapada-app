@@ -4,7 +4,7 @@ export const useRoutesStore = defineStore("routes", () => {
   const globalRoutes: Route[] = [
     {
       label: "Início",
-      route: "/",
+      to: "/",
       menu: false,
     },
   ];
@@ -13,17 +13,17 @@ export const useRoutesStore = defineStore("routes", () => {
     {
       icon: "mdi-shopping-search",
       label: "Leilões disponíveis",
-      route: "/auctions",
+      to: "/auctions",
       menu: true,
     },
-    { label: "Detalhes de leilão", route: "/auctions/[id]", menu: false },
+    { label: "Detalhes de leilão", to: "/auctions/[id]", menu: false },
     {
       icon: "mdi-invoice-text-multiple",
       label: "Meus lances",
-      route: "/bids",
+      to: "/bids",
       menu: true,
     },
-    { icon: "mdi-forum", label: "Conversas", route: "/chats", menu: true },
+    { icon: "mdi-forum", label: "Conversas", to: "/chats", menu: true },
   ];
 
   const routesByUserType: RoutesByUserType = {
@@ -33,7 +33,7 @@ export const useRoutesStore = defineStore("routes", () => {
       {
         icon: "mdi-shopping",
         label: "Meus leilões",
-        route: "/my-auctions",
+        to: "/my-auctions",
         menu: true,
       },
       ...sharedRoutes,
@@ -43,7 +43,7 @@ export const useRoutesStore = defineStore("routes", () => {
       {
         icon: "mdi-clipboard-text-multiple",
         label: "Propostas de leilões",
-        route: "/proposals",
+        to: "/proposals",
         menu: true,
       },
     ],
@@ -52,19 +52,19 @@ export const useRoutesStore = defineStore("routes", () => {
       {
         icon: "mdi-account-check",
         label: "Avaliação de submissões",
-        route: "/submissions",
+        to: "/submissions",
         menu: true,
       },
       {
         icon: "mdi-tag-multiple",
         label: "Tipos de leilões",
-        route: "/auction-types",
+        to: "/auction-types",
         menu: true,
       },
       {
         icon: "mdi-shape",
         label: "Categorias de itens",
-        route: "/item-categories",
+        to: "/item-categories",
         menu: true,
       },
     ],
@@ -80,7 +80,7 @@ export const useRoutesStore = defineStore("routes", () => {
     return (
       userRoutes.value.find((route: Route) => {
         const dynamicPattern = new RegExp(
-          `^${route.route.replace(/\[.+?\]/g, "([^/]+)")}$`
+          `^${route.to.replace(/\[.+?\]/g, "([^/]+)")}$`
         );
         return dynamicPattern.test(currentPath);
       }) || null

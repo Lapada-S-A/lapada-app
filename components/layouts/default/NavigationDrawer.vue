@@ -19,23 +19,21 @@
 
     <v-list>
       <v-list-item
-        v-for="(action, index) in routesStore.menuRoutes"
-        :id="`${action.route.split('/')[1]}-btn`"
+        v-for="(route, index) in routesStore.menuRoutes"
+        :id="`${route.to.split('/')[1]}-btn`"
         :key="index"
-        :active="isOptionActive(action.route)"
+        :active="isOptionActive(route.to)"
         variant="text"
-        @click="$router.push(action.route)"
+        @click="$router.push(route.to)"
       >
         <template #prepend>
-          <div v-if="isOptionActive(action.route)" class="active-indicator" />
+          <div v-if="isOptionActive(route.to)" class="active-indicator" />
           <v-icon>{{
-            isOptionActive(action.route)
-              ? action.icon
-              : `${action.icon}-outline`
+            isOptionActive(route.to) ? route.icon : `${route.icon}-outline`
           }}</v-icon>
         </template>
         <template #title>
-          <div class="font-normal">{{ action.label }}</div>
+          <div class="font-normal">{{ route.label }}</div>
         </template>
       </v-list-item>
     </v-list>
