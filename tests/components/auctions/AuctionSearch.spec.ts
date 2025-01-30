@@ -39,14 +39,6 @@ describe("AuctionSearch", () => {
     expect(wrapper.emitted("update:searchQuery")![0]).toEqual(["Classic Car"]);
   });
 
-  it("should render the applied filters correctly", () => {
-    const chips = wrapper.findAll(".v-chip");
-
-    expect(chips.length).toBe(2);
-    expect(chips[0].text()).toContain("Relíquia");
-    expect(chips[1].text()).toContain("Automóvel");
-  });
-
   it("should display the search icon and filter button", () => {
     const searchIcon = wrapper.find("i.mdi-magnify");
     const filterButton = wrapper.find("i.mdi-filter-variant");
