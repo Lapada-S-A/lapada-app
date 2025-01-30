@@ -59,11 +59,16 @@
           </tbody>
         </table>
       </div>
+      <div class="ml-10">
+        <SellerActions />
+      </div>
     </div>
   </v-expansion-panel-text>
 </template>
 
 <script setup lang="ts">
+import SellerActions from './SellerActions.vue';
+
 defineProps<{
   auction: Auction;
 }>();
