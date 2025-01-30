@@ -13,7 +13,7 @@
   </v-layout>
 </template>
 
-<style scoped>s
+<style scoped>
 :deep(.v-application__wrap) {
   min-height: 0;
 }
