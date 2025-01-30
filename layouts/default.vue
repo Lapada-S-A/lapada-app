@@ -4,7 +4,7 @@
     <LayoutsDefaultAppBar />
     <v-main>
       <v-container
-        class="d-flex justify-center align-center px-8 bg-transparent"
+        class="d-flex justify-center align-center px-8 pa-0 bg-transparent"
         fluid
       >
         <slot />

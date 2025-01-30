@@ -17,7 +17,7 @@ vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 vi.mock("@/stores/routes", () => ({
   useRoutesStore: vi.fn(() => ({
     menuRoutes: [
-      { label: "Dashboard", to: "/dashboard", menu: true },
+      { label: "Auctions", to: "/auctions", menu: true },
       { label: "Settings", to: "/settings", menu: true },
     ],
   })),
@@ -29,7 +29,7 @@ describe("NavigationDrawer", () => {
       template: `
                 <v-layout>
                     <NavigationDrawer />
-                </v-layout>
+                </v-layout> 
             `,
       components: {
         VLayout,
@@ -52,11 +52,11 @@ describe("NavigationDrawer", () => {
   });
 
   it("should navigate to the correct route when a menu item is clicked", async () => {
-    const dashboardItem = wrapper.find("#dashboard-btn");
+    const dashboardItem = wrapper.find("#auctions-btn");
     const routerPushSpy = vi.spyOn(useNuxtApp().$router, "push");
 
     await dashboardItem.trigger("click");
 
-    expect(routerPushSpy).toHaveBeenCalledWith("/dashboard");
+    expect(routerPushSpy).toHaveBeenCalledWith("/auctions");
   });
 });
