@@ -50,5 +50,4 @@ describe("ButtonWithActions", () => {
     await wrapper.trigger("click");
     expect(onClickMock).toHaveBeenCalled();
   });
-
 });

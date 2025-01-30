@@ -5,6 +5,7 @@
       class="rounded-lg border d-flex flex-column align-center justify-center large-square-btn ma-2 opacity-70"
       :color="color"
       stacked
+      :ripple="false"
       :elevation="elevation"
       :outlined="outlined"
       :style="{ width: `${width}px`, height: `${height}px` }"

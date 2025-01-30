@@ -1,23 +1,19 @@
 <template>
       <div class="d-flex flex-wrap justify-center align-start gap-4">
-        <LayoutsDefaultButtonWithAction
+        <ButtonWithAction
           v-for="action in routeStore.menuRoutes"
           :key="action.label"
           :label="action.label"
           :icon="action.icon"
-          :onClick="() => navigateTo(action.route)"
+          :on-click="() => router.push(action.to)"
         />
       </div>
   </template>
   
   <script setup lang="ts">
-  import { useRouter } from "vue-router";
+  import ButtonWithAction from '../layouts/default/ButtonWithAction.vue';
   const router = useRouter();
   const routeStore  = useRoutesStore();
-
-  const navigateTo = (route:string) => {
-    router.push(route);
-  };
   </script>
   
   <style scoped>

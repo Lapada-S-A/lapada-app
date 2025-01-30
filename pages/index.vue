@@ -1,9 +1,8 @@
 <template>
-  <div class="d-flex">    
-    <UserDashboard />
+  <div class="d-flex">
+    <Dashboard />
   </div>
 </template>
 <script setup lang="ts">
-import UserDashboard from '../components/layouts/home/Dashboard.vue';
-
+import Dashboard from "../components/home/Dashboard.vue";
 </script>
