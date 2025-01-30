@@ -6,11 +6,11 @@
       </template>
       <div>Falar com vendedor</div>
     </v-btn>
-    <v-btn class="btn btn-secondary" width="225">
-      <template #prepend>
-        <v-icon class="mr-2">mdi-star</v-icon>
-      </template>
-      <div>Avaliar vendedor</div>
-    </v-btn>
+    <SellerReviewDialog />
   </div>
 </template>
+
+<script setup lang="ts">
+import SellerReviewDialog from './SellerReviewDialog.vue';
+
+</script>
