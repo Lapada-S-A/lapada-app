@@ -16,11 +16,7 @@
         </template>
 
         <template #append-inner>
-          <v-btn variant="text" :ripple="false" size="20" class="mb-4 pl-1">
-            <v-icon size="20" color="primary" class="mb-4 mr-1"
-              >mdi-filter-variant</v-icon
-            >
-          </v-btn>
+          <AuctionsFilterModal @apply-filters="applyFilters" />
         </template>
       </v-text-field>
     </div>
@@ -31,9 +27,6 @@
           class="d-flex align-center font-small font-weight-semibold"
         >
           {{ filter }}
-          <template #close>
-            <v-icon size="12" class="ml-1">mdi-close</v-icon>
-          </template>
         </v-chip>
       </div>
     </div>
@@ -41,13 +34,44 @@
 </template>
 
 <script setup lang="ts">
+import type { FilterData } from "~/interfaces/auction-filter";
+
 const emit = defineEmits(["update:searchQuery"]);
 const searchQuery = ref("");
-const appliedFilters = ["Relíquia", "Automóvel"];
+const appliedFilters = ref<string[]>([]);
 
 watch(searchQuery, (newQuery) => {
   emit("update:searchQuery", newQuery);
 });
+
+const formatDate = (date: Date): string => {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  return `Encerramento: ${day}/${month}/${year}`;
+};
+
+const applyFilters = (filters: FilterData) => {
+  appliedFilters.value = Object.entries(filters)
+    .map(([key, value]) => {
+      if (
+        (key === "maxBid" || key === "minBid") &&
+        value !== null &&
+        value !== undefined
+      ) {
+        return `${
+          key === "maxBid" ? "Lance Máximo" : "Lance Mínimo"
+        }: R$ ${value}`;
+      }
+
+      if (typeof value === "object" && value instanceof Date) {
+        return formatDate(value);
+      }
+
+      return value;
+    })
+    .filter((f): f is string => typeof f === "string");
+};
 </script>
 
 <style scoped>

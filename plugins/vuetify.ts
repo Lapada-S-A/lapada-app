@@ -1,11 +1,16 @@
-import "@mdi/font/css/materialdesignicons.css";
 import "@/assets/scss/vuetify/main.scss";
+import "@mdi/font/css/materialdesignicons.css";
 import { createVuetify } from "vuetify";
+import { pt } from 'vuetify/locale';
 
 export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
     icons: {
       defaultSet: "mdi",
+    },
+    locale: {
+      locale: 'pt', 
+      messages: { pt },
     },
     theme: {
       defaultTheme: "light",
