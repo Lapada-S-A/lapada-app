@@ -2,7 +2,7 @@
   <DefaultMainCard>
     <v-btn
       v-if="showBackButton"
-      class="mb-4 text-font-100 font-weight-bold mt-2"
+      class="mb-7 text-font-100 font-weight-bold mt-2 ml-n3"
       variant="plain"
       :ripple="false"
       @click="handleBackClick"
