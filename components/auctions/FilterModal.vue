@@ -6,9 +6,12 @@
         color="primary"
         variant="plain"
         :ripple="false"
-        icon="mdi-filter-variant"    
+        size="20"
+        class="mb-4"
         @click="openModal"
-      />
+      >
+        <v-icon size="20">mdi-filter-variant</v-icon>
+      </v-btn>
     </template>
 
     <v-card class="rounded-lg pa-4">
@@ -162,12 +165,14 @@
       </v-card-text>
 
       <v-card-actions class="px-4">
-        <v-spacer />
-        <v-btn variant="plain" class="text-none ml-2" :ripple="false" @click="clearFilters"
+        <v-btn
+          class="btn btn-secondary mr-1 px-6"
+          width="120"
+          @click="clearFilters"
           >Limpar</v-btn
         >
-        <v-btn class="bg-primary px-6 ml-2 text-none font-weight-semibold" @click="applyFilters"
-          >Aplicar</v-btn
+        <v-btn class="btn btn-primary" width="120" @click="applyFilters"
+          >Salvar</v-btn
         >
       </v-card-actions>
     </v-card>
@@ -175,7 +180,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FilterData } from '~/interfaces/auction-filter';
+import type { FilterData } from "~/interfaces/auction-filter";
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
@@ -197,7 +202,9 @@ const emits = defineEmits(["apply-filters", "clear-filters"]);
 const formatDate = (date: string | null): string | null => {
   if (!date) return null;
   const d = new Date(date);
-  return `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getFullYear()}`;
+  return `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}/${d.getFullYear()}`;
 };
 
 const openModal = () => {
@@ -205,7 +212,7 @@ const openModal = () => {
 };
 
 const closeModal = () => {
-  isOpen.value = false; 
+  isOpen.value = false;
 };
 
 const clearFilters = () => {
@@ -231,7 +238,6 @@ const confirmDate = () => {
 };
 
 const applyFilters = () => {
-
   emits("apply-filters", filters.value);
   closeModal();
 };
@@ -253,13 +259,7 @@ const applyFilters = () => {
   padding: 0 16px;
 }
 
-.v-btn{
-  padding: 0 !important;
-  width: 0 !important;
-  margin: 0px 10px 11px 10px;
-}
-
-:deep(.v-icon){
+:deep(.v-icon) {
   margin-bottom: 3px !important;
 }
 </style>

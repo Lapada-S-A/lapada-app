@@ -16,7 +16,7 @@
         </template>
 
         <template #append-inner>
-            <AuctionsFilterModal  @apply-filters="applyFilters"/>
+          <AuctionsFilterModal @apply-filters="applyFilters" />
         </template>
       </v-text-field>
     </div>
@@ -34,19 +34,19 @@
 </template>
 
 <script setup lang="ts">
-import type { FilterData } from '~/interfaces/auction-filter';
+import type { FilterData } from "~/interfaces/auction-filter";
 
 const emit = defineEmits(["update:searchQuery"]);
 const searchQuery = ref("");
-const appliedFilters = ref<string[]>(["Relíquia", "Automóvel"]);
+const appliedFilters = ref<string[]>([]);
 
 watch(searchQuery, (newQuery) => {
   emit("update:searchQuery", newQuery);
 });
 
 const formatDate = (date: Date): string => {
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
   return `Encerramento: ${day}/${month}/${year}`;
 };
@@ -54,22 +54,24 @@ const formatDate = (date: Date): string => {
 const applyFilters = (filters: FilterData) => {
   appliedFilters.value = Object.entries(filters)
     .map(([key, value]) => {
-      if ((key === 'maxBid' || key === 'minBid') && value !== null && value !== undefined) {
-      return `${key === 'maxBid' ? 'Lance Máximo' : 'Lance Mínimo'}: R$ ${value}`;
-    }
-      
-    if (typeof value === 'object' && value instanceof Date) {
-      return formatDate(value);
-    }
+      if (
+        (key === "maxBid" || key === "minBid") &&
+        value !== null &&
+        value !== undefined
+      ) {
+        return `${
+          key === "maxBid" ? "Lance Máximo" : "Lance Mínimo"
+        }: R$ ${value}`;
+      }
+
+      if (typeof value === "object" && value instanceof Date) {
+        return formatDate(value);
+      }
 
       return value;
     })
-    .filter((f): f is string => typeof f === 'string');
-    
-  
-  console.log("Filtros aplicados:", appliedFilters.value);
+    .filter((f): f is string => typeof f === "string");
 };
-
 </script>
 
 <style scoped>
