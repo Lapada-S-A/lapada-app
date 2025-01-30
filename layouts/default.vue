@@ -19,7 +19,7 @@
 }
 
 :deep(.v-application) {
-  background: transparent;
+  background-color: transparent !important;
 }
 
 :deep(.v-container) {
