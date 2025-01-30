@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isOpen" max-width="800">
+  <v-dialog v-model="isOpen" max-width="800" persistent>
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
@@ -181,9 +181,11 @@
 
 <script setup lang="ts">
 import type { FilterData } from "~/interfaces/auction-filter";
+
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
+
 const filters = ref<FilterData>({
   category: null,
   auctionType: null,
@@ -192,6 +194,8 @@ const filters = ref<FilterData>({
   maxBid: null,
   endDate: null,
 });
+
+const previousFilters = ref<FilterData>({ ...filters.value });
 
 const categories = ref<string[]>(["Eletrônicos", "Imóveis", "Veículos"]);
 const auctionTypes = ref<string[]>(["Comum", "Reverso"]);
@@ -208,10 +212,12 @@ const formatDate = (date: string | null): string | null => {
 };
 
 const openModal = () => {
+  previousFilters.value = { ...filters.value };
   isOpen.value = true;
 };
 
 const closeModal = () => {
+  filters.value = { ...previousFilters.value };
   isOpen.value = false;
 };
 
@@ -239,7 +245,7 @@ const confirmDate = () => {
 
 const applyFilters = () => {
   emits("apply-filters", filters.value);
-  closeModal();
+  isOpen.value = false;
 };
 </script>
 
