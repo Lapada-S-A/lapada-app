@@ -1,7 +1,9 @@
 <template>
   <div>
+    <AuctionSearch v-model:search-query="searchQuery" />
+
     <div class="d-flex flex-wrap ga-4">
-      <div v-for="auction in auctions" :key="auction.title">
+      <div v-for="auction in filteredAuctions" :key="auction.title">
         <AuctionCard
           :title="auction.title"
           :type="auction.type"
@@ -23,6 +25,7 @@
 
 <script setup lang="ts">
 import AuctionCard from "~/components/auctions/AuctionCard.vue";
+import AuctionSearch from "~/components/auctions/AuctionSearch.vue";
 
 const auctions = [
   {
@@ -50,4 +53,12 @@ const auctions = [
     highestBid: 12000,
   },
 ];
+
+const searchQuery = ref("");
+
+const filteredAuctions = computed(() => {
+  return auctions.filter((auction) =>
+    auction.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
 </script>
