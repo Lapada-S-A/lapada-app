@@ -28,6 +28,10 @@ export default defineNuxtPlugin((app) => {
       VBtn: {
         variant: "flat",
       },
+      VTextField: {
+        variant: "outlined",
+        color: "primary",
+      },
     },
   });
   app.vueApp.use(vuetify);
