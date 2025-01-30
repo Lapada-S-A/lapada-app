@@ -6,7 +6,7 @@
         color="primary"
         variant="plain"
         :ripple="false"
-        icon="mdi-filter-variant"
+        icon="mdi-filter-variant"    
         @click="openModal"
       />
     </template>
@@ -130,7 +130,7 @@
                   <v-text-field
                     v-bind="props"
                     id="limit-date-filter"
-                    :value="formatDate(filters.endDate)"
+                    :value="formatDate(filters.endDate?.toString() || null)"
                     readonly
                     variant="outlined"
                     placeholder="Selecione uma data"
@@ -175,19 +175,11 @@
 </template>
 
 <script setup lang="ts">
-type FilterType = {
-  category: string | null;
-  auctionType: string | null;
-  status: string | null;
-  minBid: number | null;
-  maxBid: number | null;
-  endDate: string | null;
-};
-
+import type { FilterData } from '~/interfaces/auction-filter';
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
-const filters = ref<FilterType>({
+const filters = ref<FilterData>({
   category: null,
   auctionType: null,
   status: null,
@@ -200,6 +192,8 @@ const categories = ref<string[]>(["Eletrônicos", "Imóveis", "Veículos"]);
 const auctionTypes = ref<string[]>(["Comum", "Reverso"]);
 const statuses = ref<string[]>(["Aberto", "Encerrado", "Pendente"]);
 
+const emits = defineEmits(["apply-filters", "clear-filters"]);
+
 const formatDate = (date: string | null): string | null => {
   if (!date) return null;
   const d = new Date(date);
@@ -211,7 +205,7 @@ const openModal = () => {
 };
 
 const closeModal = () => {
-  isOpen.value = false;
+  isOpen.value = false; 
 };
 
 const clearFilters = () => {
@@ -223,6 +217,7 @@ const clearFilters = () => {
     maxBid: null,
     endDate: null,
   };
+  emits("clear-filters");
 };
 
 const clearDate = () => {
@@ -236,7 +231,8 @@ const confirmDate = () => {
 };
 
 const applyFilters = () => {
-  console.log("Filtros aplicados:", filters.value);
+
+  emits("apply-filters", filters.value);
   closeModal();
 };
 </script>
@@ -255,5 +251,15 @@ const applyFilters = () => {
 :deep(.v-picker__actions .v-btn) {
   text-transform: none;
   padding: 0 16px;
+}
+
+.v-btn{
+  padding: 0 !important;
+  width: 0 !important;
+  margin: 0px 10px 11px 10px;
+}
+
+:deep(.v-icon){
+  margin-bottom: 3px !important;
 }
 </style>
