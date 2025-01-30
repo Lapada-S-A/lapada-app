@@ -6,7 +6,7 @@
 
 <style scoped>
 .full-height {
-  height: calc(100vh - 86px) !important;
+  min-height: calc(100vh - 86px) !important;
   border-radius: 6px;
 }
 </style>

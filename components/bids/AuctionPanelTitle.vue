@@ -1,40 +1,52 @@
 <template>
   <v-expansion-panel-title collapse-icon="mdi-minus">
-    <div class="d-flex align-center justify-space-between w-100">
-      <div class="d-flex align-center">
-        <div
+    <v-row align="center" justify="space-between" class="w-100">
+      <v-col cols="6">
+        <v-row align="center">
+          <v-col
+            cols="3"
+            class="font-small font-weight-semibold"
+            :class="isOpened ? 'text-font-10' : 'text-primary'"
+          >
+            {{ auction.type }}
+          </v-col>
+
+          <v-col cols="1" class="d-flex justify-center">
+            <v-divider
+              class="opacity-100"
+              length="25"
+              vertical
+              :color="isOpened ? 'font-10' : 'font-60'"
+            />
+          </v-col>
+
+          <v-col cols="8" class="font-large font-weight-bold">
+            {{ auction.title }}
+          </v-col>
+        </v-row>
+      </v-col>
+
+      <v-col cols="6">
+        <v-row
+          align="center"
+          justify="end"
           class="font-small font-weight-semibold"
-          :class="isOpened ? 'text-font-10' : 'text-primary'"
+          :class="isOpened ? 'text-font-10' : 'text-font-60'"
         >
-          {{ auction.type }}
-        </div>
-
-        <v-divider
-          class="mx-4 opacity-100"
-          length="25"
-          vertical
-          :color="isOpened ? 'font-10' : 'font-60'"
-        />
-
-        <div class="font-large font-weight-bold">
-          {{ auction.title }}
-        </div>
-      </div>
-
-      <div
-        class="d-flex align-center mr-16 font-small font-weight-semibold"
-        :class="isOpened ? 'text-font-10' : 'text-font-60'"
-      >
-        <div class="mr-16">
-          Lance atual:
-          {{
-            auction.highestBid > 0 ? formatCurrency(auction.highestBid) : "---"
-          }}
-        </div>
-
-        <div>Data: {{ auction.startDate }}</div>
-      </div>
-    </div>
+          <v-col cols="6">
+            Lance atual:
+            {{
+              auction.highestBid > 0
+                ? formatCurrency(auction.highestBid)
+                : "---"
+            }}
+          </v-col>
+          <v-col cols="6">
+            Data: {{ auction.startDate }}
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </v-expansion-panel-title>
 </template>
 

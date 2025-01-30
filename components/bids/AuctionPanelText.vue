@@ -8,7 +8,7 @@
           height="155"
           width="200"
         />
-        <div class="font-weight-bold text-truncate">{{ auction.title }}</div>
+        <div class="font-weight-bold title-truncate">{{ auction.title }}</div>
         <div class="d-flex justify-space-between align-center mt-1">
           <div class="d-flex align-center font-smaller ga-1">
             <div
@@ -40,24 +40,24 @@
         <div class="text-primary font-large font-weight-bold mb-1">
           Meus lances:
         </div>
-        <table class="font-weight-regular">
-          <thead>
-            <tr class="font-normal text-font-60">
-              <td>Valor</td>
-              <td>Situação</td>
-              <td>Data</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(bid, index) in bids" :key="index">
-              <td>{{ formatCurrency(bid.value) }}</td>
-              <td :class="`text-${getStatusColor(bid.status.id)}`">
-                {{ bid.status.name }}
-              </td>
-              <td>{{ bid.date }}</td>
-            </tr>
-          </tbody>
-        </table>
+          <table class="font-weight-regular">
+            <thead>
+              <tr class="font-normal text-font-60">
+                <td>Valor</td>
+                <td>Situação</td>
+                <td>Data</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(bid, index) in bids" :key="index">
+                <td>{{ formatCurrency(bid.value) }}</td>
+                <td :class="`text-${getStatusColor(bid.status.id)}`">
+                  {{ bid.status.name }}
+                </td>
+                <td>{{ bid.date }}</td>
+              </tr>
+            </tbody>
+          </table>
       </div>
       <div class="ml-10">
         <SellerActions />
@@ -101,9 +101,15 @@ td {
   height: 20px;
 }
 
-.text-truncate {
+.title-truncate {
+  max-width: 200px;
+  line-height: 20px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
 }
 </style>
