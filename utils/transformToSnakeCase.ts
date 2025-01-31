@@ -12,6 +12,7 @@ export const transformToSnakeCase = (filters: Record<string, any>) => {
           return [toSnakeCase(key), value];
         })
         .filter(([, value]) => value !== null && value !== undefined)
+
     );
   };
   

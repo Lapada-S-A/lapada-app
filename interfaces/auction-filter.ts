@@ -3,8 +3,8 @@ export type FilterData = {
     categoryId: ModelWithId | null ;
     typeId: ModelWithId | null;
     status: string | null;
-    initialValue: number | null;
-    highestBid: number | null;
+    minBid: number | null;
+    maxBid: number | null;
     endDate: string | Date |  null;
 };
 

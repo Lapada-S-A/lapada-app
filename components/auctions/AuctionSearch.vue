@@ -64,16 +64,15 @@ const applyFilters = (filters: FilterData) => {
         }
       }
 
-      if (key === "highestBid" || key === "initialValue") {
+      if (key === "maxBid" || key === "minBid") {
         return `${
-          key === "highestBid" ? "Lance Máximo" : "Lance Mínimo"
+          key === "maxBid" ? "Lance Máximo" : "Lance Mínimo"
         }: R$ ${value}`;
       }
 
       return value;
     })
     .filter((f): f is string => typeof f === "string");
-
   emit("apply-filters", filters);
 };
 </script>

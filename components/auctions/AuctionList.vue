@@ -101,6 +101,14 @@ const filteredAuctions = computed(() => {
   );
 });
 
+const formatDateTimeForRequest = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
 const fetchAuctions = async () => {
   isLoading.value = true;
   auctions.value = [];
@@ -111,7 +119,7 @@ const fetchAuctions = async () => {
     search: searchQuery.value,
     ...filters.value,
   });
-
+  console.log(filters.value);
   if (response) {
     auctions.value = response.items;
     totalAuctions.value = response.pagination.total;
@@ -163,6 +171,14 @@ const changePage = (direction: string) => {
 
 const updateFilters = (filterData: FilterData) => {
   const transformedFilters = transformToSnakeCase(filterData);
+  if (
+    transformedFilters.end_date &&
+    transformedFilters.end_date instanceof Date
+  ) {
+    transformedFilters.end_date = formatDateTimeForRequest(
+      transformedFilters.end_date
+    );
+  }
   filters.value = { ...transformedFilters };
 };
 </script>

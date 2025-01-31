@@ -89,7 +89,7 @@
               >
               <v-text-field
                 id="min-bid-filter"
-                v-model="filters.initialValue"
+                v-model="filters.minBid"
                 variant="outlined"
                 hide-spin-buttons
                 type="number"
@@ -107,7 +107,7 @@
               >
               <v-text-field
                 id="max-bid-filter"
-                v-model="filters.highestBid"
+                v-model="filters.maxBid"
                 variant="outlined"
                 hide-spin-buttons
                 type="number"
@@ -185,7 +185,11 @@
 </template>
 
 <script setup lang="ts">
-import type { FilterData } from "~/interfaces/auction-filter";
+import type {
+  FilterData,
+  ModelWithId,
+  ModelWithLabel,
+} from "~/interfaces/auction-filter";
 
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
@@ -195,16 +199,30 @@ const filters = ref<FilterData>({
   categoryId: null,
   typeId: null,
   status: null,
-  initialValue: null,
-  highestBid: null,
+  minBid: null,
+  maxBid: null,
   endDate: null,
 });
 
 const previousFilters = ref<FilterData>({ ...filters.value });
 
-const categories = ref<string[]>(["Eletrônicos", "Imóveis", "Veículos"]);
-const auctionTypes = ref<string[]>(["Comum", "Reverso"]);
-const statuses = ref<string[]>(["Aberto", "Encerrado", "Pendente"]);
+const categories = ref<ModelWithId[]>([
+  { id: 1, name: "Eletrônicos" },
+  { id: 2, name: "Móveis" },
+  { id: 3, name: "Automóveis" },
+  { id: 4, name: "Imóveis" },
+]);
+const auctionTypes = ref<ModelWithId[]>([
+  { id: 1, name: "Comum" },
+  { id: 2, name: "Por proximidade" },
+  { id: 3, name: "Reverso" },
+]);
+
+const statuses = ref<ModelWithLabel[]>([
+  { label: "Aberto", name: "OPEN" },
+  { label: "Encerrado", name: "CLOSED" },
+  { label: "Pendente", name: "PENDING" },
+]);
 
 const emits = defineEmits(["apply-filters", "clear-filters"]);
 
@@ -231,8 +249,8 @@ const clearFilters = () => {
     categoryId: null,
     typeId: null,
     status: null,
-    initialValue: null,
-    highestBid: null,
+    minBid: null,
+    maxBid: null,
     endDate: null,
   };
   emits("clear-filters");
