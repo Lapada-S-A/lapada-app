@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import type { FilterData } from "~/interfaces/auction-filter";
 
-const emit = defineEmits(["update:searchQuery"]);
+const emit = defineEmits(["update:searchQuery", "apply-filters"]);
 const searchQuery = ref("");
 const appliedFilters = ref<string[]>([]);
 
@@ -54,23 +54,27 @@ const formatDate = (date: Date): string => {
 const applyFilters = (filters: FilterData) => {
   appliedFilters.value = Object.entries(filters)
     .map(([key, value]) => {
-      if (
-        (key === "maxBid" || key === "minBid") &&
-        value !== null &&
-        value !== undefined
-      ) {
-        return `${
-          key === "maxBid" ? "Lance Máximo" : "Lance Mínimo"
-        }: R$ ${value}`;
+      if (value === null || value === undefined) return null;
+
+      if (typeof value === "object") {
+        if (value instanceof Date) {
+          return formatDate(value);
+        } else if ("name" in value) {
+          return value.name;
+        }
       }
 
-      if (typeof value === "object" && value instanceof Date) {
-        return formatDate(value);
+      if (key === "highestBid" || key === "initialValue") {
+        return `${
+          key === "highestBid" ? "Lance Máximo" : "Lance Mínimo"
+        }: R$ ${value}`;
       }
 
       return value;
     })
     .filter((f): f is string => typeof f === "string");
+
+  emit("apply-filters", filters);
 };
 </script>
 

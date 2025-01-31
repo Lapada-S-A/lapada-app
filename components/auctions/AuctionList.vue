@@ -1,6 +1,9 @@
 <template>
   <div>
-    <AuctionSearch v-model:search-query="searchQuery" />
+    <AuctionSearch
+      v-model:search-query="searchQuery"
+      @apply-filters="updateFilters"
+    />
 
     <div
       v-if="auctionsStore.loading"
@@ -72,15 +75,19 @@
 import AuctionCard from "~/components/auctions/AuctionCard.vue";
 import AuctionSearch from "~/components/auctions/AuctionSearch.vue";
 import type { Auction } from "~/interfaces/auction";
+import type { FilterData } from "~/interfaces/auction-filter";
 
 const auctionsStore = useAuctionsStore();
 const auctions = ref<Auction[]>([]);
 const auctionsPerPage = ref<number>(10);
 const currentPage = ref<number>(1);
 const totalAuctions = ref<number>(0);
+const filters = ref({});
+const isLoading = ref(false);
 const totalPages = computed(() =>
   Math.ceil(totalAuctions.value / auctionsPerPage.value)
 );
+let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
 onMounted(async () => {
   await fetchAuctions();
@@ -95,17 +102,53 @@ const filteredAuctions = computed(() => {
 });
 
 const fetchAuctions = async () => {
+  isLoading.value = true;
   auctions.value = [];
+
   const response = await auctionsStore.getAuctionsPaginated({
     page: currentPage.value.toString(),
     per_page: auctionsPerPage.value.toString(),
+    search: searchQuery.value,
+    ...filters.value,
   });
 
   if (response) {
     auctions.value = response.items;
     totalAuctions.value = response.pagination.total;
   }
+  isLoading.value = false;
 };
+
+watch(
+  filters,
+  () => {
+    currentPage.value = 1;
+    fetchAuctions();
+  },
+  { deep: true }
+);
+
+watch(
+  () => searchQuery.value,
+  (newQuery) => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(async () => {
+      const localResults = auctions.value.filter((auction: Auction) =>
+        auction.title.toLowerCase().includes(newQuery.toLowerCase())
+      );
+
+      if (localResults.length > 0) {
+        console.log("Usando filtro local");
+        return;
+      }
+
+      console.log("Buscando na API...");
+      currentPage.value = 1;
+      await fetchAuctions();
+    }, 2000);
+  }
+);
 
 const isLastPage = computed(() => currentPage.value >= totalPages.value);
 
@@ -116,6 +159,11 @@ const changePage = (direction: string) => {
     currentPage.value++;
   }
   fetchAuctions();
+};
+
+const updateFilters = (filterData: FilterData) => {
+  const transformedFilters = transformToSnakeCase(filterData);
+  filters.value = { ...transformedFilters };
 };
 </script>
 
