@@ -1,14 +1,33 @@
 <template>
   <div class="d-flex ga-2 mb-8">
-    <v-btn class="btn btn-primary font-small rounded" height="25">Todos</v-btn>
-    <v-btn class="btn btn-secondary font-small rounded" height="25"
-      >Leilões abertos</v-btn
+    <v-btn
+      v-for="status in statuses"
+      :key="status.id"
+      class="btn font-small rounded"
+      :class="{
+        ' btn-primary ': status.id === statusId,
+        ' btn-secondary ': status.id !== statusId,
+      }"
+      height="25"
+      @click="
+        [(statusId = status.id), $emit('update:statusSelected', status.id)]
+      "
     >
-    <v-btn class="btn btn-secondary font-small rounded" height="25"
-      >Leilões encerrados</v-btn
-    >
-    <v-btn class="btn btn-secondary font-small rounded" height="25"
-      >Leilões cancelados</v-btn
-    >
+      {{ status.label }}
+    </v-btn>
   </div>
 </template>
+
+<script setup lang="ts">
+import { AuctionStatus } from "~/stores/enum";
+
+defineEmits(["update:statusSelected"]);
+const statusId = ref<number>();
+
+const statuses = [
+  { id: undefined, label: "Todos" },
+  { id: AuctionStatus.PENDING, label: "Leilões abertos " },
+  { id: AuctionStatus.FINISHED, label: "Leilões encerrados " },
+  { id: AuctionStatus.CANCELED, label: "Leilões cancelados" },
+];
+</script>
