@@ -36,7 +36,7 @@
             <v-icon
               v-for="starIndex in 5"
               :key="starIndex"
-              :size="65"
+              :size="55"
               @click="setRating(starIndex)"
               @mouseenter="hoverRating = starIndex"
               @mouseleave="hoverRating = 0"

@@ -8,7 +8,7 @@
             class="font-small font-weight-semibold"
             :class="isOpened ? 'text-font-10' : 'text-primary'"
           >
-            {{ auction.type }}
+            {{ getAuctionType(auction.type_id) }}
           </v-col>
 
           <v-col cols="1" class="d-flex justify-center">
@@ -36,14 +36,10 @@
           <v-col cols="6">
             Lance atual:
             {{
-              auction.highestBid > 0
-                ? formatCurrency(auction.highestBid)
-                : "---"
+              auction.highest_bid ? formatCurrency(auction.highest_bid) : " ---"
             }}
           </v-col>
-          <v-col cols="6">
-            Data: {{ auction.startDate }}
-          </v-col>
+          <v-col cols="6"> Data: {{ formatDate(auction.created_date) }} </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -51,8 +47,21 @@
 </template>
 
 <script setup lang="ts">
+import type { Auction } from "~/interfaces/auction";
+
 defineProps<{
   auction: Auction;
   isOpened: boolean;
 }>();
+
+function getAuctionType(typeId: number) {
+  switch (typeId) {
+    case 1:
+      return "Leilão Comum";
+    case 2:
+      return "Leilão por Proximidade";
+    case 3:
+      return "Leilão Inverso";
+  }
+}
 </script>

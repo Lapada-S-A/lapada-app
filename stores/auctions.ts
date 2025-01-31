@@ -1,4 +1,4 @@
-import type { AuctionPaginatedResponse } from "~/interfaces/auction";
+import type { Auction, AuctionPaginatedResponse } from "~/interfaces/auction";
 
 export const useAuctionsStore = defineStore("auctions", () => {
   const { $api } = useNuxtApp();
@@ -16,8 +16,19 @@ export const useAuctionsStore = defineStore("auctions", () => {
     }
   };
 
+  const getAllAuctions = async (): Promise<Auction[] | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.auction.getAll();
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     getAuctionsPaginated,
+    getAllAuctions,
   };
 });
