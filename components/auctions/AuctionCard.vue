@@ -63,7 +63,6 @@ onMounted(() => {
     componentProps.auction.created_date,
     componentProps.auction.end_date
   );
-  console.log(remainingTime.value);
 });
 </script>
 
