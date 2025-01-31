@@ -7,6 +7,7 @@ export interface Auction {
   created_date: string;
   end_date: string;
   initial_value: number;
+  highest_bid: number;
   item_id: number;
   min_increment: number;
   seller_id: number;

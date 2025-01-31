@@ -19,16 +19,17 @@ describe("AuctionCard", () => {
     wrapper = await mountSuspended(AuctionCard, {
       props: {
         auction: {
+          created_date: "30-01-2025-23-01-26",
+          end_date: "21-12-2024-10-00-00",
           id: 1,
-          title: "Relógio de Ouro Antigo",
-          type_id: 2,
-          created_date: "15-01-2025-12-00-00",
-          end_date: "16-01-2025-12-00-00",
-          initial_value: 500000,
-          item_id: 123,
-          min_increment: 1000,
-          seller_id: 456,
-          status: AuctionStatus.ACTIVE,
+          initial_value: 100.0,
+          item_id: 1,
+          min_increment: 5.0,
+          seller_id: 1,
+          status: 2,
+          title: "Auction for Item XYZA",
+          highest_bid: 1000,
+          type_id: 1,
         },
       },
     });

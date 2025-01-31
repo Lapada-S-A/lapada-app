@@ -14,17 +14,26 @@ const ResizeObserverMock = vi.fn(() => ({
 
 vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 
+vi.mock("~/utils/formatDate", () => ({
+  formatDate: vi.fn().mockResolvedValue(""),
+}));
+
 describe("AuctionPanel", () => {
   beforeEach(async () => {
     wrapper = await mountSuspended({
       props: {
         auction: {
+          created_date: "30-01-2025-23-01-26",
+          end_date: "21-12-2024-10-00-00",
           id: 1,
-          title: "Pintura de Paisagem do Século XIX",
-          type: "Leilão invertido",
-          startDate: "30/01/2024",
-          remainingTime: 97645,
-          highestBid: 2800000000,
+          initial_value: 100.0,
+          item_id: 1,
+          min_increment: 5.0,
+          seller_id: 1,
+          status: 2,
+          title: "Auction for Item XYZA",
+          highest_bid: 1000,
+          type_id: 1,
         },
         isOpened: true,
       },

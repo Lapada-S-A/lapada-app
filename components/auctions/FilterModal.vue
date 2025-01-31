@@ -185,11 +185,7 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  FilterData,
-  ModelWithId,
-  ModelWithLabel,
-} from "~/interfaces/auction-filter";
+import type { FilterData } from "~/interfaces/auction-filter";
 
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
@@ -206,22 +202,9 @@ const filters = ref<FilterData>({
 
 const previousFilters = ref<FilterData>({ ...filters.value });
 
-const categories = ref<ModelWithId[]>([
-  { id: 1, name: "Eletrônicos" },
-  { id: 2, name: "Móveis" },
-  { id: 3, name: "Automóveis" },
-  { id: 4, name: "Imóveis" },
-]);
-const auctionTypes = ref<ModelWithId[]>([
-  { id: 1, name: "Comum" },
-  { id: 2, name: "Reverso" },
-]);
-
-const statuses = ref<ModelWithLabel[]>([
-  { label: "Aberto", name: "OPEN" },
-  { label: "Encerrado", name: "CLOSED" },
-  { label: "Pendente", name: "PENDING" },
-]);
+const categories = ref<string[]>(["Eletrônicos", "Imóveis", "Veículos"]);
+const auctionTypes = ref<string[]>(["Comum", "Reverso"]);
+const statuses = ref<string[]>(["Aberto", "Encerrado", "Pendente"]);
 
 const emits = defineEmits(["apply-filters", "clear-filters"]);
 

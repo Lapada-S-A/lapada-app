@@ -25,8 +25,12 @@
       <div
         class="d-flex flex-column ml-16 pl-8 font-large font-weight-bold ga-3"
       >
-        <div class="text-primary">Lance atual:</div>
-        <div>{{ formatCurrency(auction.highestBid) }}</div>
+        <div class="highest-bid text-primary">Lance atual:</div>
+        <div>
+          {{
+            auction.highest_bid ? formatCurrency(auction.highest_bid) : " ---"
+          }}
+        </div>
       </div>
 
       <v-divider
@@ -40,24 +44,24 @@
         <div class="text-primary font-large font-weight-bold mb-1">
           Meus lances:
         </div>
-          <table class="font-weight-regular">
-            <thead>
-              <tr class="font-normal text-font-60">
-                <td>Valor</td>
-                <td>Situação</td>
-                <td>Data</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(bid, index) in bids" :key="index">
-                <td>{{ formatCurrency(bid.value) }}</td>
-                <td :class="`text-${getStatusColor(bid.status.id)}`">
-                  {{ bid.status.name }}
-                </td>
-                <td>{{ bid.date }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <table class="font-weight-regular">
+          <thead>
+            <tr class="font-normal text-font-60">
+              <td>Valor</td>
+              <td>Situação</td>
+              <td>Data</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(bid, index) in bids" :key="index">
+              <td>{{ formatCurrency(bid.amount) }}</td>
+              <td :class="`text-${getBidStatus(bid.bid_status_id)!.color}`">
+                {{ getBidStatus(bid.bid_status_id)!.name }}
+              </td>
+              <td>{{ formatDate(bid.bid_date) }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div class="ml-10">
         <SellerActions />
@@ -67,26 +71,33 @@
 </template>
 
 <script setup lang="ts">
-import SellerActions from './SellerActions.vue';
+import SellerActions from "./SellerActions.vue";
+import type { Auction } from "~/interfaces/auction";
+import type { Bid } from "~/interfaces/bid";
 
-defineProps<{
+const componentProps = defineProps<{
   auction: Auction;
 }>();
+const bidsStore = useBidsStore();
+const bids = ref<Bid[]>([]);
 
-const bids = ref([
-  { value: 3000, status: { id: 1, name: "Vencedor" }, date: "17/11/2024" },
-  { value: 2500, status: { id: 2, name: "Ativo" }, date: "17/11/2024" },
-  { value: 2000, status: { id: 3, name: "Vencido" }, date: "16/11/2024" },
-]);
+onMounted(async () => {
+  const response = await bidsStore.getBidsByAuctionId(
+    componentProps.auction.id
+  );
+  if (response) {
+    bids.value = response;
+  }
+});
 
-function getStatusColor(statusId: number) {
+function getBidStatus(statusId: number) {
   switch (statusId) {
     case 1:
-      return "primary";
+      return { name: "Ativo", color: "success" };
     case 2:
-      return "success";
+      return { name: "Vencido", color: "error" };
     case 3:
-      return "error";
+      return { name: "Vencedor", color: "primary" };
   }
 }
 </script>
@@ -111,5 +122,9 @@ td {
   white-space: normal;
   line-clamp: 2;
   -webkit-line-clamp: 2;
+}
+
+.highest-bid {
+  min-width: 100px;
 }
 </style>
