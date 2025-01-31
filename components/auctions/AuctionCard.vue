@@ -4,10 +4,11 @@
       <v-img src="@/assets/images/auction.png" class="mb-3" height="155" />
       <div class="flex-grow-1">
         <div class="font-large font-weight-bold mb-1 title-truncate">
-          {{ title }}
+          {{ auction.title }}
         </div>
         <div class="font-small font-weight-semibold text-primary mb-2">
-          {{ type }}
+          <!-- {{ auction.type }} -->
+            Leilão Comum
         </div>
       </div>
 
@@ -20,11 +21,15 @@
         </div>
         <div
           class="d-flex align-center ga-1"
-          :class="{ 'mr-2': highestBid === 0 }"
+          :class="{ 'mr-2': auction.initial_value === 0 }"
         >
           <v-icon color="secondary">mdi-cash-multiple</v-icon>
           <div class="text-truncate bid">
-            {{ highestBid > 0 ? formatCurrency(highestBid) : "---" }}
+            {{
+              auction.initial_value > 0
+                ? formatCurrency(auction.initial_value)
+                : "---"
+            }}
           </div>
         </div>
       </div>
@@ -33,12 +38,32 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  title: string;
-  type: string;
-  remainingTime: number;
-  highestBid: number;
+import type { Auction } from "~/interfaces/auction";
+
+const componentProps = defineProps<{
+  auction: Auction;
 }>();
+const remainingTime = ref<number>(0);
+
+function parseDateString(dateStr: string): Date {
+  const [day, month, year, hour, minute, second] = dateStr
+    .split("-")
+    .map(Number);
+  return new Date(year, month - 1, day, hour, minute, second);
+}
+
+function calculateRemainingTime(startDate: string, endDate: string): number {
+  const start = parseDateString(startDate).getTime();
+  const end = parseDateString(endDate).getTime();
+  return Math.floor((end - start) / 1000);
+}
+
+onMounted(() => {
+  remainingTime.value = calculateRemainingTime(
+    componentProps.auction.created_date,
+    componentProps.auction.end_date
+  );
+});
 </script>
 
 <style scoped>

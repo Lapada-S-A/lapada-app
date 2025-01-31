@@ -14,34 +14,43 @@ const ResizeObserverMock = vi.fn(() => ({
 
 vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 
-const mockAuctions = [
-  {
-    title: "Pintura de Paisagem do Século XIX",
-    type: "Leilão invertido",
-    remainingTime: 97645,
-    highestBid: 2800000000,
-  },
-  {
-    title: "Escultura de Mármore",
-    type: "Leilão tradicional",
-    remainingTime: 2456,
-    highestBid: 0,
-  },
-  {
-    title: "Relógio de Ouro Antigo",
-    type: "Leilão por proximidade",
-    remainingTime: 34567,
-    highestBid: 500000,
-  },
-  {
-    title: "Carro Clássico",
-    type: "Leilão invertido",
-    remainingTime: 0,
-    highestBid: 12000,
-  },
-];
-
-vi.stubGlobal("auctions", mockAuctions);
+vi.mock("~/stores/auctions", () => ({
+  useAuctionsStore: () => ({
+    getAuctionsPaginated: vi.fn().mockResolvedValue({
+      items: [
+        {
+          created_date: "30-01-2025-23-01-26",
+          end_date: "21-12-2024-10-00-00",
+          id: 1,
+          initial_value: 100.0,
+          item_id: 1,
+          min_increment: 5.0,
+          seller_id: 1,
+          status: "PENDING",
+          title: "Auction for Item XYZA",
+          type_id: 1,
+        },
+        {
+          created_date: "30-01-2025-23-01-26",
+          end_date: "21-12-2024-10-00-00",
+          id: 1,
+          initial_value: 100.0,
+          item_id: 1,
+          min_increment: 5.0,
+          seller_id: 1,
+          status: "PENDING",
+          title: "Other",
+          type_id: 1,
+        },
+      ],
+      pagination: {
+        page: 1,
+        per_page: 1,
+        total: 18,
+      },
+    }),
+  }),
+}));
 
 describe("AuctionList", () => {
   beforeEach(async () => {
@@ -64,7 +73,7 @@ describe("AuctionList", () => {
   });
 
   it("should display auctions when search query matches", async () => {
-    wrapper.vm.searchQuery.value = "Escultura de Mármore";
+    wrapper.vm.searchQuery.value = "Auction for Item XYZA";
     await wrapper.vm.$nextTick();
 
     const auctionCards = wrapper.findAllComponents(AuctionCard);
@@ -72,11 +81,11 @@ describe("AuctionList", () => {
   });
 
   it("should correctly filter auctions based on search query", async () => {
-    wrapper.vm.searchQuery.value = "Pintura";
+    wrapper.vm.searchQuery.value = "Other";
     await wrapper.vm.$nextTick();
 
     const filteredAuctions = wrapper.vm.filteredAuctions;
     expect(filteredAuctions.length).toBe(1);
-    expect(filteredAuctions[0].title).toBe("Pintura de Paisagem do Século XIX");
+    expect(filteredAuctions[0].title).toBe("Other");
   });
 });
