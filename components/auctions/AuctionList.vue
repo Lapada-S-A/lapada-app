@@ -119,7 +119,7 @@ const fetchAuctions = async () => {
     search: searchQuery.value,
     ...filters.value,
   });
-  console.log(filters.value);
+
   if (response) {
     auctions.value = response.items;
     totalAuctions.value = response.pagination.total;
