@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import type { FilterData } from "~/interfaces/auction-filter";
 
-const emit = defineEmits(["update:searchQuery"]);
+const emit = defineEmits(["update:searchQuery", "apply-filters"]);
 const searchQuery = ref("");
 const appliedFilters = ref<string[]>([]);
 
@@ -48,29 +48,32 @@ const formatDate = (date: Date): string => {
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
-  return `Encerramento: ${day}/${month}/${year}`;
+  return `Data de término: ${day}/${month}/${year}`;
 };
 
 const applyFilters = (filters: FilterData) => {
   appliedFilters.value = Object.entries(filters)
     .map(([key, value]) => {
-      if (
-        (key === "maxBid" || key === "minBid") &&
-        value !== null &&
-        value !== undefined
-      ) {
+      if (value === null || value === undefined) return null;
+
+      if (typeof value === "object") {
+        if (value instanceof Date) {
+          return formatDate(value);
+        } else if ("name" in value) {
+          return value.name;
+        }
+      }
+
+      if (key === "maxBid" || key === "minBid") {
         return `${
           key === "maxBid" ? "Lance Máximo" : "Lance Mínimo"
         }: R$ ${value}`;
       }
 
-      if (typeof value === "object" && value instanceof Date) {
-        return formatDate(value);
-      }
-
       return value;
     })
     .filter((f): f is string => typeof f === "string");
+  emit("apply-filters", filters);
 };
 </script>
 

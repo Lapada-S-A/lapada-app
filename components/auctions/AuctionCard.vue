@@ -7,8 +7,7 @@
           {{ auction.title }}
         </div>
         <div class="font-small font-weight-semibold text-primary mb-2">
-          <!-- {{ auction.type }} -->
-            Leilão Comum
+          {{ getAuctionType(auction.type_id) }}
         </div>
       </div>
 
@@ -26,8 +25,8 @@
           <v-icon color="secondary">mdi-cash-multiple</v-icon>
           <div class="text-truncate bid">
             {{
-              auction.initial_value > 0
-                ? formatCurrency(auction.initial_value)
+              auction.highest_bid > 0
+                ? formatCurrency(auction.highest_bid)
                 : "---"
             }}
           </div>
@@ -64,6 +63,17 @@ onMounted(() => {
     componentProps.auction.end_date
   );
 });
+
+function getAuctionType(typeId: number) {
+  switch (typeId) {
+    case 1:
+      return "Leilão Comum";
+    case 2:
+      return "Leilão por Proximidade";
+    case 3:
+      return "Leilão Reverso";
+  }
+}
 </script>
 
 <style scoped>

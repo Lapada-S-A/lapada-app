@@ -61,7 +61,7 @@ function getAuctionType(typeId: number) {
     case 2:
       return "Leilão por Proximidade";
     case 3:
-      return "Leilão Inverso";
+      return "Leilão Reverso";
   }
 }
 </script>

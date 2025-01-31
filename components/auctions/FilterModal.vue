@@ -39,12 +39,14 @@
               >
               <v-autocomplete
                 id="category-filter"
-                v-model="filters.category"
+                v-model="filters.categoryId"
                 variant="outlined"
                 :items="categories"
+                item-title="name"
+                item-value="id"
                 placeholder="Escolha a categoria"
-                return-object
                 clearable
+                return-object
               />
             </v-col>
             <v-col cols="4">
@@ -53,12 +55,14 @@
               >
               <v-autocomplete
                 id="auction-type-filter"
-                v-model="filters.auctionType"
+                v-model="filters.typeId"
                 variant="outlined"
                 :items="auctionTypes"
+                item-title="name"
+                item-value="id"
                 placeholder="Escolha um tipo"
-                return-object
                 clearable
+                return-object
               />
             </v-col>
             <v-col cols="4">
@@ -70,8 +74,9 @@
                 v-model="filters.status"
                 variant="outlined"
                 :items="statuses"
+                item-title="label"
+                item-value="name"
                 placeholder="Escolha um status"
-                return-object
                 clearable
               />
             </v-col>
@@ -180,15 +185,19 @@
 </template>
 
 <script setup lang="ts">
-import type { FilterData } from "~/interfaces/auction-filter";
+import type {
+  FilterData,
+  ModelWithId,
+  ModelWithLabel,
+} from "~/interfaces/auction-filter";
 
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
 
 const filters = ref<FilterData>({
-  category: null,
-  auctionType: null,
+  categoryId: null,
+  typeId: null,
   status: null,
   minBid: null,
   maxBid: null,
@@ -197,9 +206,23 @@ const filters = ref<FilterData>({
 
 const previousFilters = ref<FilterData>({ ...filters.value });
 
-const categories = ref<string[]>(["Eletrônicos", "Imóveis", "Veículos"]);
-const auctionTypes = ref<string[]>(["Comum", "Reverso"]);
-const statuses = ref<string[]>(["Aberto", "Encerrado", "Pendente"]);
+const categories = ref<ModelWithId[]>([
+  { id: 1, name: "Eletrônicos" },
+  { id: 2, name: "Móveis" },
+  { id: 3, name: "Automóveis" },
+  { id: 4, name: "Imóveis" },
+]);
+const auctionTypes = ref<ModelWithId[]>([
+  { id: 1, name: "Comum" },
+  { id: 2, name: "Por Proximidade" },
+  { id: 3, name: "Reverso" },
+]);
+
+const statuses = ref<ModelWithLabel[]>([
+  { label: "Aberto", name: "OPEN" },
+  { label: "Encerrado", name: "CLOSED" },
+  { label: "Pendente", name: "PENDING" },
+]);
 
 const emits = defineEmits(["apply-filters", "clear-filters"]);
 
@@ -223,8 +246,8 @@ const closeModal = () => {
 
 const clearFilters = () => {
   filters.value = {
-    category: null,
-    auctionType: null,
+    categoryId: null,
+    typeId: null,
     status: null,
     minBid: null,
     maxBid: null,
