@@ -214,7 +214,8 @@ const categories = ref<ModelWithId[]>([
 ]);
 const auctionTypes = ref<ModelWithId[]>([
   { id: 1, name: "Comum" },
-  { id: 2, name: "Reverso" },
+  { id: 2, name: "Por proximidade" },
+  { id: 3, name: "Reverso" },
 ]);
 
 const statuses = ref<ModelWithLabel[]>([

@@ -7,8 +7,7 @@
           {{ auction.title }}
         </div>
         <div class="font-small font-weight-semibold text-primary mb-2">
-          <!-- {{ auction.type }} -->
-            Leilão Comum
+          {{ getAuctionType(auction.type_id)}}
         </div>
       </div>
 
@@ -64,6 +63,17 @@ onMounted(() => {
     componentProps.auction.end_date
   );
 });
+
+function getAuctionType(typeId: number) {
+  switch (typeId) {
+    case 1:
+      return "Leilão Comum";
+    case 2:
+      return "Leilão por Proximidade";
+    case 3:
+      return "Leilão Reverso";
+  }
+}
 </script>
 
 <style scoped>
