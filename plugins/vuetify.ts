@@ -18,16 +18,16 @@ export default defineNuxtPlugin((app) => {
         light: {
           dark: false,
           colors: {
-            primary: "#053CC7",
+            primary: "#008CFF",
             "primary-60": "#F6F6F6",
-            secondary: "#5E85E6",
+            secondary: "#82C4FA",
             "on-surface": "#121212",
             "font-100": "#121212",
             "font-60": "#A4A4A4",
             "font-10": "#FFFFFF",
-            "red-rose": "#DA5E5E",
-            "green-jade": "#62A74B",
-            "yellow": "#FDBB41"
+            "success": "#62A74B",
+            "error": "#DA5E5E",
+            "warning": "#FDBB41"
           },
         },
       },

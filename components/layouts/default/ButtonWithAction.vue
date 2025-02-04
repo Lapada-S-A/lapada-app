@@ -12,7 +12,7 @@
       @click="handleClick"
     >
       <v-icon v-if="icon" :size="iconSize" class="mb-2">{{ icon }}</v-icon>
-      <div  class="text-center font-weight-black font-large" >{{ label }}</div>
+      <div  class="text-center font-weight-bold font-large" >{{ label }}</div>
     </v-btn>
   </template>
   

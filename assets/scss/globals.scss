@@ -6,6 +6,12 @@ body {
 }
 
 .font {
+    &-bigtitle {
+        font-size: $font-size-bigtitle !important;
+    }
+    &-title {
+        font-size: $font-size-title !important;
+    }
     &-subtitle {
         font-size: $font-size-subtitle !important;
     }

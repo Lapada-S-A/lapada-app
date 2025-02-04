@@ -1,8 +1,5 @@
 <template>
-  <div class="mt-5">
-    <h4 class="font-weight-bold text-primary">
-      Últimos lances <v-icon>mdi-dots-horizontal-circle-outline</v-icon>
-    </h4>
+  <div>
     <v-table class="ml-n4 opacity-50" density="compact">
       <thead>
         <tr>
@@ -12,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(bid, index) in bids" :key="index">
+        <tr v-for="(bid, index) in bids" :key="index" class="font-large">
           <td>{{ bid.value }}</td>
           <td>{{ bid.user }}</td>
           <td>{{ bid.date }}</td>
@@ -21,6 +18,7 @@
     </v-table>
   </div>
 </template>
+
 <script setup lang="ts">
 defineProps({
   bids: {
@@ -29,6 +27,7 @@ defineProps({
   },
 });
 </script>
+
 <style scoped>
 .v-table--density-compact {
   --v-table-row-height: 4px !important;

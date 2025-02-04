@@ -1,6 +1,6 @@
 <template>
   <v-app-bar
-    class="pl-8 bg-primary-60 font-subtitle font-weight-black"
+    class="pl-8 bg-primary-60 font-subtitle font-weight-bold"
     elevation="0"
   >
     {{ currentRoute.label }}

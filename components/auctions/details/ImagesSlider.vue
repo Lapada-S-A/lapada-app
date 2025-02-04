@@ -10,21 +10,21 @@
           <v-img
             :src="image"
             class="rounded-lg clickable-image mb-2"
-            @click="setMainImage(image)"
-            cover
-            height="119"
             width="150"
-          ></v-img>
+            height="119"
+            cover
+            @click="setMainImage(image)"
+          />
         </v-slide-group-item>
       </v-slide-group>
     </v-col>
 
-    <v-col cols="10">
+    <v-col cols="10" class="px-0">
       <v-img
         :src="mainImage"
-        class="rounded mb-2 main-image clickable-image"
+        class="rounded mb-2 main-image"
         cover
-      ></v-img>
+      />
     </v-col>
   </v-row>
 </template>
@@ -48,10 +48,11 @@ const setMainImage = (image: string) => {
 }
 
 .clickable-image:hover {
-  transform: scale(1.03);
+  transform: scale(1.01);
 }
 
 .main-image {
+  max-width: 830px;
   height: 500px;
 }
 </style>

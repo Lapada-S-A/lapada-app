@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import AuctionPanelTitle from "~/components/bids/AuctionPanelTitle.vue";
 import AuctionPanelText from "~/components/bids/AuctionPanelText.vue";
+import type { Auction } from "~/interfaces/auction";
 
 defineProps<{
   auction: Auction;
