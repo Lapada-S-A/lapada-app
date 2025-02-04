@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import FilterModal from "~/components/auctions/FilterModal.vue";
 

@@ -14,6 +14,5 @@ import MainCard from "~/components/common/MainCard.vue";
 import AuctionFilterOptions from "~/components/bids/AuctionFilterOptions.vue";
 import AuctionPanelsList from "~/components/bids/AuctionPanelsList.vue";
 
-const auctionsStore = useAuctionsStore();
 const statusIdSelected = ref<number>();
 </script>

@@ -10,7 +10,7 @@
         color="secondary"
         size="70"
         width="6"
-      ></v-progress-circular>
+      />
     </div>
     <div v-else>
       <div
@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <v-expansion-panels v-model="openedAuctionId" variant="accordion" v-else>
+      <v-expansion-panels v-else v-model="openedAuctionId" variant="accordion">
         <div
           v-for="auction in filteredAuctions"
           :key="auction.id"
@@ -48,6 +48,7 @@
 
 <script setup lang="ts">
 import AuctionPanel from "~/components/bids/AuctionPanel.vue";
+import type { Auction } from "~/interfaces/auction";
 
 const componentProps = defineProps<{ statusId?: number }>();
 
@@ -58,14 +59,14 @@ const auctions = ref<Auction[]>([]);
 onMounted(async () => {
   const response = await auctionsStore.getAllAuctions();
   if (response) {
-    auctions.value = response.items;
+    auctions.value = response;
   }
 });
 
 const filteredAuctions = computed(() => {
   return componentProps.statusId !== undefined
     ? auctions.value.filter(
-        (auction) => auction.status === componentProps.statusId
+        (auction: Auction) => auction.status === componentProps.statusId
       )
     : auctions.value;
 });

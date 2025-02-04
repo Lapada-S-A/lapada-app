@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import AuctionCard from "@/components/auctions/AuctionCard.vue";
-import { AuctionStatus } from "~/stores/enum";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let wrapper: any;

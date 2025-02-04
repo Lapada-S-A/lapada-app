@@ -15,7 +15,7 @@
         color="secondary"
         size="70"
         width="6"
-      ></v-progress-circular>
+      />
     </div>
 
     <div

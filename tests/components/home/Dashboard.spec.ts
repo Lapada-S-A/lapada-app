@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, expect, vi } from "vitest";
+import { describe, it, beforeEach, expect } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import Dashboard from "@/components//home/Dashboard.vue";
 
@@ -6,8 +6,6 @@ import Dashboard from "@/components//home/Dashboard.vue";
 let wrapper: any;
 
 describe("Dashboard", () => {
-  const onClickMock = vi.fn();
-
   beforeEach(async () => {
     wrapper = await mountSuspended(Dashboard, {});
   });
