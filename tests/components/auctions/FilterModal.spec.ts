@@ -65,8 +65,8 @@ describe("FilterModal", () => {
 
     expect(wrapper.emitted("clear-filters")[0]).toBeTruthy();
     expect(wrapper.vm.filters.value).toEqual({
-      category: null,
-      auctionType: null,
+      categoryId: null,
+      typeId: null,
       status: null,
       minBid: null,
       maxBid: null,
