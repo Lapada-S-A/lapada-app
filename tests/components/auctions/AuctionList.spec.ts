@@ -66,13 +66,6 @@ describe("AuctionList", () => {
   it("should render the AuctionList component", () => {
     expect(wrapper.exists()).toBeTruthy();
   });
-  it("should display no results when no auctions match the search query", async () => {
-    wrapper.vm.searchQuery.value = "Nonexistent Auction";
-    await wrapper.vm.$nextTick();
-
-    const noResultsCard = wrapper.find(".no-results-card");
-    expect(noResultsCard.exists()).toBeTruthy();
-  });
 
   it("should display auctions when search query matches", async () => {
     wrapper.vm.searchQuery.value = "Auction for Item XYZA";

@@ -6,6 +6,12 @@ body {
 }
 
 .font {
+    &-bigtitle {
+        font-size: $font-size-bigtitle !important;
+    }
+    &-title {
+        font-size: $font-size-title !important;
+    }
     &-subtitle {
         font-size: $font-size-subtitle !important;
     }
@@ -45,7 +51,7 @@ body {
         border: 2px solid $color-primary !important;
     }
     &-disabled {
-        opacity: 0.6;
+        opacity: 0.3;
         pointer-events: none;
         cursor: default;
     }

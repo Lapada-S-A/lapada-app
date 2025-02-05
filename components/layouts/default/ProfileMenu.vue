@@ -10,7 +10,7 @@
         width="35"
         height="35"
       >
-        <div class="font-normal">MK</div>
+        <div class="font-normal text-font-10">MK</div>
       </v-btn>
     </template>
 

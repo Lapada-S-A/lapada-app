@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import FilterModal from "~/components/auctions/FilterModal.vue";
+import AuctionFilterDialog from "~/components/auctions/AuctionFilterDialog.vue";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let wrapper: any;
@@ -13,12 +13,12 @@ const ResizeObserverMock = vi.fn(() => ({
 
 vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 
-describe("FilterModal", () => {
+describe("AuctionFilterDialog", () => {
   beforeEach(async () => {
-    wrapper = await mountSuspended(FilterModal, {});
+    wrapper = await mountSuspended(AuctionFilterDialog, {});
   });
 
-  it("should render the FilterModal component", () => {
+  it("should render the AuctionFilterDialog component", () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 

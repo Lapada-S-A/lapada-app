@@ -23,7 +23,7 @@
       class="d-flex justify-center mt-16"
     >
       <div
-        class="no-results-card d-flex flex-column align-center justify-center pa-6 mt-8"
+        class="d-flex flex-column align-center justify-center pa-6 mt-8"
         max-width="400"
       >
         <v-icon size="125" color="secondary">mdi-magnify</v-icon>
@@ -182,10 +182,3 @@ const updateFilters = (filterData: FilterData) => {
   filters.value = { ...transformedFilters };
 };
 </script>
-
-<style scoped>
-.no-results-card {
-  background-color: rgba(var(--v-theme-font-10), 0.7);
-  border-radius: 6px;
-}
-</style>
