@@ -16,7 +16,7 @@
         </template>
 
         <template #append-inner>
-          <AuctionsFilterModal @apply-filters="applyFilters" />
+          <AuctionFilterDialog @apply-filters="applyFilters" />
         </template>
       </v-text-field>
     </div>
@@ -34,6 +34,7 @@
 </template>
 
 <script setup lang="ts">
+import AuctionFilterDialog from "@/components/auctions/AuctionFilterDialog.vue";
 import type { FilterData } from "~/interfaces/auction-filter";
 
 const emit = defineEmits(["update:searchQuery", "apply-filters"]);
