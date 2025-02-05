@@ -11,20 +11,15 @@
         <div class="text-font-60 mt-n1">Incremento mín.: {{ minIncrement }}</div>
       </v-col>
       <v-col cols="12" class="d-flex justify-center mt-4 mb-5">
-        <v-btn
-          class="btn btn-primary font-subtitle"
-          height="65"
-          width="320"
-          color="primary"
-        >
-          Fazer lance
-        </v-btn>
+        <CreateBidDialog />
       </v-col>
     </v-row>
   </div>
 </template>
 
 <script setup lang="ts">
+import CreateBidDialog from "@/components/auctions/details/CreateBidDialog.vue";
+
 defineProps({
   title: { type: String, required: true },
   auctionType: { type: String, default: "Leilão Comum" },
