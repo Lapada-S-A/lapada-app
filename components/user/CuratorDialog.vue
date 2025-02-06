@@ -48,11 +48,17 @@
             <v-file-input
               id="photo-upload"
               v-model="photo"
-              placeholder="Comprovante de identidade"
               accept="image/*"
               variant="outlined"
               color="primary"
-            />
+              clear-icon="mdi-close"
+            >
+              <template #prepend-inner>
+                <div v-if="!photo" class="file-input-placeholder">
+                    Comprovante de identidade
+                </div></template
+              ></v-file-input
+            >
           </div>
 
           <div class="w-100 mt-2">
@@ -64,11 +70,17 @@
             <v-file-input
               id="document-upload"
               v-model="document"
-              placeholder="Certificado de conhecimento"
               accept=".pdf,.doc,.docx,.jpg,.png"
               variant="outlined"
               color="primary"
-            />
+              clear-icon="mdi-close"
+            >
+              <template #prepend-inner>
+                <div v-if="!document" class="file-input-placeholder">
+                  Certificado de conhecimento
+                </div></template
+              >
+            </v-file-input>
           </div>
         </div>
       </v-card-text>
@@ -77,6 +89,7 @@
         <v-spacer />
         <v-btn
           class="btn btn-primary px-6 ml-2"
+          :class="{ 'btn-disabled': !confirmEnabled }"
           @click="confirmCuratorSelection"
         >
           Confirmar
@@ -88,21 +101,25 @@
 
 <script setup lang="ts">
 const emit = defineEmits(["confirmed", "update:modelValue"]);
-
-const category = ref("");
-const photo = ref();
-const document = ref();
 const props = defineProps({
   parentShow: {
     type: Boolean,
     default: false,
   },
 });
+
 const show = computed({
   get: () => props.parentShow,
   set: (value) => {
     emit("update:modelValue", value);
   },
+});
+const category = ref();
+const photo = ref();
+const document = ref();
+
+const confirmEnabled = computed(() => {
+  return category.value && photo.value && document.value;
 });
 
 function confirmCuratorSelection() {
@@ -112,6 +129,9 @@ function confirmCuratorSelection() {
 
 function cancelCuratorSelection() {
   show.value = false;
+  category.value = null;
+  photo.value = null;
+  document.value = null;
 }
 </script>
 
@@ -119,5 +139,10 @@ function cancelCuratorSelection() {
 :deep(.v-input__prepend > .v-icon) {
   opacity: 1;
   color: rgba(var(--v-theme-primary));
+}
+
+.file-input-placeholder {
+  width: 400px !important;
+  opacity: 0.4;
 }
 </style>

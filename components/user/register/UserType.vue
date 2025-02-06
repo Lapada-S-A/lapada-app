@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { UserTypes } from "~/stores/enum";
-import CuratorDialog from "@/components/register/CuratorDialog.vue";
+import CuratorDialog from "@/components/user/CuratorDialog.vue";
 
 const emit = defineEmits(["update:user-type-selected"]);
 

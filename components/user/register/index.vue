@@ -45,9 +45,9 @@
 </template>
 
 <script setup lang="ts">
-import PersonalInfo from "@/components/register/PersonalInfo.vue";
-import Password from "@/components/register/Password.vue";
-import UserType from "@/components/register/UserType.vue";
+import PersonalInfo from "@/components/user/register/PersonalInfo.vue";
+import Password from "@/components/user/register/Password.vue";
+import UserType from "@/components/user/register/UserType.vue";
 import { UserTypes } from "~/stores/enum";
 
 const validate = ref<boolean>(false);
