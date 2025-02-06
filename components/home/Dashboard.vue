@@ -11,7 +11,7 @@
   </template>
   
   <script setup lang="ts">
-  import ButtonWithAction from '../layouts/default/ButtonWithAction.vue';
+  import ButtonWithAction from '../common/ButtonWithAction.vue';
   const router = useRouter();
   const routeStore  = useRoutesStore();
   </script>

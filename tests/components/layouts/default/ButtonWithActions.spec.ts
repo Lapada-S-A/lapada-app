@@ -1,6 +1,6 @@
 import { describe, it, beforeEach, expect, vi } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
-import LayoutsDefaultButtonWithAction from "@/components/layouts/default/ButtonWithAction.vue";
+import LayoutsDefaultButtonWithAction from "~/components/common/ButtonWithAction.vue";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let wrapper: any;
