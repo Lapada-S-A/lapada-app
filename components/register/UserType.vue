@@ -11,22 +11,43 @@
           :value="UserTypes.Buyer"
           color="primary"
         />
-        <v-radio label="Curador" :value="UserTypes.Curator" color="primary" />
+        <v-radio
+          label="Curador"
+          :value="UserTypes.Curator"
+          color="primary"
+          @click="openCuratorDialog"
+        />
       </div>
     </v-radio-group>
+
+    <CuratorDialog
+      v-model="curatorDialog"
+      @confirmed="confirmCuratorSelection"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { UserTypes } from "~/stores/enum";
+import CuratorDialog from "@/components/register/CuratorDialog.vue";
 
 const emit = defineEmits(["update:user-type-selected"]);
-const userType = ref<UserTypes>(UserTypes.Buyer);
 
-watch(
-  () => userType.value,
-  () => {
-    emit("update:user-type-selected", userType.value);
+const userType = ref<UserTypes>(UserTypes.Buyer);
+const curatorDialog = ref(false);
+const infosUploaded = ref(false);
+
+function openCuratorDialog() {
+  if (!infosUploaded.value) {
+    curatorDialog.value = true;
+  } else {
+    emit("update:user-type-selected", userType);
   }
-);
+}
+
+function confirmCuratorSelection() {
+  curatorDialog.value = false;
+  infosUploaded.value = true;
+  emit("update:user-type-selected", UserTypes.Curator);
+}
 </script>
