@@ -14,7 +14,7 @@
       </v-btn>
     </template>
 
-    <v-card class="pt-3" max-width="250px" elevation="1">
+    <v-card class="pt-4" width="300px" elevation="1">
       <v-list class="pl-2 pr-8 py-0">
         <v-list-item class="py-0">
           <template #prepend>
@@ -22,10 +22,10 @@
           </template>
 
           <div class="d-flex flex-column">
-            <span class="font-weight-bold text-truncate negative-spacing">
+            <span class="font-weight-bold font-large text-truncate mb-n1">
               Marcela Kramer
             </span>
-            <span class="font-smaller text-font-60 text-truncate">
+            <span class="font-small text-font-60 text-truncate">
               marcelakramer@gmail.com
             </span>
           </div>
@@ -34,7 +34,7 @@
 
       <v-divider class="mt-3" />
 
-      <v-list class="pb-2">
+      <v-list class="pb-3">
         <v-list-item
           v-for="item of menuItems"
           :id="item.buttonId"
@@ -49,7 +49,7 @@
               {{ item.icon }}
             </v-icon>
           </template>
-          <span class="font-normal font-weight-semibold">{{ item.title }}</span>
+          <span class="font-weight-semibold">{{ item.title }}</span>
         </v-list-item>
       </v-list>
     </v-card>
@@ -90,9 +90,5 @@ const menuItems = ref([
   &:hover {
     opacity: 0.8 !important;
   }
-}
-
-.negative-spacing {
-  margin-bottom: -4px;
 }
 </style>

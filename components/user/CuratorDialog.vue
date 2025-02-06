@@ -55,7 +55,7 @@
             >
               <template #prepend-inner>
                 <div v-if="!photo" class="file-input-placeholder">
-                    Comprovante de identidade
+                  Comprovante de identidade
                 </div></template
               ></v-file-input
             >
@@ -136,7 +136,8 @@ function cancelCuratorSelection() {
 </script>
 
 <style scoped>
-:deep(.v-input__prepend > .v-icon) {
+:deep(.v-input__prepend > .v-icon),
+:deep(.v-field__append-inner > .v-icon, ) {
   opacity: 1;
   color: rgba(var(--v-theme-primary));
 }
