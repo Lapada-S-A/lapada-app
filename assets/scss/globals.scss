@@ -6,6 +6,9 @@ body {
 }
 
 .font {
+    &-biggertitle {
+        font-size: $font-size-biggertitle !important;
+    }
     &-bigtitle {
         font-size: $font-size-bigtitle !important;
     }
@@ -55,4 +58,8 @@ body {
         pointer-events: none;
         cursor: default;
     }
+}
+
+.v-label {
+    opacity: 1 !important;
 }

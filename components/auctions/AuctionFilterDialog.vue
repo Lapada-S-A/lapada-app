@@ -142,7 +142,7 @@
                     readonly
                     variant="outlined"
                     placeholder="Selecione uma data"
-                    :append-inner-icon="'mdi-calendar'"
+                    :append-inner-icon="'mdi-calendar-month'"
                     clearable
                     @click:clear="filters.endDate = null"
                   />
@@ -290,5 +290,11 @@ const applyFilters = () => {
 
 :deep(.v-icon) {
   margin-bottom: 3px !important;
+}
+
+:deep(.v-field__append-inner > .v-icon) {
+  opacity: 1;
+  color: rgba(var(--v-theme-primary));
+  cursor: pointer;
 }
 </style>
