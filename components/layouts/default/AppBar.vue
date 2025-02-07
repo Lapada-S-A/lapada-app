@@ -13,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+await nextTick();
 const route = useRoute();
 const routesStore = useRoutesStore();
 const currentRoute = computed(() => {

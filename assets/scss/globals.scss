@@ -6,6 +6,9 @@ body {
 }
 
 .font {
+    &-biggertitle {
+        font-size: $font-size-biggertitle !important;
+    }
     &-bigtitle {
         font-size: $font-size-bigtitle !important;
     }
@@ -55,4 +58,14 @@ body {
         pointer-events: none;
         cursor: default;
     }
+}
+
+.v-label {
+    opacity: 1 !important;
+}
+
+.v-card {
+    box-shadow: 0px 4px 10px 0px rgba(160, 160, 160, 0.58) !important;
+-webkit-box-shadow: 0px 4px 10px 0px rgba(160, 160, 160,0.58) !important;
+-moz-box-shadow: 0px 4px 10px 0px rgba(160, 160, 160,0.58) !important;
 }

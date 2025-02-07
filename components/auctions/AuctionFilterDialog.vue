@@ -46,6 +46,7 @@
                 item-value="id"
                 placeholder="Escolha a categoria"
                 clearable
+                clear-icon="mdi-close"
                 return-object
               />
             </v-col>
@@ -62,6 +63,7 @@
                 item-value="id"
                 placeholder="Escolha um tipo"
                 clearable
+                clear-icon="mdi-close"
                 return-object
               />
             </v-col>
@@ -78,6 +80,7 @@
                 item-value="name"
                 placeholder="Escolha um status"
                 clearable
+                clear-icon="mdi-close"
               />
             </v-col>
           </v-row>
@@ -95,6 +98,7 @@
                 type="number"
                 placeholder="Digite o lance mínimo"
                 clearable
+                clear-icon="mdi-close"
                 :rules="[
                   (value) =>
                     !value || value >= 25 || 'Deve ser no mínimo R$25,00',
@@ -113,6 +117,7 @@
                 type="number"
                 placeholder="Digite o lance máximo"
                 clearable
+                clear-icon="mdi-close"
                 :rules="[
                   (value) => !value || value >= 0 || 'Não pode ser negativo',
                 ]"
@@ -142,8 +147,9 @@
                     readonly
                     variant="outlined"
                     placeholder="Selecione uma data"
-                    :append-inner-icon="'mdi-calendar'"
+                    :append-inner-icon="'mdi-calendar-month'"
                     clearable
+                    clear-icon="mdi-close"
                     @click:clear="filters.endDate = null"
                   />
                 </template>
@@ -290,5 +296,11 @@ const applyFilters = () => {
 
 :deep(.v-icon) {
   margin-bottom: 3px !important;
+}
+
+:deep(.v-field__append-inner > .v-icon) {
+  opacity: 1;
+  color: rgba(var(--v-theme-primary));
+  cursor: pointer;
 }
 </style>

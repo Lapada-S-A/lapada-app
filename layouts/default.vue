@@ -1,5 +1,6 @@
 <template>
   <v-layout class="h-100">
+    <Snackbar />
     <LayoutsDefaultNavigationDrawer />
     <LayoutsDefaultAppBar />
     <v-main>
@@ -12,6 +13,10 @@
     </v-main>
   </v-layout>
 </template>
+
+<script setup lang="ts">
+import Snackbar from "@/components/common/Snackbar.vue";
+</script>
 
 <style scoped>
 :deep(.v-application__wrap) {
