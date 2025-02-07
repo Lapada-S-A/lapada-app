@@ -14,7 +14,7 @@
       </v-btn>
     </template>
 
-    <v-card class="pt-4" width="300px" elevation="1">
+    <v-card class="pt-4" width="300px">
       <v-list class="pl-2 pr-8 py-0">
         <v-list-item class="py-0">
           <template #prepend>

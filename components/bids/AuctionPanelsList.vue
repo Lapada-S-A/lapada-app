@@ -59,7 +59,7 @@ const auctions = ref<Auction[]>([]);
 onMounted(async () => {
   const response = await auctionsStore.getAllAuctions();
   if (response) {
-    auctions.value = response;
+    auctions.value = response.items;
   }
 });
 

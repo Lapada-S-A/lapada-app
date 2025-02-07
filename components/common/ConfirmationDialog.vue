@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="show" max-width="300" opacity="0.4" persistent>
-    <v-card class="pa-8" elevation="1">
+    <v-card class="pa-8">
       <div
         class="d-flex font-large text-justify align-center ga-6"
       >
