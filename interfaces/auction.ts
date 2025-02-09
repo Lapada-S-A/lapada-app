@@ -14,6 +14,15 @@ export interface Auction {
   status: AuctionStatus;
 }
 
+export interface AuctionSpecification {
+  title: string | null;
+  min_increment: number | null;
+  end_date: string | null;
+  category_ids: number[] | null;
+  type_id: number | null;
+  description: string | null;
+}
+
 export interface AuctionPaginatedResponse {
   items: Auction[];
   pagination: {

@@ -2,6 +2,7 @@ import "@/assets/scss/vuetify/main.scss";
 import "@mdi/font/css/materialdesignicons.css";
 import { createVuetify } from "vuetify";
 import { pt } from 'vuetify/locale';
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
 
 export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
@@ -42,6 +43,9 @@ export default defineNuxtPlugin((app) => {
         color: "primary",
       },
     },
+    components: {
+      VFileUpload
+    }
   });
   app.vueApp.use(vuetify);
 });

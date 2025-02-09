@@ -1,5 +1,7 @@
+import type { Route, RoutesByUserType } from "~/interfaces/route";
+
 export const useRoutesStore = defineStore("routes", () => {
-  const userType = ref<UserTypes>(UserTypes.Buyer);
+  const userType = ref<UserTypes>(UserTypes.Seller);
 
   const globalRoutes: Route[] = [
     {
@@ -33,8 +35,14 @@ export const useRoutesStore = defineStore("routes", () => {
       {
         icon: "mdi-shopping",
         label: "Meus leilões",
-        to: "/my-auctions",
+        to: "/auctions/my-auctions",
         menu: true,
+      },
+      {
+        icon: "mdi-shopping",
+        label: "Criar leilão",
+        to: "/auctions/new",
+        menu: false,
       },
       ...sharedRoutes,
     ],

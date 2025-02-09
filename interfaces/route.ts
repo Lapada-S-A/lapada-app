@@ -6,5 +6,5 @@ export interface Route {
 }
 
 export type RoutesByUserType = {
-    [key in UserTypes]: Route;
+    [key in UserTypes]: Route[];
 };

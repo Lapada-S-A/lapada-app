@@ -143,7 +143,7 @@
                   <v-text-field
                     v-bind="props"
                     id="limit-date-filter"
-                    :value="formatDate(filters.endDate?.toString() || null)"
+                    :value="formatDatePickerDate(filters.endDate?.toString() || null)"
                     readonly
                     variant="outlined"
                     placeholder="Selecione uma data"
@@ -231,14 +231,6 @@ const statuses = ref<ModelWithLabel[]>([
 ]);
 
 const emits = defineEmits(["apply-filters", "clear-filters"]);
-
-const formatDate = (date: string | null): string | null => {
-  if (!date) return null;
-  const d = new Date(date);
-  return `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}/${d.getFullYear()}`;
-};
 
 const openModal = () => {
   previousFilters.value = { ...filters.value };
