@@ -26,9 +26,20 @@ export const useAuctionsStore = defineStore("auctions", () => {
     }
   };
 
+  const addAuction = async (auction: Auction): Promise<Auction | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.auction.add(auction);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     getAuctionsPaginated,
     getAllAuctions,
+    addAuction,
   };
 });

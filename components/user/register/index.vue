@@ -57,7 +57,6 @@ const userTypeId = ref<UserTypes>(UserTypes.Buyer);
 
 function submitForm() {
   validate.value = false;
-  console.log(personalInfoValidation, passwordValidation, userTypeId);
   nextTick(() => {
     validate.value = true;
   });

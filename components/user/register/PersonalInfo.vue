@@ -295,6 +295,8 @@ watch(
       phoneValidation
     ) {
       emit("update:validation", true);
+    } else {
+      emit("update:validation", false);
     }
   }
 );

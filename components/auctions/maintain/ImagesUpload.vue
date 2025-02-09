@@ -1,44 +1,58 @@
 <template>
-  <div class="mb-8">
-    <span class="font-subtitle font-weight-bold text-primary mr-3">Fotos</span>
-    <span class="font-small text-font-60">(máx: 4)</span>
-  </div>
-  <div class="d-flex align-center">
-    <v-file-upload
-      v-model="images"
-      max-width="75"
-      max-height="75"
-      browse-text=""
-      title=""
-      divider-text=""
-      icon=""
-      multiple
-      clearable
-      @change="images = images.slice(0, 4)"
-    >
-      <template #browse="{ props }">
-        <v-btn variant="plain" size="75" @click="props.onClick">
-          <v-icon size="30" color="primary">mdi-cloud-upload-outline</v-icon>
-        </v-btn>
-      </template>
+  <div>
+    <div class="mb-8">
+      <span class="font-subtitle font-weight-bold text-primary mr-3"
+        >Fotos</span
+      >
+      <span class="font-small text-font-60">(máx: 4)</span>
+    </div>
+    <div class="d-flex align-center">
+      <v-file-upload
+        v-model="images"
+        max-width="75"
+        max-height="75"
+        browse-text=""
+        title=""
+        divider-text=""
+        icon=""
+        multiple
+        clearable
+        @change="
+          images = images.slice(0, 4);
+          showErrorMessage = false;
+        "
+      >
+        <template #browse="{ props }">
+          <v-btn variant="plain" size="75" @click="props.onClick">
+            <v-icon size="30" color="primary">mdi-cloud-upload-outline</v-icon>
+          </v-btn>
+        </template>
 
-      <template #item="{ file, props }">
-        <div class="d-flex flex-column position-relative">
-          <img :src="getImagePreview(file)" class="image-preview" >
-          <v-icon
-            class="remove-icon position-absolute"
-            @click="props['onClick:remove']"
-          >
-            mdi-close
-          </v-icon>
-        </div>
-      </template>
-    </v-file-upload>
+        <template #item="{ file, props }">
+          <div class="d-flex flex-column position-relative">
+            <img :src="getImagePreview(file)" class="image-preview" >
+            <v-icon
+              class="remove-icon position-absolute"
+              @click="props['onClick:remove']"
+            >
+              mdi-close
+            </v-icon>
+          </div>
+        </template>
+      </v-file-upload>
+
+      <div v-if="showErrorMessage" class="ml-4 text-error font-small">
+        É necessário adicionar ao menos uma foto.
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+const componentProps = defineProps<{ validate: boolean }>();
+const emit = defineEmits(["update:validation"]);
 const images = ref<File[]>([]);
+const showErrorMessage = ref<boolean>(false);
 
 function getImagePreview(file: File) {
   if (file && file.type.startsWith("image/")) {
@@ -46,6 +60,18 @@ function getImagePreview(file: File) {
   }
   return "";
 }
+
+watch(
+  () => componentProps.validate,
+  () => {
+    if (images.value.length > 0) {
+      emit("update:validation", true);
+    } else {
+      showErrorMessage.value = true;
+      emit("update:validation", false);
+    }
+  }
+);
 </script>
 
 <style scoped>

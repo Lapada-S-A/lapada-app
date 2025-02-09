@@ -1,14 +1,15 @@
 import type { AuctionStatus } from "~/stores/enum";
 
 export interface Auction {
-  id: number;
+  id?: number;
   title: string;
+  description: string;
+  category_ids: number[];
   type_id: number;
-  created_date: string;
+  created_date?: string;
   end_date: string;
   initial_value: number;
-  highest_bid: number;
-  item_id: number;
+  highest_bid?: number;
   min_increment: number;
   seller_id: number;
   status: AuctionStatus;
