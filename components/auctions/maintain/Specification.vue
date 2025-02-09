@@ -31,6 +31,7 @@
           maxlength="20"
           type="number"
           hide-spin-buttons
+          :rules="minIncrementRule"
         />
       </v-col>
       <v-col cols="4">
@@ -57,6 +58,7 @@
               placeholder="Data de Término"
               append-inner-icon="mdi-calendar-month"
               clearable
+              :rules="dateRule"
               @click:clear="clearDate"
             />
           </template>
@@ -85,7 +87,6 @@
         >
           Categorias
         </v-label>
-        {{ auctionSpecification.category_ids }}
         <v-autocomplete
           id="categories-autocomplete-field"
           v-model="auctionSpecification.category_ids"
@@ -97,6 +98,8 @@
           chips
           clearable
           clear-icon="mdi-close"
+          item-value="id"
+          item-title="name"
         >
           <template #chip="{ item, index, props }">
             <v-chip
@@ -106,7 +109,7 @@
               variant="flat"
             >
               <div class="text-font-10">
-                {{ item.value.name }}
+                {{ item.title }}
               </div>
 
               <template #close>
@@ -121,10 +124,15 @@
             <v-list-item
               v-bind="props"
               :key="index"
-              :title="item.value.name"
+              :title="item.title"
               color="primary"
               class="my-2 mx-4"
               density="compact"
+              :prepend-icon="
+                auctionSpecification.category_ids?.includes(item.value)
+                  ? 'mdi-checkbox-marked'
+                  : 'mdi-checkbox-blank-outline'
+              "
             />
           </template>
         </v-autocomplete>
@@ -140,16 +148,25 @@
         <v-autocomplete
           id="type-autocomplete-field"
           v-model="auctionSpecification.type_id"
-          :items="auctionTypes"
+          :items="types"
           variant="outlined"
           placeholder="Tipo"
           no-data-text="Nenhum tipo disponível"
           clearable
           clear-icon="mdi-close"
+          color="primary"
           item-value="id"
           item-title="name"
-          color="primary"
-        />
+        >
+          <template #item="{ item, index, props }">
+            <v-list-item v-bind="props" :key="index" title="" color="primary">
+              {{ item.title }}
+              <v-tooltip activator="parent" location="bottom" max-width="300">
+                {{ types[index].description }}
+              </v-tooltip>
+            </v-list-item>
+          </template></v-autocomplete
+        >
       </v-col>
     </v-row>
 
@@ -177,8 +194,10 @@
 <script setup lang="ts">
 import type { AuctionSpecification } from "~/interfaces/auction";
 import type { Category } from "~/interfaces/category";
+import type { Type } from "~/interfaces/type";
 
 const categoriesStore = useCategoriesStore();
+const typesStore = useTypesStore();
 const auctionSpecification = ref<AuctionSpecification>({
   title: null,
   min_increment: null,
@@ -188,14 +207,37 @@ const auctionSpecification = ref<AuctionSpecification>({
   description: null,
 });
 const categories = ref<Category[]>([]);
+const types = ref<Type[]>([]);
 
 onMounted(async () => {
   const auctionCategories = await categoriesStore.getAllCategories();
   categories.value = auctionCategories ? auctionCategories : [];
+
+  const auctionTypes = await typesStore.getAllTypes();
+  types.value = auctionTypes ? auctionTypes : [];
 });
 
 const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
+
+const dateRule = [
+  (v: string) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(v);
+    selectedDate.setHours(0, 0, 0, 0);
+    currentDate.setHours(currentDate.getHours() + 24); // Adiciona 24 horas à data atual
+    return (
+      selectedDate >= currentDate ||
+      "A data precisa ser no mínimo 24 horas à frente."
+    );
+  },
+];
+
+const minIncrementRule = [
+  (v: number) => {
+    return v >= 25 || "O lance mínimo deve ser de no mínimo R$ 25,00.";
+  },
+];
 
 function clearDate() {
   auctionSpecification.value.end_date = null;
@@ -206,12 +248,6 @@ function confirmDate() {
   auctionSpecification.value.end_date = tempDate.value;
   dateMenu.value = false;
 }
-
-const auctionTypes = ref([
-  { id: 1, name: "Comum" },
-  { id: 2, name: "Por Proximidade" },
-  { id: 3, name: "Reverso" },
-]);
 </script>
 
 <style scoped>
