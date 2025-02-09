@@ -42,6 +42,7 @@
                 v-model="filters.categoryId"
                 variant="outlined"
                 :items="categories"
+                no-data-text="Nenhuma categoria disponível"
                 item-title="name"
                 item-value="id"
                 placeholder="Escolha a categoria"
@@ -143,7 +144,9 @@
                   <v-text-field
                     v-bind="props"
                     id="limit-date-filter"
-                    :value="formatDatePickerDate(filters.endDate?.toString() || null)"
+                    :value="
+                      formatDatePickerDate(filters.endDate?.toString() || null)
+                    "
                     readonly
                     variant="outlined"
                     placeholder="Selecione uma data"
@@ -196,11 +199,12 @@ import type {
   ModelWithId,
   ModelWithLabel,
 } from "~/interfaces/auction-filter";
+import type { Category } from "~/interfaces/category";
 
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
-
+const categoriesStore = useCategoriesStore();
 const filters = ref<FilterData>({
   categoryId: null,
   typeId: null,
@@ -211,13 +215,13 @@ const filters = ref<FilterData>({
 });
 
 const previousFilters = ref<FilterData>({ ...filters.value });
+const categories = ref<Category[]>([]);
 
-const categories = ref<ModelWithId[]>([
-  { id: 1, name: "Eletrônicos" },
-  { id: 2, name: "Móveis" },
-  { id: 3, name: "Automóveis" },
-  { id: 4, name: "Imóveis" },
-]);
+onMounted(async () => {
+  const auctionCategories = await categoriesStore.getAllCategories();
+  categories.value = auctionCategories ? auctionCategories : [];
+});
+
 const auctionTypes = ref<ModelWithId[]>([
   { id: 1, name: "Comum" },
   { id: 2, name: "Por Proximidade" },

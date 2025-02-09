@@ -85,6 +85,7 @@
         >
           Categorias
         </v-label>
+        {{ auctionSpecification.category_ids }}
         <v-autocomplete
           id="categories-autocomplete-field"
           v-model="auctionSpecification.category_ids"
@@ -175,7 +176,9 @@
 
 <script setup lang="ts">
 import type { AuctionSpecification } from "~/interfaces/auction";
+import type { Category } from "~/interfaces/category";
 
+const categoriesStore = useCategoriesStore();
 const auctionSpecification = ref<AuctionSpecification>({
   title: null,
   min_increment: null,
@@ -183,6 +186,12 @@ const auctionSpecification = ref<AuctionSpecification>({
   category_ids: null,
   type_id: null,
   description: null,
+});
+const categories = ref<Category[]>([]);
+
+onMounted(async () => {
+  const auctionCategories = await categoriesStore.getAllCategories();
+  categories.value = auctionCategories ? auctionCategories : [];
 });
 
 const dateMenu = ref<boolean>(false);
@@ -198,12 +207,6 @@ function confirmDate() {
   dateMenu.value = false;
 }
 
-const categories = ref([
-  { id: 1, name: "Eletrônicos" },
-  { id: 2, name: "Móveis" },
-  { id: 3, name: "Automóveis" },
-  { id: 4, name: "Romance" },
-]);
 const auctionTypes = ref([
   { id: 1, name: "Comum" },
   { id: 2, name: "Por Proximidade" },

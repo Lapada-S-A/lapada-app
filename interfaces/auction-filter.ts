@@ -1,6 +1,8 @@
+import type { Category } from "./category";
+
 export type FilterData = {
     title?: string | null;
-    categoryId: ModelWithId | null ;
+    categoryId: Category | null ;
     typeId: ModelWithId | null;
     status: string | null;
     minBid: number | null;
