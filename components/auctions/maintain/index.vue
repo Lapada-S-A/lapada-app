@@ -65,7 +65,6 @@ function submitForm() {
     validate.value = true;
 
     if (specificationValidation.value && imagesValidation.value) {
-      console.log(specification.value);
       updateAuctionSpecification();
       if (await auctionStore.addAuction(auction.value)) {
         router.push("/auctions/my-auctions");

@@ -41,7 +41,7 @@
                 id="category-filter"
                 v-model="filters.categoryId"
                 variant="outlined"
-                :items="categories"
+                :items="categoriesStore.categories"
                 no-data-text="Nenhuma categoria disponível"
                 item-title="name"
                 item-value="id"
@@ -59,7 +59,7 @@
                 id="auction-type-filter"
                 v-model="filters.typeId"
                 variant="outlined"
-                :items="types"
+                :items="typesStore.types"
                 item-title="name"
                 item-value="id"
                 placeholder="Escolha um tipo"
@@ -194,11 +194,7 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  FilterData,
-  ModelWithLabel,
-} from "~/interfaces/auction-filter";
-import type { Category } from "~/interfaces/category";
+import type { FilterData, ModelWithLabel } from "~/interfaces/auction-filter";
 
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
@@ -215,15 +211,10 @@ const filters = ref<FilterData>({
 });
 
 const previousFilters = ref<FilterData>({ ...filters.value });
-const categories = ref<Category[]>([]);
-const types = ref<Category[]>([]);
 
 onMounted(async () => {
-  const auctionCategories = await categoriesStore.getAllCategories();
-  categories.value = auctionCategories ? auctionCategories : [];
-
-  const auctionTypes = await typesStore.getAllTypes();
-  types.value = auctionTypes ? auctionTypes : [];
+  await categoriesStore.getAllCategories();
+  await typesStore.getAllTypes();
 });
 
 const statuses = ref<ModelWithLabel[]>([

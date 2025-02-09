@@ -7,8 +7,14 @@ export enum UserTypes {
 
 export enum AuctionStatus {
   PENDING = 1,
-  ACTIVE = 2,
+  OPEN = 2,
   FINISHED = 3,
   REJECTED = 4,
   CANCELED = 5,
+}
+
+export enum BidStatus {
+  ACTIVE = 1,
+  EXPIRED = 2,
+  WINNER = 3,
 }

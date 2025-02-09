@@ -100,7 +100,7 @@
         <v-autocomplete
           id="categories-autocomplete-field"
           v-model="auctionSpecification.category_ids"
-          :items="categories"
+          :items="categoriesStore.categories"
           variant="outlined"
           placeholder="Categorias"
           no-data-text="Nenhuma categoria disponível"
@@ -160,7 +160,7 @@
         <v-autocomplete
           id="type-autocomplete-field"
           v-model="auctionSpecification.type_id"
-          :items="types"
+          :items="typesStore.types"
           variant="outlined"
           placeholder="Tipo"
           no-data-text="Nenhum tipo disponível"
@@ -176,7 +176,7 @@
             <v-list-item v-bind="props" :key="index" title="" color="primary">
               {{ item.title }}
               <v-tooltip activator="parent" location="bottom" max-width="300">
-                {{ types[index].description }}
+                {{ typesStore.types[index].description }}
               </v-tooltip>
             </v-list-item>
           </template></v-autocomplete
@@ -209,8 +209,6 @@
 
 <script setup lang="ts">
 import type { AuctionSpecification } from "~/interfaces/auction";
-import type { Category } from "~/interfaces/category";
-import type { Type } from "~/interfaces/type";
 
 const componentProps = defineProps<{ validate: boolean }>();
 const emit = defineEmits(["update:validation", "update:specification"]);
@@ -224,15 +222,10 @@ const auctionSpecification = ref<AuctionSpecification>({
   type_id: null,
   description: null,
 });
-const categories = ref<Category[]>([]);
-const types = ref<Type[]>([]);
 
 onMounted(async () => {
-  const auctionCategories = await categoriesStore.getAllCategories();
-  categories.value = auctionCategories ? auctionCategories : [];
-
-  const auctionTypes = await typesStore.getAllTypes();
-  types.value = auctionTypes ? auctionTypes : [];
+  await categoriesStore.getAllCategories();
+  await typesStore.getAllTypes();
 });
 
 const dateMenu = ref<boolean>(false);

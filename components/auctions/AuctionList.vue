@@ -1,12 +1,31 @@
 <template>
   <div>
-    <AuctionSearch
-      v-model:search-query="searchQuery"
-      @apply-filters="updateFilters"
-    />
+    <div v-if="!isSeller">
+      <AuctionSearch
+        v-model:search-query="searchQuery"
+        @apply-filters="updateFilters"
+      />
+    </div>
+    <div v-else class="mt-2 mb-8 d-flex align-center justify-space-between">
+      <AuctionStatusOptions
+        @update:status-selected="(event) => (auctionStatusIdSelected = event)"
+      />
+      <v-btn
+        class="btn btn-primary"
+        width="160"
+        height="40"
+        @click="$router.push('/auctions/new')"
+      >
+        <div class="d-flex align-center ga-3">
+          <v-icon size="20">mdi-plus</v-icon>Criar leilão
+        </div>
+      </v-btn>
+    </div>
 
     <div
-      v-if="auctionsStore.loading"
+      v-if="
+        auctionsStore.loading || typesStore.loading || categoriesStore.loading
+      "
       class="d-flex justify-center align-center"
     >
       <v-progress-circular
@@ -18,54 +37,56 @@
       />
     </div>
 
-    <div
-      v-if="filteredAuctions.length === 0 && !auctionsStore.loading"
-      class="d-flex justify-center mt-16"
-    >
-      <div
-        class="d-flex flex-column align-center justify-center pa-6 mt-8"
-        max-width="400"
-      >
-        <v-icon size="125" color="secondary">mdi-magnify</v-icon>
-        <div
-          class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
-        >
-          Nenhum leilão encontrado
-        </div>
-      </div>
-    </div>
-
     <div v-else>
-      <div class="d-flex flex-wrap ga-4">
-        <div v-for="auction in filteredAuctions" :key="auction.title">
-          <AuctionCard :auction="auction" />
+      <div
+        v-if="filteredAuctions.length === 0 && !auctionsStore.loading"
+        class="d-flex justify-center mt-16"
+      >
+        <div
+          class="d-flex flex-column align-center justify-center pa-6 mt-8"
+          max-width="400"
+        >
+          <v-icon size="125" color="secondary">mdi-magnify</v-icon>
+          <div
+            class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
+          >
+            Nenhum leilão encontrado
+          </div>
         </div>
       </div>
 
-      <div
-        v-if="!auctionsStore.loading"
-        class="d-flex justify-center ga-2 mt-16 mb-5"
-      >
-        <v-btn
-          id="previous-auctions-page-btn"
-          class="btn btn-secondary font-small"
-          height="32"
-          width="85"
-          :class="{ 'btn-disabled': currentPage === 1 }"
-          @click="changePage('previous')"
+      <div v-else>
+        <div class="d-flex flex-wrap ga-4">
+          <div v-for="auction in filteredAuctions" :key="auction.title">
+            <AuctionCard :auction="auction" :show-status="isSeller" />
+          </div>
+        </div>
+
+        <div
+          v-if="!auctionsStore.loading"
+          class="d-flex justify-center ga-2 mt-16 mb-5"
         >
-          Anterior
-        </v-btn>
-        <v-btn
-          id="next-auctions-page-btn"
-          class="btn btn-primary font-small"
-          height="32"
-          width="85"
-          :class="{ 'btn-disabled': isLastPage }"
-          @click="changePage('next')"
-        >
-          Próxima
-        </v-btn>
+          <v-btn
+            id="previous-auctions-page-btn"
+            class="btn btn-secondary font-small"
+            height="32"
+            width="85"
+            :class="{ 'btn-disabled': currentPage === 1 }"
+            @click="changePage('previous')"
+          >
+            Anterior
+          </v-btn>
+          <v-btn
+            id="next-auctions-page-btn"
+            class="btn btn-primary font-small"
+            height="32"
+            width="85"
+            :class="{ 'btn-disabled': isLastPage }"
+            @click="changePage('next')"
+          >
+            Próxima
+          </v-btn>
+        </div>
       </div>
     </div>
   </div>
@@ -74,11 +95,17 @@
 <script setup lang="ts">
 import AuctionCard from "~/components/auctions/AuctionCard.vue";
 import AuctionSearch from "~/components/auctions/AuctionSearch.vue";
+import AuctionStatusOptions from "~/components/auctions/AuctionStatusOptions.vue";
 import type { Auction } from "~/interfaces/auction";
 import type { FilterData } from "~/interfaces/auction-filter";
+import type { AuctionStatus } from "~/stores/enum";
 
+defineProps<{ isSeller?: boolean }>();
 const auctionsStore = useAuctionsStore();
+const categoriesStore = useCategoriesStore();
+const typesStore = useTypesStore();
 const auctions = ref<Auction[]>([]);
+const auctionStatusIdSelected = ref<AuctionStatus>();
 const auctionsPerPage = ref<number>(10);
 const currentPage = ref<number>(1);
 const totalAuctions = ref<number>(0);
@@ -89,16 +116,24 @@ const totalPages = computed(() =>
 );
 let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
-onMounted(async () => {
+onBeforeMount(async () => {
   await fetchAuctions();
+  await categoriesStore.getAllCategories();
+  await typesStore.getAllTypes();
 });
 
 const searchQuery = ref("");
 
 const filteredAuctions = computed(() => {
-  return auctions.value.filter((auction: Auction) =>
+  let filtered = auctions.value.filter((auction: Auction) =>
     auction.title.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
+  if (auctionStatusIdSelected.value) {
+    filtered = filtered.filter(
+      (auction: Auction) => +auction.status === auctionStatusIdSelected.value
+    );
+  }
+  return filtered;
 });
 
 const formatDateTimeForRequest = (date: Date): string => {
@@ -147,11 +182,9 @@ watch(
       );
 
       if (localResults.length > 0) {
-        console.log("Usando filtro local");
         return;
       }
 
-      console.log("Buscando na API...");
       currentPage.value = 1;
       await fetchAuctions();
     }, 2000);

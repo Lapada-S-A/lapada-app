@@ -8,7 +8,7 @@
             class="font-small font-weight-semibold"
             :class="isOpened ? 'text-font-10' : 'text-primary'"
           >
-            {{ getAuctionType(auction.type_id) }}
+            {{ type ? type.name : "" }}
           </v-col>
 
           <v-col cols="1" class="d-flex justify-center">
@@ -39,7 +39,9 @@
               auction.highest_bid ? formatCurrency(auction.highest_bid) : " ---"
             }}
           </v-col>
-          <v-col cols="6"> Data: {{ formatDate(auction.created_date) }} </v-col>
+          <v-col cols="6">
+            Data: {{ formatDate(auction.created_date!) }}
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -48,20 +50,15 @@
 
 <script setup lang="ts">
 import type { Auction } from "~/interfaces/auction";
+import type { Type } from "~/interfaces/type";
 
-defineProps<{
+const componentProps = defineProps<{
   auction: Auction;
   isOpened: boolean;
 }>();
-
-function getAuctionType(typeId: number) {
-  switch (typeId) {
-    case 1:
-      return "Leilão Comum";
-    case 2:
-      return "Leilão por Proximidade";
-    case 3:
-      return "Leilão Reverso";
-  }
-}
+const typesStore = useTypesStore();
+const type = ref<Type>();
+onMounted(() => {
+  type.value = typesStore.getTypeById(componentProps.auction.type_id);
+});
 </script>

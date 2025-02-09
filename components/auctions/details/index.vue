@@ -6,7 +6,7 @@
         class="mb-7 text-font-100 font-large font-weight-bold text-none ml-n5"
         variant="plain"
         :ripple="false"
-        @click="handleBackClick"
+        @click="$router.back()"
       >
         Voltar
       </v-btn>
@@ -72,7 +72,6 @@ const props = defineProps({
     required: true,
   },
   showBackButton: { type: Boolean, default: true },
-  onBackClick: { type: Function, default: null },
 });
 
 const handleBackClick = () => {
