@@ -55,8 +55,10 @@
           <tbody>
             <tr v-for="(bid, index) in bids" :key="index">
               <td>{{ formatCurrency(bid.amount) }}</td>
-              <td :class="`text-${getBidStatus(bid.bid_status_id)!.color}`">
-                {{ getBidStatus(bid.bid_status_id)!.name }}
+              <td
+                :class="{[`text-${getBidStatusProperties(bid.bid_status_id)!.color}`]: true, 'font-weight-semibold': bid.bid_status_id === BidStatus.WINNER}"
+              >
+                {{ getBidStatusProperties(bid.bid_status_id)!.name }}
               </td>
               <td>{{ formatDate(bid.bid_date) }}</td>
             </tr>
@@ -83,23 +85,12 @@ const bids = ref<Bid[]>([]);
 
 onMounted(async () => {
   const response = await bidsStore.getBidsByAuctionId(
-    componentProps.auction.id
+    componentProps.auction.id!
   );
   if (response) {
     bids.value = response;
   }
 });
-
-function getBidStatus(statusId: number) {
-  switch (statusId) {
-    case 1:
-      return { name: "Ativo", color: "success" };
-    case 2:
-      return { name: "Vencido", color: "error" };
-    case 3:
-      return { name: "Vencedor", color: "primary" };
-  }
-}
 </script>
 
 <style scoped>

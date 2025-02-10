@@ -41,7 +41,8 @@
                 id="category-filter"
                 v-model="filters.categoryId"
                 variant="outlined"
-                :items="categories"
+                :items="categoriesStore.categories"
+                no-data-text="Nenhuma categoria disponível"
                 item-title="name"
                 item-value="id"
                 placeholder="Escolha a categoria"
@@ -58,7 +59,7 @@
                 id="auction-type-filter"
                 v-model="filters.typeId"
                 variant="outlined"
-                :items="auctionTypes"
+                :items="typesStore.types"
                 item-title="name"
                 item-value="id"
                 placeholder="Escolha um tipo"
@@ -143,7 +144,9 @@
                   <v-text-field
                     v-bind="props"
                     id="limit-date-filter"
-                    :value="formatDate(filters.endDate?.toString() || null)"
+                    :value="
+                      formatDatePickerDate(filters.endDate?.toString() || null)
+                    "
                     readonly
                     variant="outlined"
                     placeholder="Selecione uma data"
@@ -191,16 +194,13 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  FilterData,
-  ModelWithId,
-  ModelWithLabel,
-} from "~/interfaces/auction-filter";
+import type { FilterData, ModelWithLabel } from "~/interfaces/auction-filter";
 
 const isOpen = ref<boolean>(false);
 const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
-
+const categoriesStore = useCategoriesStore();
+const typesStore = useTypesStore();
 const filters = ref<FilterData>({
   categoryId: null,
   typeId: null,
@@ -212,17 +212,10 @@ const filters = ref<FilterData>({
 
 const previousFilters = ref<FilterData>({ ...filters.value });
 
-const categories = ref<ModelWithId[]>([
-  { id: 1, name: "Eletrônicos" },
-  { id: 2, name: "Móveis" },
-  { id: 3, name: "Automóveis" },
-  { id: 4, name: "Imóveis" },
-]);
-const auctionTypes = ref<ModelWithId[]>([
-  { id: 1, name: "Comum" },
-  { id: 2, name: "Por Proximidade" },
-  { id: 3, name: "Reverso" },
-]);
+onMounted(async () => {
+  await categoriesStore.getAllCategories();
+  await typesStore.getAllTypes();
+});
 
 const statuses = ref<ModelWithLabel[]>([
   { label: "Aberto", name: "OPEN" },
@@ -231,14 +224,6 @@ const statuses = ref<ModelWithLabel[]>([
 ]);
 
 const emits = defineEmits(["apply-filters", "clear-filters"]);
-
-const formatDate = (date: string | null): string | null => {
-  if (!date) return null;
-  const d = new Date(date);
-  return `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}/${d.getFullYear()}`;
-};
 
 const openModal = () => {
   previousFilters.value = { ...filters.value };

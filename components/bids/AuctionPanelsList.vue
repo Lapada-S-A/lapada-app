@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="auctionsStore.loading"
+      v-if="auctionsStore.loading || typesStore.loading"
       class="d-flex justify-center align-center"
     >
       <v-progress-circular
@@ -51,7 +51,7 @@ import AuctionPanel from "~/components/bids/AuctionPanel.vue";
 import type { Auction } from "~/interfaces/auction";
 
 const componentProps = defineProps<{ statusId?: number }>();
-
+const typesStore = useTypesStore();
 const auctionsStore = useAuctionsStore();
 const openedAuctionId = ref<number | null>(null);
 const auctions = ref<Auction[]>([]);
@@ -59,8 +59,9 @@ const auctions = ref<Auction[]>([]);
 onMounted(async () => {
   const response = await auctionsStore.getAllAuctions();
   if (response) {
-    auctions.value = response.items;
+    auctions.value = response;
   }
+  await typesStore.getAllTypes();
 });
 
 const filteredAuctions = computed(() => {

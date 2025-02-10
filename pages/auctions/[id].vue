@@ -10,16 +10,11 @@
       :images="auctionData.images"
       :bids="auctionData.bids"
       :show-back-button="true"
-      @on-back-click="navigateBack"
     />
   </template>
   
   <script setup lang="ts">
   import AuctionDetails from "@/components/auctions/details/index.vue";
-  
-  const navigateBack = () => {
-    console.log("Voltar ao catálogo");
-  };
   
   const auctionData = {
     title: "Automóvel Clássico Ford Mustang 1965",

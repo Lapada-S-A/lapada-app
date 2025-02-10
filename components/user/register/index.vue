@@ -57,7 +57,6 @@ const userTypeId = ref<UserTypes>(UserTypes.Buyer);
 
 function submitForm() {
   validate.value = false;
-  console.log(personalInfoValidation, passwordValidation, userTypeId);
   nextTick(() => {
     validate.value = true;
   });
@@ -65,10 +64,6 @@ function submitForm() {
 </script>
 
 <style scoped>
-:deep(.v-card) {
-  border-radius: 6px;
-}
-
 :deep(.v-field__append-inner > .v-icon) {
   opacity: 1;
   color: rgba(var(--v-theme-primary));

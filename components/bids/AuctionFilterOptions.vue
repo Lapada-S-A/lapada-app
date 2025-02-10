@@ -26,8 +26,8 @@ const statusId = ref<number>();
 
 const statuses = [
   { id: undefined, label: "Todos" },
-  { id: AuctionStatus.PENDING, label: "Leilões abertos " },
-  { id: AuctionStatus.FINISHED, label: "Leilões encerrados " },
+  { id: AuctionStatus.PENDING, label: "Leilões abertos" },
+  { id: AuctionStatus.FINISHED, label: "Leilões encerrados" },
   { id: AuctionStatus.CANCELED, label: "Leilões cancelados" },
 ];
 </script>

@@ -6,7 +6,7 @@
         class="mb-7 text-font-100 font-large font-weight-bold text-none ml-n5"
         variant="plain"
         :ripple="false"
-        @click="handleBackClick"
+        @click="$router.back()"
       >
         Voltar
       </v-btn>
@@ -57,7 +57,7 @@ import LastBids from "@/components/auctions/details/LastBids.vue";
 import MainDetails from "@/components/auctions/details/MainDetails.vue";
 import SellerCard from "@/components/auctions/details/SellerCard.vue";
 
-const props = defineProps({
+defineProps({
   title: { type: String, required: true },
   auctionType: { type: String, default: "Leilão Comum" },
   category: { type: String, required: true },
@@ -72,14 +72,7 @@ const props = defineProps({
     required: true,
   },
   showBackButton: { type: Boolean, default: true },
-  onBackClick: { type: Function, default: null },
 });
-
-const handleBackClick = () => {
-  if (props.onBackClick) {
-    props.onBackClick();
-  }
-};
 
 const timeUnits = [
   { value: 3, label: "dias" },
