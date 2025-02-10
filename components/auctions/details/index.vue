@@ -57,7 +57,7 @@ import LastBids from "@/components/auctions/details/LastBids.vue";
 import MainDetails from "@/components/auctions/details/MainDetails.vue";
 import SellerCard from "@/components/auctions/details/SellerCard.vue";
 
-const props = defineProps({
+defineProps({
   title: { type: String, required: true },
   auctionType: { type: String, default: "Leilão Comum" },
   category: { type: String, required: true },
@@ -73,12 +73,6 @@ const props = defineProps({
   },
   showBackButton: { type: Boolean, default: true },
 });
-
-const handleBackClick = () => {
-  if (props.onBackClick) {
-    props.onBackClick();
-  }
-};
 
 const timeUnits = [
   { value: 3, label: "dias" },

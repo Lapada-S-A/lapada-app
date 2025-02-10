@@ -9,6 +9,11 @@ export const useRoutesStore = defineStore("routes", () => {
       to: "/",
       menu: false,
     },
+    {
+      label: "Meu perfil",
+      to: "/profile",
+      menu: false,
+    },
   ];
 
   const sharedRoutes: Route[] = [
