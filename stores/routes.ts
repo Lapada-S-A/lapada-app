@@ -49,6 +49,12 @@ export const useRoutesStore = defineStore("routes", () => {
         to: "/auctions/new",
         menu: false,
       },
+      {
+        icon: "mdi-shopping",
+        label: "Editar leilão",
+        to: "/auctions/edit/[id]",
+        menu: false,
+      },
       ...sharedRoutes,
     ],
     [UserTypes.Curator]: [

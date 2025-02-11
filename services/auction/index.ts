@@ -15,7 +15,11 @@ export default class AuctionService extends BaseService {
     return await this.request(this.RESOURCE + "list", "GET");
   }
 
+  async getById(id: number): Promise<Auction | undefined> {
+    return await this.request(this.RESOURCE + `list/${id}`, "GET");
+  }
+
   async add(auction: Auction): Promise<Auction | undefined> {
-    return await this.request(this.RESOURCE + "create", "POST", auction)
+    return await this.request(this.RESOURCE + "create", "POST", auction);
   }
 }

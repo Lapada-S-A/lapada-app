@@ -46,7 +46,7 @@
           class="d-flex flex-column align-center justify-center pa-6 mt-8"
           max-width="400"
         >
-          <v-icon size="125" color="secondary">mdi-magnify</v-icon>
+          <v-icon size="125" color="secondary">mdi-shopping-search-outline</v-icon>
           <div
             class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
           >
@@ -106,7 +106,7 @@ const categoriesStore = useCategoriesStore();
 const typesStore = useTypesStore();
 const auctions = ref<Auction[]>([]);
 const auctionStatusIdSelected = ref<AuctionStatus>();
-const auctionsPerPage = ref<number>(10);
+const auctionsPerPage = ref<number>(18);
 const currentPage = ref<number>(1);
 const totalAuctions = ref<number>(0);
 const filters = ref({});

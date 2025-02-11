@@ -26,6 +26,18 @@ export const useAuctionsStore = defineStore("auctions", () => {
     }
   };
 
+  const getAuctionById = async (
+    auctionId: number
+  ): Promise<Auction | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.auction.getById(auctionId);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const addAuction = async (auction: Auction): Promise<Auction | undefined> => {
     loading.value = true;
     try {
@@ -40,6 +52,7 @@ export const useAuctionsStore = defineStore("auctions", () => {
     loading,
     getAuctionsPaginated,
     getAllAuctions,
+    getAuctionById,
     addAuction,
   };
 });

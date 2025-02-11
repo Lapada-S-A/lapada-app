@@ -1,11 +1,12 @@
 <template>
-  <MainCard>
+  <MainCard v-if="auction">
     <div class="pa-4">
       <div class="mb-10">
         <Specification
           v-model:specification="specification"
           v-model:validation="specificationValidation"
           :validate="validate"
+          :auction="auction"
         />
 
         <ImagesUpload
@@ -32,6 +33,21 @@
       </div>
     </div>
   </MainCard>
+  <div v-else>
+    <div class="d-flex justify-center mt-16">
+      <div
+        class="d-flex flex-column align-center justify-center pa-6 mt-8"
+        max-width="400"
+      >
+        <v-icon size="125" color="secondary">mdi-shopping-outline</v-icon>
+        <div
+          class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
+        >
+          Ops... <span class="ml-2">Este leilão não foi encontrado</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -39,22 +55,12 @@ import MainCard from "~/components/common/MainCard.vue";
 import Specification from "./Specification.vue";
 import ImagesUpload from "./ImagesUpload.vue";
 import type { Auction, AuctionSpecification } from "~/interfaces/auction";
-import { AuctionStatus } from "~/stores/enum";
 
+const componentProps = defineProps<{ auction?: Auction }>();
 const router = useRouter();
 const auctionStore = useAuctionsStore();
 const snackBarStore = useSnackbarStore();
-const auction = ref<Auction>({
-  title: "",
-  description: "",
-  end_date: "",
-  type_id: 1,
-  categories: [],
-  min_increment: 0,
-  initial_value: 0,
-  seller_id: 1,
-  status: AuctionStatus.PENDING,
-});
+const auction = toRef(componentProps.auction);
 const validate = ref<boolean>(false);
 const specificationValidation = ref<boolean>(false);
 const specification = ref<AuctionSpecification>();
@@ -75,10 +81,12 @@ watch(
 
 async function submitForm() {
   updateAuctionSpecification();
-  const response = await auctionStore.addAuction(auction.value);
-  if (response) {
-    snackBarStore.showSnackbar("success", "Leilão criado com sucesso!")
-    router.push("/auctions/my-auctions");
+  if (auction.value) {
+    const response = await auctionStore.addAuction(auction.value);
+    if (response) {
+      snackBarStore.showSnackbar("success", "Leilão criado com sucesso!");
+      router.push("/auctions/my-auctions");
+    }
   }
 }
 
@@ -90,7 +98,7 @@ function changeValidate() {
 }
 
 function updateAuctionSpecification() {
-  if (specification.value) {
+  if (auction.value && specification.value) {
     auction.value.title = specification.value.title!;
     auction.value.description = specification.value.description!;
     auction.value.min_increment = specification.value.min_increment!;

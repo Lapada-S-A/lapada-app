@@ -61,7 +61,7 @@
           for="end-date-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
         >
-          Data de Término
+          Data de término
         </v-label>
         <v-menu
           v-model="dateMenu"
@@ -77,7 +77,7 @@
               id="end-date-field"
               :value="formatDatePickerDate(auctionSpecification.end_date)"
               readonly
-              placeholder="Data de Término"
+              placeholder="Data de término"
               append-inner-icon="mdi-calendar-month"
               clearable
               :error-messages="endDateError"
@@ -207,7 +207,7 @@
           for="description-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
         >
-          Decrição
+          Descrição
         </v-label>
         <v-textarea
           id="description-field"
@@ -225,9 +225,9 @@
 </template>
 
 <script setup lang="ts">
-import type { AuctionSpecification } from "~/interfaces/auction";
+import type { Auction, AuctionSpecification } from "~/interfaces/auction";
 
-const componentProps = defineProps<{ validate: boolean }>();
+const componentProps = defineProps<{ validate: boolean; auction?: Auction }>();
 const emit = defineEmits(["update:validation", "update:specification"]);
 const categoriesStore = useCategoriesStore();
 const typesStore = useTypesStore();
@@ -244,6 +244,26 @@ const auctionSpecification = ref<AuctionSpecification>({
 onMounted(async () => {
   await categoriesStore.getAllCategories();
   await typesStore.getAllTypes();
+
+  if (componentProps.auction) {
+    auctionSpecification.value.title = componentProps.auction.title;
+    auctionSpecification.value.initial_value =
+      componentProps.auction.initial_value > 0
+        ? auctionSpecification.value.initial_value
+        : null;
+    auctionSpecification.value.min_increment =
+      componentProps.auction.min_increment > 0
+        ? auctionSpecification.value.min_increment
+        : null;
+    auctionSpecification.value.end_date = convertDate(
+      componentProps.auction.end_date
+    );
+    auctionSpecification.value.categories = [
+      ...componentProps.auction.categories,
+    ];
+    auctionSpecification.value.type_id = componentProps.auction.type_id;
+    auctionSpecification.value.description = componentProps.auction.description;
+  }
 });
 
 const dateMenu = ref<boolean>(false);
@@ -355,6 +375,14 @@ function confirmDate() {
       .slice(0, -1);
   }
   dateMenu.value = false;
+}
+
+function convertDate(input: string) {
+  const [day, month, year, hours, minutes, seconds] = input.split("-");
+
+  const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+  return new Date(formattedDate).toISOString().slice(0, -1);
 }
 
 watch(
