@@ -4,7 +4,7 @@ export interface Auction {
   id?: number;
   title: string;
   description: string;
-  category_ids: number[];
+  categories: number[];
   type_id: number;
   created_date?: string;
   end_date: string;
@@ -17,9 +17,10 @@ export interface Auction {
 
 export interface AuctionSpecification {
   title: string | null;
+  initial_value: number | null;
   min_increment: number | null;
   end_date: string | null;
-  category_ids: number[] | null;
+  categories: number[] | null;
   type_id: number | null;
   description: string | null;
 }

@@ -26,7 +26,7 @@
           class="btn btn-primary"
           height="37"
           width="120"
-          @click="submitForm"
+          @click="changeValidate"
           >Salvar</v-btn
         >
       </div>
@@ -43,12 +43,13 @@ import { AuctionStatus } from "~/stores/enum";
 
 const router = useRouter();
 const auctionStore = useAuctionsStore();
+const snackBarStore = useSnackbarStore();
 const auction = ref<Auction>({
   title: "",
   description: "",
   end_date: "",
   type_id: 1,
-  category_ids: [],
+  categories: [],
   min_increment: 0,
   initial_value: 0,
   seller_id: 1,
@@ -59,17 +60,32 @@ const specificationValidation = ref<boolean>(false);
 const specification = ref<AuctionSpecification>();
 const imagesValidation = ref<boolean>(false);
 
-function submitForm() {
-  validate.value = false;
-  nextTick(async () => {
-    validate.value = true;
+const isFormValidated = computed(() => {
+  return specificationValidation.value && imagesValidation.value;
+});
 
-    if (specificationValidation.value && imagesValidation.value) {
-      updateAuctionSpecification();
-      if (await auctionStore.addAuction(auction.value)) {
-        router.push("/auctions/my-auctions");
-      }
+watch(
+  () => isFormValidated.value,
+  async () => {
+    if (isFormValidated.value) {
+      await submitForm();
     }
+  }
+);
+
+async function submitForm() {
+  updateAuctionSpecification();
+  const response = await auctionStore.addAuction(auction.value);
+  if (response) {
+    snackBarStore.showSnackbar("success", "Leilão criado com sucesso!")
+    router.push("/auctions/my-auctions");
+  }
+}
+
+function changeValidate() {
+  validate.value = true;
+  nextTick(() => {
+    validate.value = false;
   });
 }
 
@@ -78,7 +94,8 @@ function updateAuctionSpecification() {
     auction.value.title = specification.value.title!;
     auction.value.description = specification.value.description!;
     auction.value.min_increment = specification.value.min_increment!;
-    auction.value.category_ids = specification.value.category_ids!;
+    auction.value.initial_value = specification.value.initial_value!;
+    auction.value.categories = specification.value.categories!;
     auction.value.type_id = specification.value.type_id!;
     auction.value.end_date = specification.value.end_date!;
   }

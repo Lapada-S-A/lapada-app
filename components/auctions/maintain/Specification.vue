@@ -22,6 +22,23 @@
       </v-col>
       <v-col cols="4">
         <v-label
+          for="initial-value-field"
+          class="text-font-100 font-weight-semibold mb-2 ml-1"
+          >Valor inicial (R$)</v-label
+        >
+        <v-text-field
+          id="initial-value-field"
+          v-model="auctionSpecification.initial_value"
+          placeholder="Valor inicial (R$)"
+          maxlength="20"
+          type="number"
+          hide-spin-buttons
+          :error-messages="initialValueError"
+          @input="initialValueError = []"
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-label
           for="min-increment-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
           >Lance/Incremento mínimo (R$)</v-label
@@ -37,6 +54,8 @@
           @input="minIncrementError = []"
         />
       </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="4">
         <v-label
           for="end-date-field"
@@ -88,9 +107,7 @@
           </v-date-picker>
         </v-menu>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="8">
+      <v-col cols="4">
         <v-label
           for="categories-autocomplete-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
@@ -99,7 +116,7 @@
         </v-label>
         <v-autocomplete
           id="categories-autocomplete-field"
-          v-model="auctionSpecification.category_ids"
+          v-model="auctionSpecification.categories"
           :items="categoriesStore.categories"
           variant="outlined"
           placeholder="Categorias"
@@ -141,7 +158,7 @@
               class="my-2 mx-4"
               density="compact"
               :prepend-icon="
-                auctionSpecification.category_ids?.includes(item.value)
+                auctionSpecification.categories?.includes(item.value)
                   ? 'mdi-checkbox-marked'
                   : 'mdi-checkbox-blank-outline'
               "
@@ -216,9 +233,10 @@ const categoriesStore = useCategoriesStore();
 const typesStore = useTypesStore();
 const auctionSpecification = ref<AuctionSpecification>({
   title: null,
+  initial_value: null,
   min_increment: null,
   end_date: null,
-  category_ids: null,
+  categories: null,
   type_id: null,
   description: null,
 });
@@ -232,6 +250,7 @@ const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
 
 const titleError = ref<string[]>([]);
+const initialValueError = ref<string[]>([]);
 const minIncrementError = ref<string[]>([]);
 const endDateError = ref<string[]>([]);
 const categoriesError = ref<string[]>([]);
@@ -250,12 +269,24 @@ function validateTitle() {
   return true;
 }
 
+function validateInitialValue() {
+  if (
+    !auctionSpecification.value.initial_value ||
+    auctionSpecification.value.initial_value < 5
+  ) {
+    initialValueError.value = ["O valor inicial deve ser de no mínimo R$ 5,00"];
+    return false;
+  }
+  initialValueError.value = [];
+  return true;
+}
+
 function validateMinIncrement() {
   if (
     !auctionSpecification.value.min_increment ||
-    auctionSpecification.value.min_increment < 25
+    auctionSpecification.value.min_increment < 5
   ) {
-    minIncrementError.value = ["O lance mínimo deve ser de no mínimo R$ 25,00"];
+    minIncrementError.value = ["O lance mínimo deve ser de no mínimo R$ 5,00"];
     return false;
   }
   minIncrementError.value = [];
@@ -281,8 +312,8 @@ function validateEndDate() {
 
 function validateCategories() {
   if (
-    !auctionSpecification.value.category_ids ||
-    auctionSpecification.value.category_ids.length === 0
+    !auctionSpecification.value.categories ||
+    auctionSpecification.value.categories.length === 0
   ) {
     categoriesError.value = ["Pelo menos uma categoria deve ser selecionada"];
     return false;
@@ -330,6 +361,7 @@ watch(
   () => componentProps.validate,
   () => {
     const titleValidation = validateTitle();
+    const initialValueValidation = validateInitialValue();
     const minIncrementValidation = validateMinIncrement();
     const endDateValidation = validateEndDate();
     const categoriesValidation = validateCategories();
@@ -338,6 +370,7 @@ watch(
 
     if (
       titleValidation &&
+      initialValueValidation &&
       minIncrementValidation &&
       endDateValidation &&
       categoriesValidation &&
