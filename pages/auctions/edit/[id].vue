@@ -13,7 +13,7 @@
       />
     </div>
     <div v-else>
-      <AuctionsMaintain :auction="auction" />
+      <AuctionsMaintain :auction="auction" :edit="true"/>
     </div>
   </div>
 </template>

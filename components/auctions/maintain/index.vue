@@ -7,6 +7,7 @@
           v-model:validation="specificationValidation"
           :validate="validate"
           :auction="auction"
+          :edit="edit"
         />
 
         <ImagesUpload
@@ -56,7 +57,7 @@ import Specification from "./Specification.vue";
 import ImagesUpload from "./ImagesUpload.vue";
 import type { Auction, AuctionSpecification } from "~/interfaces/auction";
 
-const componentProps = defineProps<{ auction?: Auction }>();
+const componentProps = defineProps<{ edit: boolean; auction?: Auction }>();
 const router = useRouter();
 const auctionStore = useAuctionsStore();
 const snackBarStore = useSnackbarStore();
@@ -80,11 +81,26 @@ watch(
 );
 
 async function submitForm() {
+  let result = false;
   updateAuctionSpecification();
   if (auction.value) {
-    const response = await auctionStore.addAuction(auction.value);
-    if (response) {
-      snackBarStore.showSnackbar("success", "Leilão criado com sucesso!");
+    let response;
+    let message = "";
+    if (!componentProps.edit) {
+      response = await auctionStore.addAuction(auction.value);
+      if (response) {
+        message = "Leilão criado com sucesso!";
+        result = true;
+      }
+    } else {
+      response = await auctionStore.updateAuction(auction.value);
+      if (response) {
+        message = "Leilão atualizado com sucesso!";
+        result = true;
+      }
+    }
+    if (result) {
+      snackBarStore.showSnackbar("success", message);
       router.push("/auctions/my-auctions");
     }
   }

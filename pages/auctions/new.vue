@@ -1,5 +1,5 @@
 <template>
-  <AuctionsMaintain :auction="auction" />
+  <AuctionsMaintain :auction="auction" :edit="false" />
 </template>
 
 <script setup lang="ts">

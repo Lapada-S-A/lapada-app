@@ -24,6 +24,7 @@
         <v-label
           for="initial-value-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
+          :class="{'disabled-label': edit}"
           >Valor inicial (R$)</v-label
         >
         <v-text-field
@@ -34,6 +35,7 @@
           type="number"
           hide-spin-buttons
           :error-messages="initialValueError"
+          :disabled="edit"
           @input="initialValueError = []"
         />
       </v-col>
@@ -41,6 +43,7 @@
         <v-label
           for="min-increment-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
+          :class="{'disabled-label': edit}"
           >Lance/Incremento mínimo (R$)</v-label
         >
         <v-text-field
@@ -51,6 +54,7 @@
           type="number"
           hide-spin-buttons
           :error-messages="minIncrementError"
+          :disabled="edit"
           @input="minIncrementError = []"
         />
       </v-col>
@@ -171,6 +175,7 @@
         <v-label
           for="type-autocomplete-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
+          :class="{'disabled-label': edit}"
         >
           Tipo
         </v-label>
@@ -187,6 +192,7 @@
           item-value="id"
           item-title="name"
           :error-messages="typeError"
+          :disabled="edit"
           @update:model-value="typeError = []"
         >
           <template #item="{ item, index, props }">
@@ -227,7 +233,11 @@
 <script setup lang="ts">
 import type { Auction, AuctionSpecification } from "~/interfaces/auction";
 
-const componentProps = defineProps<{ validate: boolean; auction?: Auction }>();
+const componentProps = defineProps<{
+  validate: boolean;
+  auction: Auction;
+  edit: boolean;
+}>();
 const emit = defineEmits(["update:validation", "update:specification"]);
 const categoriesStore = useCategoriesStore();
 const typesStore = useTypesStore();
@@ -245,15 +255,15 @@ onMounted(async () => {
   await categoriesStore.getAllCategories();
   await typesStore.getAllTypes();
 
-  if (componentProps.auction) {
+  if (componentProps.auction && componentProps.edit) {
     auctionSpecification.value.title = componentProps.auction.title;
     auctionSpecification.value.initial_value =
       componentProps.auction.initial_value > 0
-        ? auctionSpecification.value.initial_value
+        ? componentProps.auction.initial_value
         : null;
     auctionSpecification.value.min_increment =
       componentProps.auction.min_increment > 0
-        ? auctionSpecification.value.min_increment
+        ? componentProps.auction.min_increment
         : null;
     auctionSpecification.value.end_date = convertDate(
       componentProps.auction.end_date
@@ -378,11 +388,15 @@ function confirmDate() {
 }
 
 function convertDate(input: string) {
-  const [day, month, year, hours, minutes, seconds] = input.split("-");
+  if (input) {
+    const [day, month, year, hours, minutes, seconds] = input.split("-");
 
-  const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
-  return new Date(formattedDate).toISOString().slice(0, -1);
+    return new Date(formattedDate).toISOString().slice(0, -1);
+  } else {
+    return null;
+  }
 }
 
 watch(
@@ -422,5 +436,9 @@ watch(
 :deep(.v-picker__actions .v-btn) {
   text-transform: none;
   padding: 0 16px;
+}
+
+.disabled-label {
+  opacity: 0.4 !important;
 }
 </style>
