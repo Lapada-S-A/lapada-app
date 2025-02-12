@@ -2,9 +2,9 @@ import type { User } from "~/interfaces/user";
 import BaseService from "../base";
 
 export default class UserService extends BaseService {
-  private RESOURCE = "users/";
+  private RESOURCE = "client/";
   
-  async getById(id: string): Promise<User | undefined> {
+  async getById(id: number): Promise<User | undefined> {
     return await this.request(this.RESOURCE + `${id}`, "GET");
   }
 

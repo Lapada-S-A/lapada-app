@@ -5,6 +5,7 @@ import AuthService from "~/services/auth";
 import BidService from "~/services/bid";
 import CategoryService from "~/services/category";
 import TypeService from "~/services/type";
+import UserService from "~/services/user";
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
@@ -30,6 +31,7 @@ export default defineNuxtPlugin(() => {
     bid: new BidService(apiFetcher),
     category: new CategoryService(apiFetcher),
     type: new TypeService(apiFetcher),
+    user: new UserService(apiFetcher),
   };
 
   return {

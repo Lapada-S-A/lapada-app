@@ -18,7 +18,7 @@ export const useAuthStore = defineStore(
         );
         if (response) {
           token.value = response.access_token;
-          userStore.currentUserId = response.id;
+          await userStore.getUserById(response.id);
         }
         return response;
       } catch (error) {
@@ -30,7 +30,6 @@ export const useAuthStore = defineStore(
     const disauthenticate = () => {
       token.value = null;
       userStore.currentUser = null;
-      userStore.currentUserId = null;
     };
 
     const validateToken = (): boolean => {
