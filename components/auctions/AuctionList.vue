@@ -46,7 +46,9 @@
           class="d-flex flex-column align-center justify-center pa-6 mt-8"
           max-width="400"
         >
-          <v-icon size="125" color="secondary">mdi-magnify</v-icon>
+          <v-icon size="125" color="secondary"
+            >mdi-shopping-search-outline</v-icon
+          >
           <div
             class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
           >
@@ -98,15 +100,15 @@ import AuctionSearch from "~/components/auctions/AuctionSearch.vue";
 import AuctionStatusOptions from "~/components/auctions/AuctionStatusOptions.vue";
 import type { Auction } from "~/interfaces/auction";
 import type { FilterData } from "~/interfaces/auction-filter";
-import type { AuctionStatus } from "~/stores/enum";
+import { AuctionStatus } from "~/stores/enum";
 
-defineProps<{ isSeller?: boolean }>();
+const componentProps = defineProps<{ isSeller?: boolean }>();
 const auctionsStore = useAuctionsStore();
 const categoriesStore = useCategoriesStore();
 const typesStore = useTypesStore();
 const auctions = ref<Auction[]>([]);
 const auctionStatusIdSelected = ref<AuctionStatus>();
-const auctionsPerPage = ref<number>(10);
+const auctionsPerPage = ref<number>(18);
 const currentPage = ref<number>(1);
 const totalAuctions = ref<number>(0);
 const filters = ref({});
@@ -125,8 +127,10 @@ onBeforeMount(async () => {
 const searchQuery = ref("");
 
 const filteredAuctions = computed(() => {
-  let filtered = auctions.value.filter((auction: Auction) =>
-    auction.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  let filtered = auctions.value.filter(
+    (auction: Auction) =>
+      auction.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+      (!componentProps.isSeller ? auction.status === AuctionStatus.OPEN : true)
   );
   if (auctionStatusIdSelected.value) {
     filtered = filtered.filter(

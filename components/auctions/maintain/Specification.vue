@@ -22,8 +22,28 @@
       </v-col>
       <v-col cols="4">
         <v-label
+          for="initial-value-field"
+          class="text-font-100 font-weight-semibold mb-2 ml-1"
+          :class="{'disabled-label': edit}"
+          >Valor inicial (R$)</v-label
+        >
+        <v-text-field
+          id="initial-value-field"
+          v-model="auctionSpecification.initial_value"
+          placeholder="Valor inicial (R$)"
+          maxlength="20"
+          type="number"
+          hide-spin-buttons
+          :error-messages="initialValueError"
+          :disabled="edit"
+          @input="initialValueError = []"
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-label
           for="min-increment-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
+          :class="{'disabled-label': edit}"
           >Lance/Incremento mínimo (R$)</v-label
         >
         <v-text-field
@@ -34,15 +54,18 @@
           type="number"
           hide-spin-buttons
           :error-messages="minIncrementError"
+          :disabled="edit"
           @input="minIncrementError = []"
         />
       </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="4">
         <v-label
           for="end-date-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
         >
-          Data de Término
+          Data de término
         </v-label>
         <v-menu
           v-model="dateMenu"
@@ -58,7 +81,7 @@
               id="end-date-field"
               :value="formatDatePickerDate(auctionSpecification.end_date)"
               readonly
-              placeholder="Data de Término"
+              placeholder="Data de término"
               append-inner-icon="mdi-calendar-month"
               clearable
               :error-messages="endDateError"
@@ -88,9 +111,7 @@
           </v-date-picker>
         </v-menu>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="8">
+      <v-col cols="4">
         <v-label
           for="categories-autocomplete-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
@@ -99,7 +120,7 @@
         </v-label>
         <v-autocomplete
           id="categories-autocomplete-field"
-          v-model="auctionSpecification.category_ids"
+          v-model="auctionSpecification.categories"
           :items="categoriesStore.categories"
           variant="outlined"
           placeholder="Categorias"
@@ -141,7 +162,7 @@
               class="my-2 mx-4"
               density="compact"
               :prepend-icon="
-                auctionSpecification.category_ids?.includes(item.value)
+                auctionSpecification.categories?.includes(item.value)
                   ? 'mdi-checkbox-marked'
                   : 'mdi-checkbox-blank-outline'
               "
@@ -154,6 +175,7 @@
         <v-label
           for="type-autocomplete-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
+          :class="{'disabled-label': edit}"
         >
           Tipo
         </v-label>
@@ -170,6 +192,7 @@
           item-value="id"
           item-title="name"
           :error-messages="typeError"
+          :disabled="edit"
           @update:model-value="typeError = []"
         >
           <template #item="{ item, index, props }">
@@ -190,7 +213,7 @@
           for="description-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
         >
-          Decrição
+          Descrição
         </v-label>
         <v-textarea
           id="description-field"
@@ -208,17 +231,22 @@
 </template>
 
 <script setup lang="ts">
-import type { AuctionSpecification } from "~/interfaces/auction";
+import type { Auction, AuctionSpecification } from "~/interfaces/auction";
 
-const componentProps = defineProps<{ validate: boolean }>();
+const componentProps = defineProps<{
+  validate: boolean;
+  auction: Auction;
+  edit: boolean;
+}>();
 const emit = defineEmits(["update:validation", "update:specification"]);
 const categoriesStore = useCategoriesStore();
 const typesStore = useTypesStore();
 const auctionSpecification = ref<AuctionSpecification>({
   title: null,
+  initial_value: null,
   min_increment: null,
   end_date: null,
-  category_ids: null,
+  categories: null,
   type_id: null,
   description: null,
 });
@@ -226,12 +254,33 @@ const auctionSpecification = ref<AuctionSpecification>({
 onMounted(async () => {
   await categoriesStore.getAllCategories();
   await typesStore.getAllTypes();
+
+  if (componentProps.auction && componentProps.edit) {
+    auctionSpecification.value.title = componentProps.auction.title;
+    auctionSpecification.value.initial_value =
+      componentProps.auction.initial_value > 0
+        ? componentProps.auction.initial_value
+        : null;
+    auctionSpecification.value.min_increment =
+      componentProps.auction.min_increment > 0
+        ? componentProps.auction.min_increment
+        : null;
+    auctionSpecification.value.end_date = convertDate(
+      componentProps.auction.end_date
+    );
+    auctionSpecification.value.categories = [
+      ...componentProps.auction.categories,
+    ];
+    auctionSpecification.value.type_id = componentProps.auction.type_id;
+    auctionSpecification.value.description = componentProps.auction.description;
+  }
 });
 
 const dateMenu = ref<boolean>(false);
 const tempDate = ref<string | null>(null);
 
 const titleError = ref<string[]>([]);
+const initialValueError = ref<string[]>([]);
 const minIncrementError = ref<string[]>([]);
 const endDateError = ref<string[]>([]);
 const categoriesError = ref<string[]>([]);
@@ -250,12 +299,24 @@ function validateTitle() {
   return true;
 }
 
+function validateInitialValue() {
+  if (
+    !auctionSpecification.value.initial_value ||
+    auctionSpecification.value.initial_value < 5
+  ) {
+    initialValueError.value = ["O valor inicial deve ser de no mínimo R$ 5,00"];
+    return false;
+  }
+  initialValueError.value = [];
+  return true;
+}
+
 function validateMinIncrement() {
   if (
     !auctionSpecification.value.min_increment ||
-    auctionSpecification.value.min_increment < 25
+    auctionSpecification.value.min_increment < 5
   ) {
-    minIncrementError.value = ["O lance mínimo deve ser de no mínimo R$ 25,00"];
+    minIncrementError.value = ["O lance mínimo deve ser de no mínimo R$ 5,00"];
     return false;
   }
   minIncrementError.value = [];
@@ -281,8 +342,8 @@ function validateEndDate() {
 
 function validateCategories() {
   if (
-    !auctionSpecification.value.category_ids ||
-    auctionSpecification.value.category_ids.length === 0
+    !auctionSpecification.value.categories ||
+    auctionSpecification.value.categories.length === 0
   ) {
     categoriesError.value = ["Pelo menos uma categoria deve ser selecionada"];
     return false;
@@ -326,10 +387,23 @@ function confirmDate() {
   dateMenu.value = false;
 }
 
+function convertDate(input: string) {
+  if (input) {
+    const [day, month, year, hours, minutes, seconds] = input.split("-");
+
+    const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+    return new Date(formattedDate).toISOString().slice(0, -1);
+  } else {
+    return null;
+  }
+}
+
 watch(
   () => componentProps.validate,
   () => {
     const titleValidation = validateTitle();
+    const initialValueValidation = validateInitialValue();
     const minIncrementValidation = validateMinIncrement();
     const endDateValidation = validateEndDate();
     const categoriesValidation = validateCategories();
@@ -338,6 +412,7 @@ watch(
 
     if (
       titleValidation &&
+      initialValueValidation &&
       minIncrementValidation &&
       endDateValidation &&
       categoriesValidation &&
@@ -361,5 +436,9 @@ watch(
 :deep(.v-picker__actions .v-btn) {
   text-transform: none;
   padding: 0 16px;
+}
+
+.disabled-label {
+  opacity: 0.4 !important;
 }
 </style>
