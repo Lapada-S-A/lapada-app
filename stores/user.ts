@@ -4,6 +4,7 @@ export const useUserStore = defineStore(
   "lapada_user",
   () => {
     const { $api } = useNuxtApp();
+    const routesStore = useRoutesStore();
     const loading = ref<boolean>(false);
     const currentUser = ref<User | null>();
 
@@ -11,7 +12,10 @@ export const useUserStore = defineStore(
       loading.value = true;
       try {
         const response = await $api.user.getById(userId);
-        if (response) currentUser.value = response;
+        if (response) {
+          currentUser.value = response;
+          routesStore.userType = currentUser.value.type_user;
+        }
       } finally {
         loading.value = false;
       }
@@ -19,7 +23,7 @@ export const useUserStore = defineStore(
 
     const registerUser = async (user: User): Promise<User | undefined> => {
       loading.value = true;
-      try { 
+      try {
         const response = await $api.user.add(user);
         if (response) return response;
       } finally {

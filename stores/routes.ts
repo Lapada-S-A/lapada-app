@@ -1,7 +1,8 @@
 import type { Route, RoutesByUserType } from "~/interfaces/route";
+import { UserTypes } from "./enum";
 
 export const useRoutesStore = defineStore("routes", () => {
-  const userType = ref<UserTypes>(UserTypes.Seller);
+  const userType = ref<UserTypes>(UserTypes.Buyer);
 
   const globalRoutes: Route[] = [
     {
