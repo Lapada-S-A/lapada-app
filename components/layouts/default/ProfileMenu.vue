@@ -57,6 +57,7 @@
 </template>
 
 <script setup lang="ts">
+const authStore = useAuthStore();
 const router = useRouter();
 const menu = ref(false);
 const menuItems = ref([
@@ -69,10 +70,15 @@ const menuItems = ref([
   {
     title: "Sair",
     icon: "mdi-logout-variant",
-    click: () => router.push("/login"),
+    click: () => logout(),
     buttonId: "logout-btn",
   },
 ]);
+
+function logout() {
+  authStore.disauthenticate();
+  router.push("/login");
+}
 </script>
 
 <style scoped>
