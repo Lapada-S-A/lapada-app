@@ -10,7 +10,9 @@
         width="35"
         height="35"
       >
-        <div class="font-normal text-font-10">MK</div>
+        <div class="font-normal text-font-10">
+          {{ getUserInitials(user!.username) }}
+        </div>
       </v-btn>
     </template>
 
@@ -23,10 +25,10 @@
 
           <div class="d-flex flex-column">
             <span class="font-weight-bold font-large text-truncate mb-n1">
-              Marcela Kramer
+              {{ user!.username }}
             </span>
             <span class="font-small text-font-60 text-truncate">
-              marcelakramer@gmail.com
+              {{ user!.email }}
             </span>
           </div>
         </v-list-item>
@@ -57,6 +59,9 @@
 </template>
 
 <script setup lang="ts">
+const userStore = useUserStore();
+const user = userStore.currentUser;
+const authStore = useAuthStore();
 const router = useRouter();
 const menu = ref(false);
 const menuItems = ref([
@@ -69,10 +74,15 @@ const menuItems = ref([
   {
     title: "Sair",
     icon: "mdi-logout-variant",
-    click: () => router.push("/login"),
+    click: () => logout(),
     buttonId: "logout-btn",
   },
 ]);
+
+function logout() {
+  authStore.disauthenticate();
+  router.push("/login");
+}
 </script>
 
 <style scoped>

@@ -51,6 +51,7 @@
               placeholder="Senha"
               maxlength="16"
               :type="passwordVisible ? 'text' : 'password'"
+              @keydown.enter="login"
             >
               <template #append-inner>
                 <v-icon
@@ -84,7 +85,7 @@
             class="btn btn-primary w-100 font-large mb-16"
             height="50"
             :disabled="!email || !password"
-            @click="$router.push('/')"
+            @click="login"
           >
             Login
           </v-btn>
@@ -99,6 +100,8 @@
 </template>
 
 <script setup lang="ts">
+const authStore = useAuthStore();
+const router = useRouter();
 const email = ref<string>();
 const password = ref<string>();
 const passwordVisible = ref<boolean>(false);
@@ -106,6 +109,18 @@ const loading = ref<boolean>(false);
 
 function togglePasswordVisibility() {
   passwordVisible.value = !passwordVisible.value;
+}
+
+function login() {
+  loading.value = true;
+  authStore
+    .authenticate({ email: email.value, password: password.value })
+    .then(() => {
+      router.push("/");
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 }
 </script>
 

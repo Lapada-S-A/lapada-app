@@ -6,6 +6,12 @@ export default defineNuxtConfig({
   devServer: {
     port: 3000,
   },
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: process.env.API_BASE_URL,
+      authBaseUrl: process.env.AUTH_BASE_URL,
+    }
+  },
   ssr: false,
   build: {
     transpile: ["vuetify"],
