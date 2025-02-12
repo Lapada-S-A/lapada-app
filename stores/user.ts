@@ -17,9 +17,20 @@ export const useUserStore = defineStore(
       }
     };
 
+    const registerUser = async (user: User): Promise<User | undefined> => {
+      loading.value = true;
+      try { 
+        const response = await $api.user.add(user);
+        if (response) return response;
+      } finally {
+        loading.value = false;
+      }
+    };
+
     return {
       currentUser,
       getUserById,
+      registerUser,
     };
   },
   {

@@ -14,8 +14,9 @@ export default defineNuxtPlugin(() => {
   const fetchOptions: FetchOptions = {
     onRequest({ options }) {
       let url = config.public.apiBaseUrl;
+      const path = router.currentRoute.value.path;
 
-      if (router.currentRoute.value.path === "/login") {
+      if (path === "/login" || path === "/register") {
         url = config.public.authBaseUrl;
       }
 

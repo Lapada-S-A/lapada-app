@@ -107,6 +107,8 @@ async function submitForm() {
 }
 
 function changeValidate() {
+  specificationValidation.value = false;
+  imagesValidation.value = false;
   validate.value = true;
   nextTick(() => {
     validate.value = false;

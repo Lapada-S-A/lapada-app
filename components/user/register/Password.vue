@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
 const componentProps = defineProps<{ validate: boolean }>();
-const emit = defineEmits(["update:validation"]);
+const emit = defineEmits(["update:validation", "update:password"]);
 const password = ref<string>("");
 const confirmPassword = ref<string>("");
 
@@ -121,7 +121,10 @@ watch(
   () => componentProps.validate,
   () => {
     if (validatePasswords()) {
+      emit("update:password", password.value);
       emit("update:validation", true);
+    } else {
+      emit("update:validation", false);
     }
   }
 );

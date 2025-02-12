@@ -13,11 +13,11 @@
         >
         <v-text-field
           id="name-field"
-          v-model="personalInfo.name"
+          v-model="personalInfo.username"
           placeholder="Nome"
           maxlength="50"
-          :error-messages="nameError"
-          @input="nameError = []"
+          :error-messages="usernameError"
+          @input="usernameError = []"
         />
       </v-col>
 
@@ -133,18 +133,12 @@
 </template>
 
 <script setup lang="ts">
-interface PersonalInfo {
-  name: string | null;
-  email: string | null;
-  cpf: string | null;
-  birthDate: string | null;
-  phone: string | null;
-}
+import type { UserPersonalInfo } from '~/interfaces/user';
 
 const componentProps = defineProps<{ validate: boolean }>();
-const emit = defineEmits(["update:validation"]);
-const personalInfo = ref<PersonalInfo>({
-  name: null,
+const emit = defineEmits(["update:validation", "update:userPersonalInfo"]);
+const personalInfo = ref<UserPersonalInfo>({
+  username: null,
   email: null,
   cpf: null,
   birthDate: null,
@@ -154,7 +148,7 @@ const personalInfo = ref<PersonalInfo>({
 const dateMenu = ref(false);
 const tempDate = ref(null);
 
-const nameError = ref<string[]>([]);
+const usernameError = ref<string[]>([]);
 const emailError = ref<string[]>([]);
 const cpfError = ref<string[]>([]);
 const birthDateError = ref<string[]>([]);
@@ -217,11 +211,11 @@ function formatPhone() {
 }
 
 function validateName() {
-  if (!personalInfo.value.name) {
-    nameError.value = ["Nome é obrigatório"];
+  if (!personalInfo.value.username) {
+    usernameError.value = ["Nome é obrigatório"];
     return false;
   }
-  nameError.value = [];
+  usernameError.value = [];
   return true;
 }
 
@@ -294,6 +288,7 @@ watch(
       birthDateValidation &&
       phoneValidation
     ) {
+      emit("update:userPersonalInfo", personalInfo.value)
       emit("update:validation", true);
     } else {
       emit("update:validation", false);
