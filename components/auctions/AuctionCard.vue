@@ -21,11 +21,7 @@
           <div class="font-normal font-weight-semibold text-primary">
             {{ type ? type.name : "" }}
           </div>
-          <v-btn
-            size="20"
-            variant="text"
-            @click="$router.push(`/auctions/${auction.id}`)"
-          >
+          <v-btn size="20" variant="text" @click="sentToDetails()">
             <v-icon size="18" color="primary">mdi-open-in-new</v-icon>
           </v-btn>
         </div>
@@ -72,11 +68,17 @@ const componentProps = defineProps<{
   showStatus?: boolean;
 }>();
 const typesStore = useTypesStore();
+const router = useRouter();
 const statusProperties = getAuctionStatusProperties(
   +componentProps.auction.status
 );
 const type = ref<Type>();
 const remainingTime = ref<number>(0);
+
+const sentToDetails = () => {
+  console.log("sentToDetails, for this id: ", componentProps.auction.id);
+  router.push(`/auctions/${componentProps.auction.id}`);
+};
 
 function parseDateString(dateStr: string): Date {
   const [day, month, year, hour, minute, second] = dateStr
