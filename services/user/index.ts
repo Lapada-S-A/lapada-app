@@ -10,7 +10,7 @@ export default class UserService extends BaseService {
     return await this.request("auth/register", "POST", user);
   }
 
-  async update(user: User): Promise<User | undefined> {
-    return await this.request("auth/update", "PUT", user);
+  async update(user: User, userId: number): Promise<User | undefined> {
+    return await this.request(`auth/user/update/${userId}`, "PUT", user);
   }
 }

@@ -2,13 +2,23 @@
   <div
     class="d-flex justify-center align-center seller-initials font-weight-bold bg-secondary text-font-10 rounded-circle mb-4"
   >
-    MK
+    {{ getUserInitials(user ? user.username : "").toUpperCase() }}
   </div>
-  <div class="mb-8">
-    <div class="font-title font-weight-bold">Marcela Kramer</div>
-    <div class="font-large text-font-60">cadastro em: 09/02/2025</div>
+  <div class="mb-8 d-flex flex-column justify-center">
+    <div class="font-title font-weight-bold text-center">
+      {{ user ? user.username : "" }}
+    </div>
+    <div class="font-large text-font-60">
+      cadastro em: {{ formatDatePickerDate(user ? user.created_at! : "") }}
+    </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import type { User } from "~/interfaces/user";
+
+defineProps<{ user: User | null }>();
+</script>
 
 <style scoped>
 .seller-initials {
@@ -17,4 +27,3 @@
   font-size: 90px;
 }
 </style>
-

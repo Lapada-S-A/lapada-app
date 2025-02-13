@@ -11,7 +11,7 @@
         height="35"
       >
         <div class="font-normal text-font-10">
-          {{ getUserInitials(user!.username) }}
+          {{ userInitials }}
         </div>
       </v-btn>
     </template>
@@ -25,10 +25,10 @@
 
           <div class="d-flex flex-column">
             <span class="font-weight-bold font-large text-truncate mb-n1">
-              {{ user!.username }}
+              {{ userStore.currentUser ? userStore.currentUser.username : "" }}
             </span>
             <span class="font-small text-font-60 text-truncate">
-              {{ user!.email }}
+              {{ userStore.currentUser ? userStore.currentUser.email : "" }}
             </span>
           </div>
         </v-list-item>
@@ -60,7 +60,6 @@
 
 <script setup lang="ts">
 const userStore = useUserStore();
-const user = userStore.currentUser;
 const authStore = useAuthStore();
 const router = useRouter();
 const menu = ref(false);
@@ -78,6 +77,12 @@ const menuItems = ref([
     buttonId: "logout-btn",
   },
 ]);
+
+const userInitials = computed(() => {
+  return getUserInitials(
+    userStore.currentUser ? userStore.currentUser.username : ""
+  ).toUpperCase();
+});
 
 function logout() {
   authStore.disauthenticate();

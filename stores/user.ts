@@ -31,10 +31,43 @@ export const useUserStore = defineStore(
       }
     };
 
+<<<<<<< Updated upstream
+=======
+    const updateUser = async (user: User): Promise<void> => {
+      loading.value = true;
+      const { id: userId, ...userData } = user;
+      try {
+        const response = await $api.user.update(userData, userId!);
+        if (response) {
+          await getUserById(currentUser.value!.id!);
+        }
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    const getClientById = async (
+      clientId: number
+    ): Promise<User | undefined> => {
+      loading.value = true;
+      try {
+        const response = await $api.user.getById(clientId);
+        if (response) return response;
+      } finally {
+        loading.value = false;
+      }
+    };
+
+>>>>>>> Stashed changes
     return {
       currentUser,
       getUserById,
       registerUser,
+<<<<<<< Updated upstream
+=======
+      updateUser,
+      getClientById,
+>>>>>>> Stashed changes
     };
   },
   {

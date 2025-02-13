@@ -9,7 +9,11 @@ export interface User {
   phone_number: string;
   type_user: UserTypes;
   birthdate: string;
+<<<<<<< Updated upstream
   categories?: number[]
+=======
+  created_at?: string;
+>>>>>>> Stashed changes
 }
 
 export interface UserPersonalInfo {
