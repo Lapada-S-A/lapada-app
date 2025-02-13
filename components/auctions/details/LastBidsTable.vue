@@ -10,9 +10,9 @@
       </thead>
       <tbody>
         <tr v-for="(bid, index) in bids" :key="index" class="font-large">
-          <td>{{ bid.value }}</td>
-          <td>{{ bid.user }}</td>
-          <td>{{ bid.date }}</td>
+          <td>{{ bid.amount }}</td>
+          <td>{{ userNames[bid.buyer_id] || "Carregando..." }}</td>
+          <td>{{ bid.bid_date }}</td>
         </tr>
       </tbody>
     </v-table>
@@ -20,12 +20,35 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
+import type { Bid } from "~/interfaces/bid";
+
+const props = defineProps({
   bids: {
-    type: Array as () => { user: string; date: string; value: string }[],
+    type: Array as () => Bid[],
     required: true,
   },
 });
+
+const userStore = useUserStore();
+const userNames = ref<Record<number, string>>({});
+
+const fetchUserNames = async () => {
+  const uniqueBuyerIds = [...new Set(props.bids.map((bid) => bid.buyer_id))];
+
+  for (const id of uniqueBuyerIds) {
+    if (!userNames.value[id]) {
+      const user = await userStore.getClientById(id);
+      if (user) {
+        userNames.value[id] = user.username;
+      } else {
+        userNames.value[id] = "Desconhecido";
+      }
+    }
+  }
+};
+
+watch(() => props.bids, fetchUserNames, { immediate: true });
+onMounted(fetchUserNames);
 </script>
 
 <style scoped>
