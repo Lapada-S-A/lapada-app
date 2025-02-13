@@ -57,6 +57,7 @@ import LastBids from "@/components/auctions/details/LastBids.vue";
 import MainDetails from "@/components/auctions/details/MainDetails.vue";
 import SellerCard from "@/components/auctions/details/SellerCard.vue";
 import MainCard from "@/components/common/MainCard.vue";
+import type { Bid } from "~/interfaces/bid";
 
 defineProps({
   title: { type: String, required: true },
@@ -69,7 +70,7 @@ defineProps({
   images: { type: Array as () => string[], required: true },
   description: { type: String, required: true },
   bids: {
-    type: Array as () => { user: string; date: string; value: string }[],
+    type: Array as () => Bid[],
     required: true,
   },
   showBackButton: { type: Boolean, default: true },
