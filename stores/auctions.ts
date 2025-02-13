@@ -61,6 +61,18 @@ export const useAuctionsStore = defineStore("auctions", () => {
     }
   };
 
+  const changeStatusOfAuction = async (
+    auctionId: number,
+    status: string
+  ): Promise<Auction | undefined> => {
+    loading.value = true;
+    try {
+      return await $api.auction.changeStatusOfAction(auctionId, status);
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     getAuctionsPaginated,
@@ -68,5 +80,6 @@ export const useAuctionsStore = defineStore("auctions", () => {
     getAuctionById,
     addAuction,
     updateAuction,
+    changeStatusOfAuction,
   };
 });
