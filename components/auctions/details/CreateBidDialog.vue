@@ -37,6 +37,8 @@
             placeholder="Valor"
             type="number"
             hide-spin-buttons
+            :rules="bidRules"
+            :error-messages="errorMessage"
           />
         </v-card-text>
 
@@ -45,7 +47,7 @@
 
           <v-btn
             class="btn btn-primary px-6 ml-2"
-            :class="{ 'btn-disabled': !bid }"
+            :disabled="!isBidValid"
             @click="[(isActive.value = false), createBid()]"
             >Confirmar</v-btn
           >
@@ -56,22 +58,64 @@
 </template>
 
 <script setup lang="ts">
+import { useAuctionsStore } from "@/stores/auctions";
 import { useBidsStore } from "@/stores/bids";
+import { computed, ref } from "vue";
 
 const props = defineProps({
   auctionId: { type: Number, required: true },
   buyerId: { type: Number, required: true },
 });
 
+const emit = defineEmits(["created-bid"]);
+
 const bid = ref<number | null>();
+const errorMessage = ref<string>("");
 const bidsStore = useBidsStore();
+const auctionStore = useAuctionsStore();
+
+const auction = await auctionStore.getAuctionById(props.auctionId);
+
+const bidRules = computed(() => [
+  (value: number) => {
+    if (!value) return "O valor do lance é obrigatório.";
+    if (value <= 0) return "O valor do lance deve ser maior que zero.";
+    if (
+      auction &&
+      auction.highest_bid !== undefined &&
+      auction.highest_bid >= value
+    ) {
+      return "O valor do lance deve ser maior que o lance atual.";
+    }
+    return true;
+  },
+]);
+
+const isBidValid = computed(() => {
+  if (!bid.value) return false;
+
+  return (
+    bid.value !== null &&
+    bidRules.value.every((rule) => rule(bid.value as number) === true)
+  );
+});
 
 const resetBid = () => {
   bid.value = null;
+  errorMessage.value = "";
 };
 
 const createBid = async () => {
   if (!bid.value) return;
+
+  if (
+    auction &&
+    auction.highest_bid !== undefined &&
+    auction.highest_bid >= bid.value
+  ) {
+    errorMessage.value = "O valor do lance deve ser maior que o lance atual.";
+    return;
+  }
 
   const userBid = {
     amount: bid.value,
@@ -82,8 +126,10 @@ const createBid = async () => {
   try {
     await bidsStore.createBid(userBid);
     resetBid();
+    emit("created-bid", bid.value);
   } catch (error) {
     console.error("Erro ao criar lance:", error);
+    errorMessage.value = "Erro ao criar lance. Tente novamente.";
   }
 };
 </script>

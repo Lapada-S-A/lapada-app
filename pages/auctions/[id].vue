@@ -9,8 +9,11 @@
     :min-increment="formatCurrency(auction.min_increment)"
     :remaining-time="
       auction.created_date && auction.end_date
-        ? calculateRemainingTime(auction.created_date, auction.end_date)
-        : 'N/A'
+        ? calculateRemainingTimeInSeconds(
+            auction.created_date,
+            auction.end_date
+          )
+        : 0
     "
     :description="auction.description"
     :images="auctionData.images"
@@ -51,28 +54,30 @@ const auctionData = {
   ],
 };
 
-const calculateRemainingTime = (startDate: string, endDate: string): string => {
-  const start = new Date(startDate).getTime();
-  const end = new Date(endDate).getTime();
+const parseCustomDate = (dateString: string): Date => {
+  const parts = dateString.split("-");
+  if (parts.length < 3) return new Date(NaN);
+
+  const [day, month, year, hour, minute, second] = parts.map(Number);
+  return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
+};
+
+const calculateRemainingTimeInSeconds = (
+  startDate: string,
+  endDate: string
+): number => {
+  const start = parseCustomDate(startDate).getTime();
+  const end = parseCustomDate(endDate).getTime();
   const diff = end - start;
+  if (diff <= 0) return 0;
 
-  if (diff <= 0) return "Encerrado";
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-  return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  return Math.floor(diff / 1000);
 };
 
 const formatDate = (dateString: string): string => {
   if (!dateString) return "";
 
-  const parsedDate = Date.parse(dateString)
-    ? new Date(dateString)
-    : parseCustomDate(dateString);
-
+  const parsedDate = parseCustomDate(dateString);
   if (!parsedDate || isNaN(parsedDate.getTime())) return "Data inválida";
 
   const day = String(parsedDate.getDate()).padStart(2, "0");
@@ -80,13 +85,5 @@ const formatDate = (dateString: string): string => {
   const year = parsedDate.getFullYear();
 
   return `${day}/${month}/${year}`;
-};
-
-const parseCustomDate = (dateString: string): Date => {
-  const parts = dateString.split("-");
-  if (parts.length < 3) return new Date(NaN);
-
-  const [day, month, year, hour, minute, second] = parts.map(Number);
-  return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
 };
 </script>

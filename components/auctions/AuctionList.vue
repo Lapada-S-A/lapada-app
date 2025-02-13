@@ -134,6 +134,7 @@ const filteredAuctions = computed(() => {
         ? auction.status.toString() === AuctionStatus.OPEN.toString()
         : true)
   );
+
   if (auctionStatusIdSelected.value) {
     filtered = filtered.filter(
       (auction: Auction) => +auction.status === auctionStatusIdSelected.value
