@@ -30,6 +30,7 @@
             :date="date"
             :current-bid="currentBid"
             :min-increment="minIncrement"
+            :auction-id="auctionId"
           />
 
           <LastBids :bids="bids" />
@@ -49,13 +50,13 @@
 </template>
 
 <script setup lang="ts">
-import MainCard from "@/components/common/MainCard.vue";
 import AuctionTimer from "@/components/auctions/details/AuctionTimer.vue";
 import Description from "@/components/auctions/details/Description.vue";
 import ImagesSlider from "@/components/auctions/details/ImagesSlider.vue";
 import LastBids from "@/components/auctions/details/LastBids.vue";
 import MainDetails from "@/components/auctions/details/MainDetails.vue";
 import SellerCard from "@/components/auctions/details/SellerCard.vue";
+import MainCard from "@/components/common/MainCard.vue";
 
 defineProps({
   title: { type: String, required: true },
@@ -72,6 +73,7 @@ defineProps({
     required: true,
   },
   showBackButton: { type: Boolean, default: true },
+  auctionId: { type: Number, required: true },
 });
 
 const timeUnits = [
