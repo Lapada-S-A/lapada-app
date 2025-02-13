@@ -26,4 +26,8 @@ export default class AuctionService extends BaseService {
   async update(auction: Auction, id: number): Promise<Auction | undefined> {
     return await this.request(this.RESOURCE + `update/${id}`, "PUT", auction);
   }
+
+  async changeStatusOfAction(id: number, status:string): Promise<Auction | undefined> {
+    return await this.request(this.RESOURCE + `${status}/${id}`, "POST");
+  }
 }
