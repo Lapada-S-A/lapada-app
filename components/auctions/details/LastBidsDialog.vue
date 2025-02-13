@@ -33,10 +33,11 @@
 
 <script setup lang="ts">
 import LastBidsTable from "@/components/auctions/details/LastBidsTable.vue";
+import type { Bid } from "~/interfaces/bid";
 
 defineProps({
   bids: {
-    type: Array as () => { user: string; date: string; value: string }[],
+    type: Array as () => Bid[],
     required: true,
   },
 });
