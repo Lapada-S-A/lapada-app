@@ -22,6 +22,7 @@
 
     <CuratorDialog
       v-model="curatorDialog"
+      :info-uploaded="infosUploaded"
       @confirmed="confirmCuratorSelection"
     />
   </div>
@@ -30,24 +31,33 @@
 <script setup lang="ts">
 import { UserTypes } from "~/stores/enum";
 import CuratorDialog from "@/components/user/CuratorDialog.vue";
+import type { CuratorInfo } from "~/interfaces/user";
 
-const emit = defineEmits(["update:user-type-selected"]);
+const emit = defineEmits(["update:user-type-selected", "update:curator-info"]);
 
 const userType = ref<UserTypes>(UserTypes.Buyer);
+const curatorInfo = ref<CuratorInfo>();
 const curatorDialog = ref(false);
 const infosUploaded = ref(false);
 
 function openCuratorDialog() {
-  if (!infosUploaded.value) {
-    curatorDialog.value = true;
-  } else {
-    emit("update:user-type-selected", userType);
-  }
+  curatorDialog.value = true;
 }
 
-function confirmCuratorSelection() {
+function confirmCuratorSelection(info: CuratorInfo) {
   curatorDialog.value = false;
   infosUploaded.value = true;
+  curatorInfo.value = info;
   emit("update:user-type-selected", UserTypes.Curator);
+  emit("update:curator-info", curatorInfo.value);
 }
+
+watch(
+  () => curatorDialog.value,
+  (val) => {
+    if (!val && !infosUploaded.value) {
+      userType.value = UserTypes.Buyer;
+    }
+  }
+);
 </script>

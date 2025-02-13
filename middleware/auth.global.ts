@@ -4,6 +4,7 @@ import { useSnackbarStore } from "~/stores/snackbar";
 export default defineNuxtRouteMiddleware((to) => {
   const authStore = useAuthStore();
   const snackbarStore = useSnackbarStore();
+  const routesStore = useRoutesStore();
 
   if (to.path !== "/login") {
     if (to.path !== "/register") {
@@ -18,6 +19,10 @@ export default defineNuxtRouteMiddleware((to) => {
           "Token expirado, faça login novamente"
         );
         return navigateTo("/login");
+      }
+
+      if (!routesStore.userRoutes.some((route) => route.to === to.path)) {
+        return navigateTo("/");
       }
     }
   } else {
