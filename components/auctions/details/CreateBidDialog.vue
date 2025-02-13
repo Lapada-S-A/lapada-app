@@ -56,14 +56,34 @@
 </template>
 
 <script setup lang="ts">
+import { useBidsStore } from "@/stores/bids";
+
+const props = defineProps({
+  auctionId: { type: Number, required: true },
+  buyerId: { type: Number, required: true },
+});
+
 const bid = ref<number | null>();
+const bidsStore = useBidsStore();
 
-function resetBid() {
+const resetBid = () => {
   bid.value = null;
-}
+};
 
-function createBid() {
-  console.log("Lance com valor: ", bid.value);
-  resetBid();
-}
+const createBid = async () => {
+  if (!bid.value) return;
+
+  const userBid = {
+    amount: bid.value,
+    auction_id: props.auctionId,
+    buyer_id: props.buyerId,
+  };
+
+  try {
+    await bidsStore.createBid(userBid);
+    resetBid();
+  } catch (error) {
+    console.error("Erro ao criar lance:", error);
+  }
+};
 </script>
