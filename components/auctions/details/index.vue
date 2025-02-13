@@ -16,7 +16,7 @@
           <v-row>
             <ImagesSlider :images="images" />
 
-            <AuctionTimer :time-units="timeUnits" />
+            <AuctionTimer :remaining-time="remainingTime" />
 
             <Description :description="description" :max-chars="800" />
           </v-row>
@@ -59,14 +59,14 @@ import SellerCard from "@/components/auctions/details/SellerCard.vue";
 import MainCard from "@/components/common/MainCard.vue";
 import type { Bid } from "~/interfaces/bid";
 
-defineProps({
+const props = defineProps({
   title: { type: String, required: true },
   auctionType: { type: String, default: "Leilão Comum" },
   category: { type: String, required: true },
   date: { type: String, required: true },
   currentBid: { type: String, required: true },
   minIncrement: { type: String, required: true },
-  remainingTime: { type: String, required: true },
+  remainingTime: { type: Number, required: true },
   images: { type: Array as () => string[], required: true },
   description: { type: String, required: true },
   bids: {
@@ -77,12 +77,9 @@ defineProps({
   auctionId: { type: Number, required: true },
 });
 
-const timeUnits = [
-  { value: 3, label: "dias" },
-  { value: 14, label: "horas" },
-  { value: 26, label: "minutos" },
-  { value: 58, label: "segundos" },
-];
+onMounted(() => {
+  console.log(props.remainingTime);
+});
 </script>
 
 <style scoped>

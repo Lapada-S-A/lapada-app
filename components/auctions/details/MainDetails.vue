@@ -21,6 +21,7 @@
           v-if="isUserType1"
           :auction-id="auctionId"
           :buyer-id="currentUser?.id ?? 0"
+          @created-bid="refreshAuctionDetails"
         />
         <DualButton
           v-else
@@ -58,10 +59,11 @@ const props = defineProps({
   auctionId: { type: Number, required: true },
 });
 
+const currentBid = ref<string>(props.currentBid.toString());
+
 const userStore = useUserStore();
 const auctionStore = useAuctionsStore();
 const currentUser = userStore.currentUser;
-
 const isUserType1 = computed(() => currentUser?.type_user === 1);
 
 const leftButtonText = computed(() => {
@@ -110,6 +112,21 @@ const rightClickActions = async () => {
     await auctionStore.changeStatusOfAuction(props.auctionId, "reject");
   } else if (currentUser.type_user === 2) {
     await auctionStore.changeStatusOfAuction(props.auctionId, "finish");
+  }
+};
+
+const refreshAuctionDetails = async () => {
+  try {
+    const updatedAuction = await auctionStore.getAuctionById(props.auctionId);
+    if (updatedAuction) {
+      const bidValue = updatedAuction.highest_bid ?? 0;
+      currentBid.value = `R$ ${bidValue.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`;
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar detalhes do leilão:", error);
   }
 };
 </script>

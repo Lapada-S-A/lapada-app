@@ -76,7 +76,6 @@ const type = ref<Type>();
 const remainingTime = ref<number>(0);
 
 const sentToDetails = () => {
-  console.log("sentToDetails, for this id: ", componentProps.auction.id);
   router.push(`/auctions/${componentProps.auction.id}`);
 };
 
