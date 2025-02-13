@@ -31,8 +31,6 @@ export const useUserStore = defineStore(
       }
     };
 
-<<<<<<< Updated upstream
-=======
     const updateUser = async (user: User): Promise<void> => {
       loading.value = true;
       const { id: userId, ...userData } = user;
@@ -58,16 +56,12 @@ export const useUserStore = defineStore(
       }
     };
 
->>>>>>> Stashed changes
     return {
       currentUser,
       getUserById,
       registerUser,
-<<<<<<< Updated upstream
-=======
       updateUser,
       getClientById,
->>>>>>> Stashed changes
     };
   },
   {
