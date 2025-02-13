@@ -121,6 +121,10 @@ function updateUser() {
       password: userPassword.value,
       type_user: userTypeId.value,
     };
+
+    if (userTypeId.value === UserTypes.Curator && curatorInfo.value && curatorInfo.value.category) {
+      user.value.categories = [curatorInfo.value.category];
+    }
   }
 }
 

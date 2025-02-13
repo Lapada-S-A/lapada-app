@@ -16,7 +16,7 @@ export default defineNuxtPlugin(() => {
       let url = config.public.apiBaseUrl;
 
       const requestStr = request.toString();
-      if (requestStr.includes("auth") || requestStr.includes("client")) {
+      if (requestStr.includes("auth") || requestStr.includes("client") || requestStr.includes("documents")) {
         url = config.public.authBaseUrl;
       }
 

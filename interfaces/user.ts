@@ -9,6 +9,7 @@ export interface User {
   phone_number: string;
   type_user: UserTypes;
   birthdate: string;
+  categories?: number[]
 }
 
 export interface UserPersonalInfo {

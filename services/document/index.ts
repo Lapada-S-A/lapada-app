@@ -6,7 +6,7 @@ export default class DocumentService extends BaseService {
     const formData = new FormData();
     formData.append("file", document);
     return await this.request(
-      `auth/documents/upload/${userId}`,
+      `documents/upload/${userId}`,
       "POST",
       formData
     );
