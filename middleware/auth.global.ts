@@ -21,7 +21,7 @@ export default defineNuxtRouteMiddleware((to) => {
         return navigateTo("/login");
       }
 
-      if (!routesStore.userRoutes.some((route) => route.to === to.path)) {
+      if (!routesStore.findCurrentRoute(to.path)) {
         return navigateTo("/");
       }
     }
