@@ -32,10 +32,13 @@
             >
             <v-autocomplete
               id="category-field"
-              v-model="category"
+              v-model="curatorInfo.category"
               variant="outlined"
               placeholder="Categoria"
-              :items="['Automóvel', 'Luxo', 'Antiguidades']"
+              :no-data-text="'Nenhuma categoria disponível'"
+              :items="categoriesStore.categories"
+              item-value="id"
+              item-title="name"
             />
           </div>
 
@@ -47,14 +50,14 @@
             >
             <v-file-input
               id="photo-upload"
-              v-model="photo"
+              v-model="curatorInfo.photo"
               accept="image/*"
               variant="outlined"
               color="primary"
               clear-icon="mdi-close"
             >
               <template #prepend-inner>
-                <div v-if="!photo" class="file-input-placeholder">
+                <div v-if="!curatorInfo.photo" class="file-input-placeholder">
                   Comprovante de identidade
                 </div></template
               ></v-file-input
@@ -69,14 +72,14 @@
             >
             <v-file-input
               id="document-upload"
-              v-model="document"
+              v-model="curatorInfo.certification"
               accept=".pdf,.doc,.docx,.jpg,.png"
               variant="outlined"
               color="primary"
               clear-icon="mdi-close"
             >
               <template #prepend-inner>
-                <div v-if="!document" class="file-input-placeholder">
+                <div v-if="!curatorInfo.certification" class="file-input-placeholder">
                   Certificado de conhecimento
                 </div></template
               >
@@ -100,9 +103,15 @@
 </template>
 
 <script setup lang="ts">
+import type { CuratorInfo } from "~/interfaces/user";
+
 const emit = defineEmits(["confirmed", "update:modelValue"]);
 const props = defineProps({
   parentShow: {
+    type: Boolean,
+    default: false,
+  },
+  infoUploaded: {
     type: Boolean,
     default: false,
   },
@@ -114,24 +123,37 @@ const show = computed({
     emit("update:modelValue", value);
   },
 });
-const category = ref();
-const photo = ref();
-const document = ref();
+const categoriesStore = useCategoriesStore();
+const curatorInfo = ref<CuratorInfo>({
+  category: null,
+  certification: null,
+  photo: null,
+});
+
+onMounted(async () => {
+  await categoriesStore.getAllCategories();
+});
 
 const confirmEnabled = computed(() => {
-  return category.value && photo.value && document.value;
+  return (
+    curatorInfo.value.category &&
+    curatorInfo.value.photo &&
+    curatorInfo.value.certification
+  );
 });
 
 function confirmCuratorSelection() {
   show.value = false;
-  emit("confirmed");
+  emit("confirmed", curatorInfo.value);
 }
 
 function cancelCuratorSelection() {
   show.value = false;
-  category.value = null;
-  photo.value = null;
-  document.value = null;
+  if (!props.infoUploaded) {
+    curatorInfo.value.category = null;
+    curatorInfo.value.photo = null;
+    curatorInfo.value.certification = null;
+  }
 }
 </script>
 

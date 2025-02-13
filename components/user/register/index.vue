@@ -20,7 +20,10 @@
           :validate="validate"
         />
 
-        <UserType v-model:user-type-selected="userTypeId" />
+        <UserType
+          v-model:user-type-selected="userTypeId"
+          v-model:curator-info="curatorInfo"
+        />
       </div>
 
       <div class="font-normal text-font-60 text-center mb-6">
@@ -51,11 +54,12 @@ import PersonalInfo from "@/components/user/register/PersonalInfo.vue";
 import Password from "@/components/user/register/Password.vue";
 import UserType from "@/components/user/register/UserType.vue";
 import { UserTypes } from "~/stores/enum";
-import type { User, UserPersonalInfo } from "~/interfaces/user";
+import type { User, UserPersonalInfo, CuratorInfo } from "~/interfaces/user";
 
 const router = useRouter();
 const snackBarStore = useSnackbarStore();
 const authStore = useAuthStore();
+const documentsStore = useDocumentsStore();
 const userStore = useUserStore();
 const user = ref<User>();
 const userPersonalInfo = ref<UserPersonalInfo>();
@@ -64,6 +68,7 @@ const validate = ref<boolean>(false);
 const personalInfoValidation = ref<boolean>(false);
 const passwordValidation = ref<boolean>(false);
 const userTypeId = ref<UserTypes>(UserTypes.Buyer);
+const curatorInfo = ref<CuratorInfo>();
 
 const isFormValidated = computed(() => {
   return personalInfoValidation.value && passwordValidation.value;
@@ -85,6 +90,16 @@ async function submitForm() {
     const response = await userStore.registerUser(user.value);
     if (response) {
       result = true;
+      if (curatorInfo.value && response.id) {
+        await documentsStore.sendDocument(
+          curatorInfo.value.certification!,
+          response.id
+        );
+        await documentsStore.sendDocument(
+          curatorInfo.value.photo!,
+          response.id
+        );
+      }
     }
   }
 

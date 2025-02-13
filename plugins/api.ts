@@ -4,19 +4,19 @@ import AuctionService from "~/services/auction";
 import AuthService from "~/services/auth";
 import BidService from "~/services/bid";
 import CategoryService from "~/services/category";
+import DocumentService from "~/services/document";
 import TypeService from "~/services/type";
 import UserService from "~/services/user";
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
-  const router = useRouter();
 
   const fetchOptions: FetchOptions = {
-    onRequest({ options }) {
+    onRequest({ options, request }) {
       let url = config.public.apiBaseUrl;
-      const path = router.currentRoute.value.path;
 
-      if (path === "/login" || path === "/register") {
+      const requestStr = request.toString();
+      if (requestStr.includes("auth") || requestStr.includes("client")) {
         url = config.public.authBaseUrl;
       }
 
@@ -31,6 +31,7 @@ export default defineNuxtPlugin(() => {
     auth: new AuthService(apiFetcher),
     bid: new BidService(apiFetcher),
     category: new CategoryService(apiFetcher),
+    document: new DocumentService(apiFetcher),
     type: new TypeService(apiFetcher),
     user: new UserService(apiFetcher),
   };

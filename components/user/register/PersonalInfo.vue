@@ -133,7 +133,7 @@
 </template>
 
 <script setup lang="ts">
-import type { UserPersonalInfo } from '~/interfaces/user';
+import type { UserPersonalInfo } from "~/interfaces/user";
 
 const componentProps = defineProps<{ validate: boolean }>();
 const emit = defineEmits(["update:validation", "update:userPersonalInfo"]);
@@ -248,13 +248,30 @@ function validateCPF() {
 function validateBirthDate() {
   const currentDate = new Date();
   const birthDate = new Date(personalInfo.value.birthDate || "");
+
   if (!personalInfo.value.birthDate) {
     birthDateError.value = ["Data de nascimento é obrigatória"];
     return false;
-  } else if (birthDate > currentDate) {
+  }
+
+  if (birthDate > currentDate) {
     birthDateError.value = ["Data de nascimento não pode ser futura"];
     return false;
   }
+
+  let age = currentDate.getFullYear() - birthDate.getFullYear();
+  const month = currentDate.getMonth() - birthDate.getMonth();
+  if (
+    month < 0 ||
+    (month === 0 && currentDate.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+  if (age < 18) {
+    birthDateError.value = ["Você precisa ter mais de 18 anos"];
+    return false;
+  }
+
   birthDateError.value = [];
   return true;
 }
@@ -288,7 +305,7 @@ watch(
       birthDateValidation &&
       phoneValidation
     ) {
-      emit("update:userPersonalInfo", personalInfo.value)
+      emit("update:userPersonalInfo", personalInfo.value);
       emit("update:validation", true);
     } else {
       emit("update:validation", false);
