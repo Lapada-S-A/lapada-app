@@ -1,5 +1,5 @@
 <template>
-  <v-dialog opacity="0.4" max-width="500" persistent>
+  <v-dialog v-model="isDialogOpen" opacity="0.4" max-width="500" persistent>
     <template #activator="{ props: activatorProps }">
       <v-btn
         id="open-create-bid-dialog-btn"
@@ -8,12 +8,13 @@
         height="65"
         width="320"
         color="primary"
+        @click="openDialog"
       >
         Fazer lance
       </v-btn>
     </template>
 
-    <template #default="{ isActive }">
+    <template #default>
       <v-card class="rounded-lg pa-4">
         <div>
           <v-card-title class="d-flex justify-space-between align-center">
@@ -24,8 +25,8 @@
               variant="plain"
               :ripple="false"
               size="22"
-              @click="[(isActive.value = false), resetBid()]"
-              ><v-icon> mdi-close</v-icon></v-btn
+              @click="closeDialog"
+              ><v-icon>mdi-close</v-icon></v-btn
             >
           </v-card-title>
         </div>
@@ -48,9 +49,10 @@
           <v-btn
             class="btn btn-primary px-6 ml-2"
             :disabled="!isBidValid"
-            @click="[(isActive.value = false), createBid()]"
-            >Confirmar</v-btn
+            @click="submitBid"
           >
+            Confirmar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </template>
@@ -69,35 +71,44 @@ const props = defineProps({
 
 const emit = defineEmits(["created-bid"]);
 
-const bid = ref<number | null>();
+const bid = ref<number | null>(null);
 const errorMessage = ref<string>("");
+const isDialogOpen = ref(false);
+
 const bidsStore = useBidsStore();
 const auctionStore = useAuctionsStore();
 
-const auction = await auctionStore.getAuctionById(props.auctionId);
+const auction = ref(await auctionStore.getAuctionById(props.auctionId));
+
+const fetchAuction = async () => {
+  auction.value = await auctionStore.getAuctionById(props.auctionId);
+};
 
 const bidRules = computed(() => [
   (value: number) => {
     if (!value) return "O valor do lance é obrigatório.";
     if (value <= 0) return "O valor do lance deve ser maior que zero.";
-    if (
-      auction &&
-      auction.highest_bid !== undefined &&
-      auction.highest_bid >= value
-    ) {
-      return "O valor do lance deve ser maior que o lance atual.";
+
+    if (auction.value) {
+      const highestBid = auction.value.highest_bid ?? 0;
+      const minIncrement = auction.value.min_increment ?? 0;
+
+      if (value <= highestBid)
+        return "O valor do lance deve ser maior que o lance atual.";
+
+      if (value < highestBid + minIncrement)
+        return `O valor do lance deve ser pelo menos R$ ${(
+          highestBid + minIncrement
+        ).toFixed(2)}.`;
     }
+
     return true;
   },
 ]);
 
 const isBidValid = computed(() => {
   if (!bid.value) return false;
-
-  return (
-    bid.value !== null &&
-    bidRules.value.every((rule) => rule(bid.value as number) === true)
-  );
+  return bidRules.value.every((rule) => rule(bid.value as number) === true);
 });
 
 const resetBid = () => {
@@ -105,20 +116,33 @@ const resetBid = () => {
   errorMessage.value = "";
 };
 
-const createBid = async () => {
-  if (!bid.value) return;
+const openDialog = async () => {
+  await fetchAuction();
+  resetBid();
+  isDialogOpen.value = true;
+};
 
-  if (
-    auction &&
-    auction.highest_bid !== undefined &&
-    auction.highest_bid >= bid.value
-  ) {
-    errorMessage.value = "O valor do lance deve ser maior que o lance atual.";
+const closeDialog = () => {
+  resetBid();
+  isDialogOpen.value = false;
+};
+
+const submitBid = async () => {
+  if (!bid.value || !auction.value) return;
+
+  const highestBid = auction.value.highest_bid ?? 0;
+  const minIncrement = auction.value.min_increment ?? 0;
+  const minValidBid = highestBid + minIncrement;
+
+  if (bid.value < minValidBid) {
+    errorMessage.value = `O valor do lance deve ser pelo menos R$ ${minValidBid.toFixed(
+      2
+    )}.`;
     return;
   }
 
   const userBid = {
-    amount: bid.value,
+    amount: parseFloat(bid.value!.toString()),
     auction_id: props.auctionId,
     buyer_id: props.buyerId,
   };
@@ -127,6 +151,7 @@ const createBid = async () => {
     await bidsStore.createBid(userBid);
     resetBid();
     emit("created-bid", bid.value);
+    closeDialog();
   } catch (error) {
     console.error("Erro ao criar lance:", error);
     errorMessage.value = "Erro ao criar lance. Tente novamente.";
