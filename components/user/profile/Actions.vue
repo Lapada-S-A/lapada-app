@@ -11,13 +11,19 @@
     >
       {{ button.text }}
     </v-btn>
+    <ChangePasswordDialog ref="changePasswordDialog" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { User } from "~/interfaces/user";
+import ChangePasswordDialog from "./ChangePasswordDialog.vue";
 
-defineProps<{ user: User | null }>();
+const userStore = useUserStore();
+const changePasswordDialog = ref();
+
+const props = defineProps<{ user: User | null }>();
+
 const buttons = ref([
   {
     class: "btn btn-primary",
@@ -25,7 +31,12 @@ const buttons = ref([
     width: "200",
     icon: "mdi-badge-account",
     text: "Tornar-se vendedor",
-    click: () => console.log("cliquei em botao"),
+    click: () => {
+      if (props.user?.id) {
+        useSnackbarStore().showSnackbar("success", "Você agora é um vendedor!");
+        userStore.promoterToSeller(props.user.id);
+      }
+    },
   },
   {
     class: "btn btn-secondary",
@@ -33,7 +44,9 @@ const buttons = ref([
     width: "200",
     icon: "mdi-pencil-outline",
     text: "Alterar senha",
-    click: () => console.log("cliquei em botao"),
+    click: () => {
+      changePasswordDialog.value.showDialog = true;
+    },
   },
   {
     class: "btn btn-primary bg-error",
@@ -41,7 +54,11 @@ const buttons = ref([
     width: "200",
     icon: "mdi-delete-outline",
     text: "Apagar conta",
-    click: () => console.log("cliquei em botao"),
+    click: () => {
+      if (props.user?.id) {
+        userStore.deleteAccount(props.user.id);
+      }
+    },
   },
 ]);
 </script>
