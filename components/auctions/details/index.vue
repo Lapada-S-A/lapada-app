@@ -31,16 +31,25 @@
             :current-bid="currentBid"
             :min-increment="minIncrement"
             :auction-id="auctionId"
+            @refresh-auction-details="refreshAuction"
           />
 
           <LastBids :bids="bids" />
 
           <SellerCard
-            :name="'Matheus Sousa'"
-            :avatar-initials="'MS'"
-            :rating="4.8"
-            :auctions-count="50"
-            :since="2020"
+            :name="sellerData?.username || ''"
+            :avatar-initials="
+              sellerData?.username
+                ? sellerData.username
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .toUpperCase()
+                : ''
+            "
+            :rating="sellerData?.rating"
+            :auctions-count="sellerData?.auctionsCreated.length || 0"
+            :since="new Date(sellerData?.created_at || '').getFullYear()"
             class="py-5"
           />
         </v-col>
@@ -58,6 +67,7 @@ import MainDetails from "@/components/auctions/details/MainDetails.vue";
 import SellerCard from "@/components/auctions/details/SellerCard.vue";
 import MainCard from "@/components/common/MainCard.vue";
 import type { Bid } from "~/interfaces/bid";
+import type { UserSellerData } from "~/interfaces/user";
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -77,9 +87,59 @@ const props = defineProps({
   auctionId: { type: Number, required: true },
 });
 
-onMounted(() => {
-  console.log(props.remainingTime);
+const reviewStore = useReviewStore();
+const auctionsStore = useAuctionsStore();
+const userStore = useUserStore();
+const bidsStore = useBidsStore();
+
+const sellerData = ref<UserSellerData>();
+const bids = ref<Bid[]>(props.bids);
+
+onMounted(async () => {
+  const auction = await auctionsStore.getAuctionById(props.auctionId);
+
+  if (auction?.seller_id !== undefined) {
+    const allAuctions = await auctionsStore.getAuctionsBySeller(
+      auction.seller_id
+    );
+    const sellerRating = await reviewStore.getAverageRatingOfSeller(
+      auction.seller_id
+    );
+    const sellerInfo = await userStore.getClientById(auction.seller_id);
+
+    if (sellerRating !== undefined) {
+      sellerData.value = {
+        ...sellerInfo,
+        username: sellerInfo?.username || "",
+        email: sellerInfo?.email || "",
+        password: sellerInfo?.password || "",
+        cpf: sellerInfo?.cpf || "",
+        phone_number: sellerInfo?.phone_number || "",
+        rating: sellerRating,
+        auctionsCreated: allAuctions || [],
+        type_user: sellerInfo?.type_user || UserTypes.Seller,
+        birthdate: sellerInfo?.birthdate || "",
+      };
+    }
+  }
 });
+
+watch(
+  () => props.bids,
+  (newBids) => {
+    if (newBids.length > 0) {
+      bids.value = newBids;
+    }
+  },
+  { immediate: true }
+);
+
+const refreshAuction = async () => {
+  const updatedAuction = await bidsStore.getBidsByAuctionId(props.auctionId);
+  if (updatedAuction) {
+    bids.value = updatedAuction || [];
+  }
+};
 </script>
 
 <style scoped>
