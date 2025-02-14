@@ -5,6 +5,7 @@ import AuthService from "~/services/auth";
 import BidService from "~/services/bid";
 import CategoryService from "~/services/category";
 import DocumentService from "~/services/document";
+import ReviewService from "~/services/review";
 import TypeService from "~/services/type";
 import UserService from "~/services/user";
 
@@ -34,6 +35,7 @@ export default defineNuxtPlugin(() => {
     document: new DocumentService(apiFetcher),
     type: new TypeService(apiFetcher),
     user: new UserService(apiFetcher),
+    review: new ReviewService(apiFetcher)
   };
 
   return {
