@@ -1,5 +1,6 @@
 import type { UserTypes } from "~/stores/enum";
-
+import type { Auction } from "./auction";
+import type { AverageRating } from "./review";
 export interface User {
   id?: number;
   username: string;
@@ -25,4 +26,9 @@ export interface CuratorInfo {
   category: number | null;
   certification: File | null;
   photo?: File | null;
+}
+
+export interface UserSellerData extends User {
+  rating: AverageRating;  
+  auctionsCreated: Auction[]; 
 }
