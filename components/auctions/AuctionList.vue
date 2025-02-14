@@ -130,7 +130,9 @@ const filteredAuctions = computed(() => {
   let filtered = auctions.value.filter(
     (auction: Auction) =>
       auction.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
-      (!componentProps.isSeller ? auction.status === AuctionStatus.OPEN : true)
+      (!componentProps.isSeller
+        ? auction.status.toString() === AuctionStatus.OPEN.toString()
+        : true)
   );
   if (auctionStatusIdSelected.value) {
     filtered = filtered.filter(

@@ -3,11 +3,18 @@
     <div class="d-flex flex-column justify-space-between py-8 px-16 h-100">
       <div class="d-flex">
         <div class="mr-16 d-flex flex-column align-center justify-center">
-          <UserProfileAvatar />
-          <UserProfileActions />
+          <UserProfileAvatar
+            :user="userStore.currentUser ? userStore.currentUser : null"
+          />
+          <UserProfileActions
+            :user="userStore.currentUser ? userStore.currentUser : null"
+          />
         </div>
         <div class="ml-16 w-100">
-          <UserProfileInfo />
+          <UserProfileInfo
+            :user="userStore.currentUser!"
+            @update-user="updateUser"
+          />
         </div>
       </div>
       <div class="d-flex justify-end">
@@ -21,4 +28,17 @@
 
 <script setup lang="ts">
 import MainCard from "@/components/common/MainCard.vue";
+import type { User } from "~/interfaces/user";
+
+const userStore = useUserStore();
+
+onMounted(async () => {
+  await userStore.getUserById(userStore.currentUser!.id!);
+});
+
+async function updateUser(user: User) {
+  if (user) {
+    await userStore.updateUser(user);
+  }
+}
 </script>
