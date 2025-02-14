@@ -102,12 +102,12 @@ onMounted(async () => {
     const allAuctions = await auctionsStore.getAuctionsBySeller(
       auction.seller_id
     );
+    const sellerInfo = await userStore.getClientById(auction.seller_id);
     const sellerRating = await reviewStore.getAverageRatingOfSeller(
       auction.seller_id
     );
-    const sellerInfo = await userStore.getClientById(auction.seller_id);
 
-    if (sellerRating !== undefined) {
+    if (sellerInfo !== undefined) {
       sellerData.value = {
         ...sellerInfo,
         username: sellerInfo?.username || "",
@@ -115,11 +115,12 @@ onMounted(async () => {
         password: sellerInfo?.password || "",
         cpf: sellerInfo?.cpf || "",
         phone_number: sellerInfo?.phone_number || "",
-        rating: sellerRating,
+        rating: sellerRating || { average_rating: "0" },
         auctionsCreated: allAuctions || [],
         type_user: sellerInfo?.type_user || UserTypes.Seller,
         birthdate: sellerInfo?.birthdate || "",
       };
+      console.log(sellerData.value);
     }
   }
 });

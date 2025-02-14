@@ -17,5 +17,6 @@ export interface ReviewRequest {
 
 export interface AverageRating{
     average_rating: string;
-    seller_id: number;
+    seller_id?: number;
+    message?: string;
 }
