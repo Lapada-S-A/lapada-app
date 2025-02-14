@@ -5,8 +5,10 @@ export const useUserStore = defineStore(
   () => {
     const { $api } = useNuxtApp();
     const routesStore = useRoutesStore();
+    const authStore = useAuthStore();
     const loading = ref<boolean>(false);
     const currentUser = ref<User | null>();
+    const router = useRouter();
 
     const getUserById = async (userId: number): Promise<void> => {
       loading.value = true;
@@ -56,12 +58,45 @@ export const useUserStore = defineStore(
       }
     };
 
+    const deleteAccount = async (userId: number): Promise<void> => {
+      loading.value = true;
+      try {
+        await $api.user.delete(userId);
+        authStore.disauthenticate();
+        router.push("/login");
+      } finally {
+        loading.value = false;
+      }
+    }
+
+    const promoterToSeller = async (userId: number): Promise<void> => {
+      loading.value = true;
+      try {
+        await $api.user.promoterToSeller(userId);
+        await getUserById(userId);
+      } finally {
+        loading.value = false;
+      }
+    }
+
+    const updateUserPassword = async ( newPassword: string, userId:number): Promise<void> => {
+      loading.value = true;
+      try {
+        await $api.user.updatePassword(newPassword, userId);
+      } finally {
+        loading.value = false;
+      }
+    }
+
     return {
       currentUser,
       getUserById,
       registerUser,
       updateUser,
       getClientById,
+      deleteAccount,
+      promoterToSeller,
+      updateUserPassword
     };
   },
   {

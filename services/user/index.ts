@@ -13,4 +13,16 @@ export default class UserService extends BaseService {
   async update(user: User, userId: number): Promise<User | undefined> {
     return await this.request(`auth/user/update/${userId}`, "PUT", user);
   }
+
+  async delete(userId: number): Promise<User | undefined> {
+    return await this.request(`auth/delete/${userId}`, "DELETE");
+  }
+
+  async promoterToSeller(userId: number): Promise<User | undefined> {
+    return await this.request(`auth/user/promote/${userId}`, "PATCH");
+  }
+
+  async updatePassword( password: string, userId: number,): Promise<User | undefined> {
+    return await this.request(`auth/user/update/${userId}`, "PUT", { password });
+  }
 }
