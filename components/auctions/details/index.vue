@@ -1,18 +1,28 @@
 <template>
   <MainCard>
     <div class="px-6">
-      <v-btn
-        v-if="showBackButton"
-        class="mb-7 text-font-100 font-large font-weight-bold text-none ml-n5"
-        variant="plain"
-        :ripple="false"
-        @click="$router.back()"
-      >
-        Voltar
-      </v-btn>
-
       <v-row class="pb-5">
         <v-col cols="12" md="7">
+          <div class="d-flex justify-space-between">
+            <v-btn
+              v-if="showBackButton"
+              class="mb-7 text-font-100 font-large font-weight-bold text-none ml-n5"
+              variant="plain"
+              :ripple="false"
+              @click="$router.back()"
+            >
+              Voltar
+            </v-btn>
+            <v-btn
+              v-if="userStore.currentUser?.type_user === UserTypes.Seller"
+              class="mb-7 text-font-100 font-large font-weight-bold text-none mr-n2"
+              variant="plain"
+              :ripple="false"
+              @click="$router.push(`/auctions/edit/${auctionId}`)"
+            >
+              Editar
+            </v-btn>
+          </div>
           <v-row>
             <ImagesSlider :images="images" />
 
@@ -22,7 +32,7 @@
           </v-row>
         </v-col>
 
-        <v-col cols="12" md="5" class="mt-n16 pl-16">
+        <v-col cols="12" md="5" class="pl-16">
           <MainDetails
             :title="title"
             :auction-type="auctionType"

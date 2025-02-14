@@ -1,11 +1,10 @@
 import type { AuctionStatus } from "~/stores/enum";
-import type { Category } from "./category";
 
 export interface Auction {
   id?: number;
   title: string;
   description: string;
-  categories: Category[];
+  categories: number[];
   type_id: number;
   created_date?: string;
   end_date: string;

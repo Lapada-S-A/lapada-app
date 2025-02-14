@@ -3,7 +3,11 @@
     v-if="auction"
     :title="auction.title"
     :auction-type="auctionType?.name"
-    :category="auction.categories.map((category) => category.name).join(', ')"
+    :category="categoriesStore.categories.map((category, index) => {
+      return auction!.categories.includes(category.id)
+        ? (index === auction!.categories.length - 1 ? category.name + ', ' : category.name)
+        : '';
+    }).join('')"
     :date="auction.created_date ? formatDate(auction.created_date) : ''"
     :current-bid="formatCurrency(auction.highest_bid || auction.initial_value)"
     :min-increment="formatCurrency(auction.min_increment)"
@@ -34,12 +38,15 @@ const auctionId = Number(route.params.id);
 const auctionsStore = useAuctionsStore();
 const bidsStore = useBidsStore();
 const typesStore = useTypesStore();
+const categoriesStore = useCategoriesStore();
 
 const auctionType = ref<Type>();
 const auction = ref<Auction>();
 const auctionBids = ref<Bid[]>();
 
 onMounted(async () => {
+  await categoriesStore.getAllCategories();
+  await typesStore.getAllTypes();
   auction.value = await auctionsStore.getAuctionById(auctionId);
   auctionBids.value = await bidsStore.getBidsByAuctionId(auctionId);
   auctionType.value = typesStore.getTypeById(auction.value?.type_id || 0);

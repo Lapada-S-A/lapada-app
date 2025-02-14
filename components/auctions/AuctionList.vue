@@ -106,6 +106,7 @@ const componentProps = defineProps<{ isSeller?: boolean }>();
 const auctionsStore = useAuctionsStore();
 const categoriesStore = useCategoriesStore();
 const typesStore = useTypesStore();
+const userStore = useUserStore();
 const auctions = ref<Auction[]>([]);
 const auctionStatusIdSelected = ref<AuctionStatus>();
 const auctionsPerPage = ref<number>(18);
@@ -132,6 +133,9 @@ const filteredAuctions = computed(() => {
       auction.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
       (!componentProps.isSeller
         ? auction.status.toString() === AuctionStatus.OPEN.toString()
+        : true) &&
+      (componentProps.isSeller
+        ? auction.seller_id === userStore.currentUser?.id
         : true)
   );
 
