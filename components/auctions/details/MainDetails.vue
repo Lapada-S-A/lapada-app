@@ -59,6 +59,8 @@ const props = defineProps({
   auctionId: { type: Number, required: true },
 });
 
+const emits = defineEmits(["refresh-auction-details"]);
+
 const currentBid = ref<string>(props.currentBid.toString());
 
 const userStore = useUserStore();
@@ -124,6 +126,7 @@ const refreshAuctionDetails = async () => {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}`;
+      emits("refresh-auction-details");
     }
   } catch (error) {
     console.error("Erro ao atualizar detalhes do leilão:", error);
