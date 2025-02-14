@@ -3,6 +3,7 @@ import type AuthService from "~/services/auth";
 import type BidService from "~/services/bid";
 import type CategoryService from "~/services/category";
 import type DocumentService from "~/services/document";
+import type ReviewService from "~/services/review";
 import type TypeService from "~/services/type";
 import type UserService from "~/services/user";
 
@@ -14,4 +15,5 @@ export interface ApiInstance {
   document: DocumentService;
   type: TypeService;
   user: UserService;
+  review: ReviewService;
 }
