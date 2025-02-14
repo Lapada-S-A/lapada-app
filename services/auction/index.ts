@@ -30,4 +30,8 @@ export default class AuctionService extends BaseService {
   async changeStatusOfAction(id: number, status:string): Promise<Auction | undefined> {
     return await this.request(this.RESOURCE + `${status}/${id}`, "POST");
   }
+
+  async getAuctionsBySeller(sellerId: number): Promise<Auction[] | undefined> {
+    return await this.request(this.RESOURCE + `seller/${sellerId}`, "GET");
+  }
 }
