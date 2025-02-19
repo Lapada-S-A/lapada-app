@@ -21,7 +21,7 @@
           class="btn btn-secondary"
           height="37"
           width="120"
-          @click="$router.push('/auctions/my-auctions')"
+          @click="$router.back()"
           >Cancelar</v-btn
         >
         <v-btn

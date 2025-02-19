@@ -4,10 +4,12 @@
       <v-btn
         id="open-create-bid-dialog-btn"
         v-bind="activatorProps"
-        class="btn btn-primary font-subtitle"
+        class="btn btn-primary font-title"
+        :class="{ 'btn-disabled': props.disabled }"
         height="65"
         width="320"
         color="primary"
+        elevation="1"
         @click="openDialog"
       >
         Fazer lance
@@ -67,6 +69,7 @@ import { computed, ref } from "vue";
 const props = defineProps({
   auctionId: { type: Number, required: true },
   buyerId: { type: Number, required: true },
+  disabled: { type: Boolean, required: true },
 });
 
 const emit = defineEmits(["created-bid"]);
@@ -77,6 +80,7 @@ const isDialogOpen = ref(false);
 
 const bidsStore = useBidsStore();
 const auctionStore = useAuctionsStore();
+const snackBarStore = useSnackbarStore();
 
 const auction = ref(await auctionStore.getAuctionById(props.auctionId));
 
@@ -90,7 +94,8 @@ const bidRules = computed(() => [
     if (value <= 0) return "O valor do lance deve ser maior que zero.";
 
     if (auction.value) {
-      const highestBid = auction.value.highest_bid ?? 0;
+      const highestBid =
+        auction.value.highest_bid ?? auction.value.initial_value;
       const minIncrement = auction.value.min_increment ?? 0;
 
       if (value <= highestBid)
@@ -151,10 +156,16 @@ const submitBid = async () => {
     await bidsStore.createBid(userBid);
     resetBid();
     emit("created-bid", bid.value);
-    closeDialog();
-  } catch (error) {
-    console.error("Erro ao criar lance:", error);
-    errorMessage.value = "Erro ao criar lance. Tente novamente.";
+    snackBarStore.showSnackbar(
+      "success",
+      "Lance feito com sucesso!"
+    );
+  } catch {
+    snackBarStore.showSnackbar(
+      "error",
+      "Erro ao fazer um lance. Tente novamente."
+    );
   }
+  closeDialog();
 };
 </script>

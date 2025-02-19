@@ -18,9 +18,10 @@
       </v-col>
       <v-col cols="12" class="d-flex justify-center mt-4 mb-5">
         <CreateBidDialog
-          v-if="isUserType1"
+          v-if="!isSeller && currentUser?.id !== UserTypes.Curator"
           :auction-id="auctionId"
           :buyer-id="currentUser?.id ?? 0"
+          :disabled="currentBidBuyerId === currentUser?.id"
           @created-bid="refreshAuctionDetails"
         />
         <DualButton
@@ -55,18 +56,20 @@ const props = defineProps({
   category: { type: String, required: true },
   date: { type: String, required: true },
   currentBid: { type: String, required: true },
+  currentBidBuyerId: { type: Number, required: true },
   minIncrement: { type: String, required: true },
   auctionId: { type: Number, required: true },
+  isSeller: { type: Boolean, required: true },
 });
 
 const emits = defineEmits(["refresh-auction-details"]);
 
-const currentBid = ref<string>(props.currentBid.toString());
+const currentBid = ref<string>(props.currentBid);
+const { currentBidBuyerId, isSeller } = toRefs(props);
 
 const userStore = useUserStore();
 const auctionStore = useAuctionsStore();
 const currentUser = userStore.currentUser;
-const isUserType1 = computed(() => currentUser?.type_user === 1);
 
 const leftButtonText = computed(() => {
   if (currentUser?.type_user === 3) return "Aprovar";

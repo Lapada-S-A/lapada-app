@@ -1,7 +1,9 @@
 <template>
   <div class="dual-button">
     <v-btn
-      class="rounded-lg btn-custom font-weight-bold"
+      class="btn btn-primary font-title"
+      width="225"
+      height="65"
       :color="leftButtonColor"
       :elevation="elevation"
       :disabled="leftButtonDisabled"
@@ -10,7 +12,9 @@
       {{ leftButtonText }}
     </v-btn>
     <v-btn
-      class="rounded-lg btn-custom font-weight-bold"
+      class="btn btn-primary font-title"
+      width="225"
+      height="65"
       :color="rightButtonColor"
       :elevation="elevation"
       :disabled="rightButtonDisabled"
@@ -33,15 +37,15 @@ defineProps({
   },
   leftButtonColor: {
     type: String,
-    default: "red",
+    default: "error",
   },
   rightButtonColor: {
     type: String,
-    default: "blue",
+    default: "primary",
   },
   elevation: {
     type: Number,
-    default: 2,
+    default: 1,
   },
   leftButtonDisabled: {
     type: Boolean,
@@ -67,12 +71,13 @@ const onRightClick = () => {
 <style scoped>
 .dual-button {
   display: flex;
-  gap: 16px;
+  gap: 10px;
 }
 .btn-custom {
-  width: 200px;
-  height: 70px !important;
-  font-size: 25px;
+  font-weight: 600 !important;
+  width: 225px;
+  height: 65px !important;
+  font-size: 24px;
   text-transform: none;
 }
 </style>

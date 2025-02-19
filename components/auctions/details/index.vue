@@ -14,7 +14,7 @@
               Voltar
             </v-btn>
             <v-btn
-              v-if="userStore.currentUser?.type_user === UserTypes.Seller"
+              v-if="isSeller"
               class="mb-7 text-font-100 font-large font-weight-bold text-none mr-n2"
               variant="plain"
               :ripple="false"
@@ -39,8 +39,10 @@
             :category="category"
             :date="date"
             :current-bid="currentBid"
+            :current-bid-buyer-id="currentBidBuyerId ?? 0"
             :min-increment="minIncrement"
             :auction-id="auctionId"
+            :is-seller="isSeller"
             @refresh-auction-details="refreshAuction"
           />
 
@@ -102,6 +104,7 @@ const auctionsStore = useAuctionsStore();
 const userStore = useUserStore();
 const bidsStore = useBidsStore();
 
+const isSeller = ref<boolean>(false);
 const sellerData = ref<UserSellerData>();
 const bids = ref<Bid[]>(props.bids);
 
@@ -112,6 +115,7 @@ onMounted(async () => {
     const allAuctions = await auctionsStore.getAuctionsBySeller(
       auction.seller_id
     );
+    isSeller.value = auction.seller_id === userStore.currentUser?.id;
     const sellerInfo = await userStore.getClientById(auction.seller_id);
     const sellerRating = await reviewStore.getAverageRatingOfSeller(
       auction.seller_id
@@ -134,6 +138,11 @@ onMounted(async () => {
   }
 });
 
+const currentBidBuyerId = computed(() => {
+  return bids.value?.find((bid) => bid.bid_status === BidStatus.ACTIVE)
+    ?.buyer_id;
+});
+
 watch(
   () => props.bids,
   (newBids) => {
@@ -144,12 +153,12 @@ watch(
   { immediate: true }
 );
 
-const refreshAuction = async () => {
+async function refreshAuction() {
   const updatedAuction = await bidsStore.getBidsByAuctionId(props.auctionId);
   if (updatedAuction) {
     bids.value = updatedAuction || [];
   }
-};
+}
 </script>
 
 <style scoped>
