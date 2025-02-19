@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MainCard>
+    <MainCard class="h-100">
       <div class="h-100">
         <AuctionFilterOptions v-model:status-selected="statusIdSelected" />
         <AuctionPanelsList :status-id="statusIdSelected" />

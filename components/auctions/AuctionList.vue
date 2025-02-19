@@ -136,7 +136,7 @@ const filteredAuctions = computed(() => {
         : true) &&
       (componentProps.isSeller
         ? auction.seller_id === userStore.currentUser?.id
-        : true)
+        : auction.seller_id !== userStore.currentUser?.id)
   );
 
   if (auctionStatusIdSelected.value) {

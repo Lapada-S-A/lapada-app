@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-100">
     <div
       v-if="auctionsStore.loading || typesStore.loading"
       class="d-flex justify-center align-center"
@@ -12,7 +12,7 @@
         width="6"
       />
     </div>
-    <div v-else>
+    <div v-else class="h-100">
       <div
         v-if="filteredAuctions.length === 0"
         class="d-flex justify-center mt-16"
@@ -29,19 +29,45 @@
           </div>
         </div>
       </div>
-
-      <v-expansion-panels v-else v-model="openedAuctionId" variant="accordion">
+      <div v-else class="d-flex flex-column justify-space-between h-100">
+        <v-expansion-panels v-model="openedAuctionId" variant="accordion">
+          <div
+            v-for="auction in filteredAuctions"
+            :key="auction.id"
+            class="w-100 mb-1"
+          >
+            <AuctionPanel
+              :auction="auction"
+              :is-opened="openedAuctionId === auction.id"
+            />
+          </div>
+        </v-expansion-panels>
         <div
-          v-for="auction in filteredAuctions"
-          :key="auction.id"
-          class="w-100 mb-1"
+          v-if="!auctionsStore.loading"
+          class="d-flex justify-center ga-2 mb-16"
         >
-          <AuctionPanel
-            :auction="auction"
-            :is-opened="openedAuctionId === auction.id"
-          />
+          <v-btn
+            id="previous-auctions-page-btn"
+            class="btn btn-secondary font-small"
+            height="32"
+            width="85"
+            :class="{ 'btn-disabled': currentPage === 1 }"
+            @click="changePage('previous')"
+          >
+            Anterior
+          </v-btn>
+          <v-btn
+            id="next-auctions-page-btn"
+            class="btn btn-primary font-small"
+            height="32"
+            width="85"
+            :class="{ 'btn-disabled': isLastPage }"
+            @click="changePage('next')"
+          >
+            Próxima
+          </v-btn>
         </div>
-      </v-expansion-panels>
+      </div>
     </div>
   </div>
 </template>
@@ -53,22 +79,56 @@ import type { Auction } from "~/interfaces/auction";
 const componentProps = defineProps<{ statusId?: number }>();
 const typesStore = useTypesStore();
 const auctionsStore = useAuctionsStore();
+const userStore = useUserStore();
 const openedAuctionId = ref<number | null>(null);
 const auctions = ref<Auction[]>([]);
+const auctionsPerPage = ref<number>(10);
+const currentPage = ref<number>(1);
+const totalPages = ref<number>(1);
 
-onMounted(async () => {
-  const response = await auctionsStore.getAllAuctions();
+const fetchAuctions = async () => {
+  const response = await auctionsStore.getAuctionsByBuyer(
+    userStore.currentUser!.id!,
+    {
+      page: currentPage.value.toString(),
+      per_page: auctionsPerPage.value.toString(),
+    }
+  );
   if (response) {
-    auctions.value = response;
+    auctions.value = response.auctions;
+    totalPages.value = response.pages;
   }
-  await typesStore.getAllTypes();
+};
+
+onMounted(() => {
+  fetchAuctions();
+  typesStore.getAllTypes();
 });
 
 const filteredAuctions = computed(() => {
   return componentProps.statusId !== undefined
     ? auctions.value.filter(
-        (auction: Auction) => auction.status === componentProps.statusId
+        (auction: Auction) =>
+          auction.status.toString() === componentProps.statusId!.toString()
       )
     : auctions.value;
 });
+
+const isLastPage = computed(() => currentPage.value >= totalPages.value);
+
+const changePage = (direction: string) => {
+  if (direction === "previous" && currentPage.value > 1) {
+    currentPage.value--;
+  } else if (direction === "next" && currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+  fetchAuctions();
+};
+
+watch(
+  () => componentProps.statusId,
+  () => {
+    openedAuctionId.value = null;
+  }
+);
 </script>

@@ -10,10 +10,10 @@
       </thead>
       <tbody>
         <tr v-for="(bid, index) in bids" :key="index" class="font-large">
-          <td>{{ bid.amount }}</td>
+          <td>{{ formatCurrency(bid.amount) }}</td>
           <td>{{ userNames[bid.buyer_id] || "Carregando..." }}</td>
           <td>
-            {{ bid.bid_date.slice(0, 10) + " " + bid.bid_date.slice(11) }}
+            {{ formatDate(bid.bid_date.slice(0, 10)) }}
           </td>
         </tr>
       </tbody>

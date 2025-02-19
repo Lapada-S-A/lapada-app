@@ -1,4 +1,8 @@
-import type { Auction, AuctionPaginatedResponse } from "~/interfaces/auction";
+import type {
+  Auction,
+  AuctionByBuyerPaginatedResponse,
+  AuctionPaginatedResponse,
+} from "~/interfaces/auction";
 
 export const useAuctionsStore = defineStore("auctions", () => {
   const { $api } = useNuxtApp();
@@ -73,14 +77,30 @@ export const useAuctionsStore = defineStore("auctions", () => {
     }
   };
 
-  const getAuctionsBySeller = async ( sellerId: number): Promise<Auction[] | undefined> => {
+  const getAuctionsBySeller = async (
+    sellerId: number
+  ): Promise<Auction[] | undefined> => {
     loading.value = true;
     try {
       return await $api.auction.getAuctionsBySeller(sellerId);
     } finally {
       loading.value = false;
     }
-  }
+  };
+
+  const getAuctionsByBuyer = async (
+    buyerId: number,
+    params: {
+      [key: string]: string;
+    }
+  ): Promise<AuctionByBuyerPaginatedResponse | undefined> => {
+    loading.value = true;
+    try {
+      return await $api.auction.getAuctionsByBuyer(buyerId, params);
+    } finally {
+      loading.value = false;
+    }
+  };
 
   return {
     loading,
@@ -90,6 +110,7 @@ export const useAuctionsStore = defineStore("auctions", () => {
     addAuction,
     updateAuction,
     changeStatusOfAuction,
-    getAuctionsBySeller
+    getAuctionsBySeller,
+    getAuctionsByBuyer,
   };
 });

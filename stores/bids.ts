@@ -1,4 +1,4 @@
-import type { Bid, UserBid } from "~/interfaces/bid";
+import type { Bid, BidsPaginatedResponse, UserBid } from "~/interfaces/bid";
 
 export const useBidsStore = defineStore("bids", () => {
   const { $api } = useNuxtApp();
@@ -26,9 +26,23 @@ export const useBidsStore = defineStore("bids", () => {
     }
   };
 
+  const getBidsByAuctionIdByBuyerId = async (
+    auctionId: number,
+    buyerId: number
+  ): Promise<BidsPaginatedResponse | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.bid.getByAuctionByBuyer(auctionId, buyerId);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     getBidsByAuctionId,
-    createBid
+    createBid,
+    getBidsByAuctionIdByBuyerId,
   };
 });

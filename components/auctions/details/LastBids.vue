@@ -2,9 +2,10 @@
   <div class="mt-5">
     <div class="font-weight-semibold text-primary">
       Últimos lances
-      <LastBidsDialog :bids="bids" />
+      <LastBidsDialog v-if="bids.length > 0" :bids="bids" />
     </div>
-    <LastBidsTable :bids="bids.slice(0, 3)" />
+    <LastBidsTable v-if="bids.length > 0" :bids="bids.slice(0, 3)" />
+    <div v-else class="mt-4 text-font-60 font-normal text-center">Nenhum lance foi feito até o momento.</div>
   </div>
 </template>
 <script setup lang="ts">

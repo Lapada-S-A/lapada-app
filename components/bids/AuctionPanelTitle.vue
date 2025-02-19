@@ -5,7 +5,7 @@
         <v-row align="center">
           <v-col
             cols="3"
-            class="font-small font-weight-semibold"
+            class="font-normal font-weight-semibold"
             :class="isOpened ? 'text-font-10' : 'text-primary'"
           >
             {{ type ? type.name : "" }}
@@ -20,7 +20,7 @@
             />
           </v-col>
 
-          <v-col cols="8" class="font-large font-weight-bold">
+          <v-col cols="8" class="font-subtitle font-weight-bold">
             {{ auction.title }}
           </v-col>
         </v-row>
@@ -30,7 +30,7 @@
         <v-row
           align="center"
           justify="end"
-          class="font-small font-weight-semibold"
+          class="font-normal font-weight-semibold"
           :class="isOpened ? 'text-font-10' : 'text-font-60'"
         >
           <v-col cols="6">
