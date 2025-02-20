@@ -11,6 +11,7 @@
         @update:status-selected="(event) => (auctionStatusIdSelected = event)"
       />
       <v-btn
+        id="create-auction-btn"
         class="btn btn-primary"
         width="160"
         height="40"
