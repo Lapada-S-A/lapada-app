@@ -17,4 +17,5 @@ export enum BidStatus {
   ACTIVE = 1,
   EXPIRED = 2,
   WINNER = 3,
+  CANCELED = 4,
 }
