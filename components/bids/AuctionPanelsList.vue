@@ -108,8 +108,7 @@ onMounted(() => {
 const filteredAuctions = computed(() => {
   return componentProps.statusId !== undefined
     ? auctions.value.filter(
-        (auction: Auction) =>
-          auction.status.toString() === componentProps.statusId!.toString()
+        (auction: Auction) => auction.status === componentProps.statusId!
       )
     : auctions.value;
 });

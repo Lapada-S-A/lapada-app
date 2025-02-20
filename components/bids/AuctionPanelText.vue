@@ -4,10 +4,11 @@
       <div class="mr-16">
         <v-img
           src="https://picsum.photos/210/245"
-          class="mb-1 rounded"
+          class="mb-1 rounded cursor-pointer"
           height="210"
           width="245"
           cover
+          @click="$router.push(`/auctions/${auction.id}`)"
           ><template #placeholder>
             <div class="d-flex align-center justify-center fill-height">
               <v-progress-circular color="font-60" indeterminate />
@@ -102,7 +103,7 @@ onMounted(async () => {
     userStore.currentUser!.id!
   );
   if (response) {
-    bids.value = response.bids;
+    bids.value = response.bids.sort((a, b) => b.amount - a.amount);
   }
 
   if (componentProps.auction?.seller_id !== undefined) {

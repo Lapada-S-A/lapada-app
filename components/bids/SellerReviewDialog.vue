@@ -20,7 +20,7 @@
               variant="plain"
               :ripple="false"
               size="22"
-              @click="isActive.value = false"
+              @click="isActive.value = false;"
               ><v-icon> mdi-close</v-icon></v-btn
             >
           </v-card-title>

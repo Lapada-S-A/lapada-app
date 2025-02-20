@@ -14,7 +14,7 @@ export enum AuctionStatus {
 }
 
 export enum BidStatus {
-  ACTIVE = "1",
-  EXPIRED = "2",
-  WINNER = "3",
+  ACTIVE = 1,
+  EXPIRED = 2,
+  WINNER = 3,
 }

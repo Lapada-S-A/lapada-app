@@ -26,6 +26,7 @@
       :images="auctionData.images"
       :bids="auctionBids || []"
       :auction-id="auctionId"
+      :auction-status="auction.status"
       :show-back-button="true"
     />
     <div v-else class="d-flex justify-center align-center">

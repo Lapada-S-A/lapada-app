@@ -54,4 +54,12 @@ export default class AuctionService extends BaseService {
       "GET"
     );
   }
+
+  async finish(auctionId: number): Promise<Auction | undefined> {
+    return await this.request(this.RESOURCE + `finish/${auctionId}`, "PATCH");
+  }
+
+  async cancel(auctionId: number): Promise<Auction | undefined> {
+    return await this.request(this.RESOURCE + `cancel/${auctionId}`, "PATCH");
+  }
 }

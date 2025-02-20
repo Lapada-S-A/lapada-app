@@ -102,6 +102,30 @@ export const useAuctionsStore = defineStore("auctions", () => {
     }
   };
 
+  const finishAuction = async (
+    auctionId: number
+  ): Promise<Auction | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.auction.finish(auctionId);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const cancelAuction = async (
+    auctionId: number
+  ): Promise<Auction | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.auction.cancel(auctionId);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     getAuctionsPaginated,
@@ -112,5 +136,7 @@ export const useAuctionsStore = defineStore("auctions", () => {
     changeStatusOfAuction,
     getAuctionsBySeller,
     getAuctionsByBuyer,
+    finishAuction,
+    cancelAuction
   };
 });

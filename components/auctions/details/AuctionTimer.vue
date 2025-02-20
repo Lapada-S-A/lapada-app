@@ -8,7 +8,9 @@
         cols="auto"
         class="text-center mt-2 text-font-100 mx-2"
       >
-        <div class="font-weight-bold font-bigtitle">{{ unit.value }}</div>
+        <div class="font-weight-bold font-bigtitle">
+          {{ showCountDown() ? unit.value : '-' }}
+        </div>
         <div class="font-weight-semibold mt-n2">{{ unit.label }}</div>
       </v-col>
     </v-row>
@@ -20,9 +22,11 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from "vue";
+import { AuctionStatus } from "~/stores/enum";
 
 const props = defineProps({
   remainingTime: { type: Number, required: true },
+  auctionStatus: { type: Number, required: true },
 });
 
 const timeUnits = ref([
@@ -46,6 +50,14 @@ const convertTime = (totalSeconds: number) => {
     { value: minutes, label: "minutos" },
     { value: seconds, label: "segundos" },
   ];
+};
+
+const showCountDown = () => {
+  return (
+    props.auctionStatus !== AuctionStatus.PENDING &&
+    props.auctionStatus !== AuctionStatus.REJECTED &&
+    props.auctionStatus !== AuctionStatus.CANCELED
+  );
 };
 
 const startCountdown = () => {
@@ -75,7 +87,8 @@ const startCountdown = () => {
 };
 
 onMounted(() => {
-  startCountdown();
+  if (props.auctionStatus === AuctionStatus.OPEN)
+    startCountdown();
 });
 
 watch(() => props.remainingTime, startCountdown);

@@ -14,7 +14,11 @@
               Voltar
             </v-btn>
             <v-btn
-              v-if="isSeller"
+              v-if="
+                isSeller &&
+                (auctionStatus === AuctionStatus.OPEN ||
+                  auctionStatus === AuctionStatus.PENDING)
+              "
               class="mb-7 text-font-100 font-large font-weight-bold text-none mr-n2"
               variant="plain"
               :ripple="false"
@@ -26,7 +30,10 @@
           <v-row>
             <ImagesSlider :images="images" />
 
-            <AuctionTimer :remaining-time="remainingTime" />
+            <AuctionTimer
+              :remaining-time="remainingTime"
+              :auction-status="auctionStatus"
+            />
 
             <Description :description="description" :max-chars="800" />
           </v-row>
@@ -42,7 +49,9 @@
             :current-bid-buyer-id="currentBidBuyerId ?? 0"
             :min-increment="minIncrement"
             :auction-id="auctionId"
+            :auction-status="auctionStatus"
             :is-seller="isSeller"
+            :has-bids="bids.length > 0"
             @refresh-auction-details="refreshAuction"
           />
 
@@ -80,6 +89,7 @@ import SellerCard from "@/components/auctions/details/SellerCard.vue";
 import MainCard from "@/components/common/MainCard.vue";
 import type { Bid } from "~/interfaces/bid";
 import type { UserSellerData } from "~/interfaces/user";
+import type { AuctionStatus } from "~/stores/enum";
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -97,6 +107,7 @@ const props = defineProps({
   },
   showBackButton: { type: Boolean, default: true },
   auctionId: { type: Number, required: true },
+  auctionStatus: { type: Number, required: true },
 });
 
 const reviewStore = useReviewStore();
@@ -106,6 +117,7 @@ const bidsStore = useBidsStore();
 
 const isSeller = ref<boolean>(false);
 const sellerData = ref<UserSellerData>();
+const auctionStatus = ref<AuctionStatus>(props.auctionStatus);
 const bids = ref<Bid[]>(props.bids);
 
 onMounted(async () => {
@@ -153,10 +165,11 @@ watch(
   { immediate: true }
 );
 
-async function refreshAuction() {
+async function refreshAuction(status: AuctionStatus) {
   const updatedAuction = await bidsStore.getBidsByAuctionId(props.auctionId);
   if (updatedAuction) {
     bids.value = updatedAuction || [];
+    auctionStatus.value = status;
   }
 }
 </script>

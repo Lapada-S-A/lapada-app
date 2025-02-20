@@ -6,7 +6,7 @@
       height="65"
       :color="leftButtonColor"
       :elevation="elevation"
-      :disabled="leftButtonDisabled"
+      :class="{ 'btn-disabled': leftButtonDisabled }"
       @click="onLeftClick"
     >
       {{ leftButtonText }}
@@ -17,7 +17,7 @@
       height="65"
       :color="rightButtonColor"
       :elevation="elevation"
-      :disabled="rightButtonDisabled"
+      :class="{ 'btn-disabled': rightButtonDisabled }"
       @click="onRightClick"
     >
       {{ rightButtonText }}
