@@ -14,8 +14,26 @@ const ResizeObserverMock = vi.fn(() => ({
 
 vi.stubGlobal("ResizeObserver", ResizeObserverMock);
 
+vi.mock("~/stores/types", () => ({
+  useTypesStore: () => ({
+    loading: false,
+    getAllTypes: vi.fn().mockResolvedValue([{ id: 1, name: "Type 1" }]),
+    getTypeById: vi.fn().mockResolvedValue({ id: 1, name: "Type 1" }),
+  }),
+}));
+
+vi.mock("~/stores/categories", () => ({
+  useCategoriesStore: () => ({
+    loading: false,
+    getAllCategories: vi
+      .fn()
+      .mockResolvedValue([{ id: 1, name: "Category 1" }]),
+  }),
+}));
+
 vi.mock("~/stores/auctions", () => ({
   useAuctionsStore: () => ({
+    loading: false,
     getAuctionsPaginated: vi.fn().mockResolvedValue({
       items: [
         {
@@ -67,20 +85,64 @@ describe("AuctionList", () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  it("should display auctions when search query matches", async () => {
-    wrapper.vm.searchQuery.value = "Auction for Item XYZA";
+  it("should display AuctionCard components when auctions are loaded", async () => {
     await wrapper.vm.$nextTick();
-
     const auctionCards = wrapper.findAllComponents(AuctionCard);
     expect(auctionCards.length).toBeGreaterThan(0);
   });
 
-  it("should correctly filter auctions based on search query", async () => {
-    wrapper.vm.searchQuery.value = "Other";
+  it("should filter auctions based on search query", async () => {
+    wrapper.vm.searchQuery.value = "Auction for Item XYZA";
     await wrapper.vm.$nextTick();
 
-    const filteredAuctions = wrapper.vm.filteredAuctions;
-    expect(filteredAuctions.length).toBe(1);
-    expect(filteredAuctions[0].title).toBe("Other");
+    const auctionCards = wrapper.findAllComponents(AuctionCard);
+    expect(auctionCards.length).toBe(1);
+    expect(auctionCards[0].props("auction").title).toBe(
+      "Auction for Item XYZA"
+    );
+  });
+
+  it("should handle page navigation buttons correctly", async () => {
+    wrapper.vm.currentPage.value = 2;
+    wrapper.vm.totalAuctions.value = 4;
+    wrapper.vm.auctionsPerPage.value = 1;
+
+    const prevButton = wrapper.find("#previous-auctions-page-btn");
+    const nextButton = wrapper.find("#next-auctions-page-btn");
+
+    await prevButton.trigger("click");
+    expect(wrapper.vm.currentPage.value).toBe(1);
+
+    await nextButton.trigger("click");
+    expect(wrapper.vm.currentPage.value).toBe(2);
+  });
+
+  it("should disable previous button on the first page", () => {
+    wrapper.vm.currentPage.value = 1;
+    const prevButton = wrapper.find("#previous-auctions-page-btn");
+    expect(prevButton.classes()).toContain("btn-disabled");
+  });
+
+  it("should disable next button on the last page", () => {
+    wrapper.vm.currentPage.value = 18;
+    const nextButton = wrapper.find("#next-auctions-page-btn");
+    expect(nextButton.classes()).toContain("btn-disabled");
+  });
+
+  it("should display 'no auctions found' when there are no filtered auctions", async () => {
+    wrapper.vm.searchQuery.value = "Non-existing auction";
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.html()).toContain("Nenhum leilão encontrado");
+  });
+
+  it("should navigate to 'create auction' page when button is clicked", async () => {
+    await wrapper.setProps({ isSeller: true });
+    const routerSpy = vi.spyOn(wrapper.vm.$router, "push");
+
+    const createAuctionButton = wrapper.find("#create-auction-btn");
+    await createAuctionButton.trigger("click");
+
+    expect(routerSpy).toHaveBeenCalledWith("/auctions/new");
   });
 });

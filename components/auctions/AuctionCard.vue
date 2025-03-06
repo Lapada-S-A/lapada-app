@@ -22,16 +22,17 @@
             {{ type ? type.name : "" }}
           </div>
           <v-btn
+            id="send-to-details-btn"
             size="20"
             variant="text"
-            @click="$router.push(`/auctions/${auction.id}`)"
+            @click="sentToDetails()"
           >
             <v-icon size="18" color="primary">mdi-open-in-new</v-icon>
           </v-btn>
         </div>
         <div
           v-if="showStatus"
-          class="font-small font-weight-semibold"
+          class="font-small font-weight-semibold status"
           :class="`text-${statusProperties.color}`"
         >
           {{ statusProperties.name }}
@@ -41,9 +42,13 @@
       <div class="d-flex justify-space-between font-small font-weight-bold">
         <div class="d-flex align-center ga-1">
           <v-icon size="20" color="primary">mdi-clock-fast</v-icon>
-          {{
-            remainingTime > 0 ? formatSecondsToTimeString(remainingTime) : "---"
-          }}
+          <div class="time">
+            {{
+              remainingTime > 0
+                ? formatSecondsToTimeString(remainingTime)
+                : "---"
+            }}
+          </div>
         </div>
         <div
           class="d-flex align-center ga-1"
@@ -72,11 +77,16 @@ const componentProps = defineProps<{
   showStatus?: boolean;
 }>();
 const typesStore = useTypesStore();
+const router = useRouter();
 const statusProperties = getAuctionStatusProperties(
   +componentProps.auction.status
 );
 const type = ref<Type>();
 const remainingTime = ref<number>(0);
+
+const sentToDetails = () => {
+  router.push(`/auctions/${componentProps.auction.id}`);
+};
 
 function parseDateString(dateStr: string): Date {
   const [day, month, year, hour, minute, second] = dateStr

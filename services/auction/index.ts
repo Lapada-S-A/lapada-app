@@ -1,4 +1,8 @@
-import type { Auction, AuctionPaginatedResponse } from "~/interfaces/auction";
+import type {
+  Auction,
+  AuctionByBuyerPaginatedResponse,
+  AuctionPaginatedResponse,
+} from "~/interfaces/auction";
 import BaseService from "../base";
 
 export default class AuctionService extends BaseService {
@@ -25,5 +29,37 @@ export default class AuctionService extends BaseService {
 
   async update(auction: Auction, id: number): Promise<Auction | undefined> {
     return await this.request(this.RESOURCE + `update/${id}`, "PUT", auction);
+  }
+
+  async changeStatusOfAction(
+    id: number,
+    status: string
+  ): Promise<Auction | undefined> {
+    return await this.request(this.RESOURCE + `${status}/${id}`, "POST");
+  }
+
+  async getAuctionsBySeller(sellerId: number): Promise<Auction[] | undefined> {
+    return await this.request(this.RESOURCE + `seller/${sellerId}`, "GET");
+  }
+
+  async getAuctionsByBuyer(
+    buyerId: number,
+    params: {
+      [key: string]: string;
+    }
+  ): Promise<AuctionByBuyerPaginatedResponse | undefined> {
+    const query = new URLSearchParams(params).toString();
+    return await this.request(
+      this.RESOURCE + `buyer/${buyerId}?` + query,
+      "GET"
+    );
+  }
+
+  async finish(auctionId: number): Promise<Auction | undefined> {
+    return await this.request(this.RESOURCE + `finish/${auctionId}`, "PATCH");
+  }
+
+  async cancel(auctionId: number): Promise<Auction | undefined> {
+    return await this.request(this.RESOURCE + `cancel/${auctionId}`, "PATCH");
   }
 }

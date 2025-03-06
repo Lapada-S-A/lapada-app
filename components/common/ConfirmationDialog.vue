@@ -4,7 +4,7 @@
       <div
         class="d-flex font-large text-justify align-center ga-6"
       >
-        <div>{{ text }} <span class="font-weight-bold">{{ highlight }}</span>?</div>
+        <div class="line-height-normal">{{ text }} <span class="font-weight-bold">{{ highlight }}</span>?</div>
       </div>
       <div class="d-flex justify-space-between align-center mt-8">
         <v-btn
@@ -69,5 +69,9 @@ const handleNoClick = () => {
 <style scoped>
 .no-btn {
   border: 1px solid rgba(var(--v-theme-font-60)) !important;
+}
+
+.line-height-normal {
+  line-height: 18px;
 }
 </style>

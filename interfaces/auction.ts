@@ -33,3 +33,10 @@ export interface AuctionPaginatedResponse {
     total: number;
   };
 }
+export interface AuctionByBuyerPaginatedResponse {
+  auctions: Auction[];
+  page: number;
+  pages: number;
+  per_page: number;
+  total: number;
+}

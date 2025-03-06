@@ -31,6 +31,7 @@ import MainCard from "@/components/common/MainCard.vue";
 import type { User } from "~/interfaces/user";
 
 const userStore = useUserStore();
+const snackBarStore = useSnackbarStore();
 
 onMounted(async () => {
   await userStore.getUserById(userStore.currentUser!.id!);
@@ -39,6 +40,7 @@ onMounted(async () => {
 async function updateUser(user: User) {
   if (user) {
     await userStore.updateUser(user);
+    snackBarStore.showSnackbar("success", "Informação alterada com sucesso!");
   }
 }
 </script>

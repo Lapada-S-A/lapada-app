@@ -14,7 +14,11 @@
           <div class="font-title font-weight-bold">{{ name }}</div>
           <div class="d-flex align-center mt-n1">
             <v-icon color="warning">mdi-star</v-icon>
-            <span class="mt-1 ml-1 font-weight-semibold">{{ rating }}</span>
+            <span class="mt-0 ml-1 font-weight-semibold">{{
+              rating.average_rating != "0"
+                ? rating.average_rating
+                : "Sem avaliações"
+            }}</span>
           </div>
           <div class="">+{{ auctionsCount }} leilões desde {{ since }}</div>
         </div>
@@ -26,9 +30,17 @@
   </div>
 </template>
 <script setup lang="ts">
+import type { AverageRating } from "~/interfaces/review";
 const props = defineProps({
   name: { type: String, required: true },
-  rating: { type: Number, required: true },
+  rating: {
+    type: Object as () => AverageRating,
+    required: true,
+    default: () => ({
+      average_rating: 0,
+      seller_id: 0,
+    }),
+  },
   auctionsCount: { type: Number, required: true },
   since: { type: Number, required: true },
 });

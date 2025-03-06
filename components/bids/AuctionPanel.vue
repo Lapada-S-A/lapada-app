@@ -4,7 +4,7 @@
     rounded="0"
     elevation="0"
     :color="isOpened ? 'primary' : 'primary-60'"
-    height="72"
+    height="80"
   >
     <AuctionPanelTitle :auction="auction" :is-opened="isOpened" />
     <AuctionPanelText :auction="auction" />

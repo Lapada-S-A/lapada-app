@@ -11,6 +11,7 @@
         @update:status-selected="(event) => (auctionStatusIdSelected = event)"
       />
       <v-btn
+        id="create-auction-btn"
         class="btn btn-primary"
         width="160"
         height="40"
@@ -106,6 +107,7 @@ const componentProps = defineProps<{ isSeller?: boolean }>();
 const auctionsStore = useAuctionsStore();
 const categoriesStore = useCategoriesStore();
 const typesStore = useTypesStore();
+const userStore = useUserStore();
 const auctions = ref<Auction[]>([]);
 const auctionStatusIdSelected = ref<AuctionStatus>();
 const auctionsPerPage = ref<number>(18);
@@ -131,9 +133,13 @@ const filteredAuctions = computed(() => {
     (auction: Auction) =>
       auction.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
       (!componentProps.isSeller
-        ? auction.status.toString() === AuctionStatus.OPEN.toString()
-        : true)
+        ? auction.status === AuctionStatus.OPEN
+        : true) &&
+      (componentProps.isSeller
+        ? auction.seller_id === userStore.currentUser?.id
+        : auction.seller_id !== userStore.currentUser?.id)
   );
+
   if (auctionStatusIdSelected.value) {
     filtered = filtered.filter(
       (auction: Auction) => +auction.status === auctionStatusIdSelected.value

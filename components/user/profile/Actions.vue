@@ -3,16 +3,21 @@
     <v-btn
       v-for="(button, index) in buttons"
       :key="index"
-      :class="button.class"
+      :class="[button.class, { 'btn-disabled': button.disabled }]"
       :height="button.height"
       :width="button.width"
       :prepend-icon="button.icon"
-      :disabled="button.disabled"
       @click="button.click"
     >
       {{ button.text }}
     </v-btn>
-    <ChangePasswordDialog ref="changePasswordDialog" />
+    <ChangePasswordDialog v-model="changePasswordDialog" />
+
+    <PromoteToSellerDialog
+      v-model="promoterToSellerDialog"
+      @confirmed="promoterToSeller()"
+    />
+
     <CommonConfirmationDialog
       v-model="confirmDeleteAccount"
       text="Você tem certeza que deseja"
@@ -25,10 +30,12 @@
 <script setup lang="ts">
 import type { User } from "~/interfaces/user";
 import ChangePasswordDialog from "./ChangePasswordDialog.vue";
+import PromoteToSellerDialog from "./PromoteToSellerDialog.vue";
 import { UserTypes } from "~/stores/enum";
 
 const userStore = useUserStore();
-const changePasswordDialog = ref();
+const changePasswordDialog = ref<boolean>(false);
+const promoterToSellerDialog = ref<boolean>(false);
 const confirmDeleteAccount = ref<boolean>(false);
 const router = useRouter();
 
@@ -43,7 +50,7 @@ const buttons = ref([
     text: "Tornar-se vendedor",
     disabled: userStore.currentUser?.type_user === UserTypes.Seller,
     click: () => {
-      promoterToSeller();
+      promoterToSellerDialog.value = true;
     },
   },
   {
@@ -54,7 +61,7 @@ const buttons = ref([
     text: "Alterar senha",
     disabled: false,
     click: () => {
-      changePasswordDialog.value.showDialog = true;
+      changePasswordDialog.value = true;
     },
   },
   {

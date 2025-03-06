@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="showDialog" opacity="0.4" max-width="500" persistent>
+  <v-dialog v-model="show" opacity="0.4" max-width="500" persistent>
     <v-card class="rounded-lg pa-4">
       <div>
         <v-card-title class="d-flex justify-space-between align-center">
@@ -49,6 +49,7 @@
           placeholder="Nova senha"
           :type="newPasswordVisible ? 'text' : 'password'"
           required
+          :error-messages="newPasswordError"
         >
           <template #append-inner>
             <v-icon
@@ -74,6 +75,7 @@
           placeholder="Confirmar senha"
           :type="confirmPasswordVisible ? 'text' : 'password'"
           required
+          :error-messages="confirmPasswordError"
         >
           <template #append-inner>
             <v-icon
@@ -112,9 +114,24 @@
 </template>
 
 <script setup lang="ts">
+const emit = defineEmits(["update:modelValue"]);
+const props = defineProps({
+  parentShow: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const userStore = useUserStore();
 const snackBarStore = useSnackbarStore();
-const showDialog = ref(false);
+
+const show = computed({
+  get: () => props.parentShow,
+  set: (value) => {
+    emit("update:modelValue", value);
+  },
+});
+
 const currentPassword = ref();
 const newPassword = ref();
 const confirmPassword = ref();
@@ -122,6 +139,9 @@ const confirmPassword = ref();
 const currentPasswordVisible = ref(false);
 const newPasswordVisible = ref(false);
 const confirmPasswordVisible = ref(false);
+
+const newPasswordError = ref<string[]>([]);
+const confirmPasswordError = ref<string[]>([]);
 
 function toggleCurrentPasswordVisibility() {
   currentPasswordVisible.value = !currentPasswordVisible.value;
@@ -136,20 +156,36 @@ function toggleConfirmPasswordVisibility() {
 }
 
 function changePassword() {
-  if (newPassword.value === confirmPassword.value) {
+  if (validatePasswords()) {
     if (userStore.currentUser?.id !== undefined) {
       userStore.updateUserPassword(newPassword.value, userStore.currentUser.id);
       snackBarStore.showSnackbar("success", "Senha alterada com sucesso!");
     }
-    showDialog.value = false;
+    show.value = false;
     reset();
-  } else {
-    snackBarStore.showSnackbar("error", "As senhas não coincidem");
   }
 }
 
+function validatePasswords() {
+  newPasswordError.value = [];
+  confirmPasswordError.value = [];
+
+  if (newPassword.value.length < 6) {
+    newPasswordError.value.push("A senha deve ter no mínimo 6 caracteres");
+  }
+
+  if (confirmPassword.value !== newPassword.value) {
+    confirmPasswordError.value.push("As senhas não coincidem");
+  }
+
+  return (
+    newPasswordError.value.length === 0 &&
+    confirmPasswordError.value.length === 0
+  );
+}
+
 function cancel() {
-  showDialog.value = false;
+  show.value = false;
   reset();
 }
 
@@ -157,11 +193,9 @@ function reset() {
   currentPassword.value = null;
   newPassword.value = null;
   confirmPassword.value = null;
+  newPasswordError.value = [];
+  confirmPasswordError.value = [];
 }
-
-defineExpose({
-  showDialog,
-});
 </script>
 
 <style scoped>

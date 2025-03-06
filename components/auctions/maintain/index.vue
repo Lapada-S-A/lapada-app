@@ -21,7 +21,7 @@
           class="btn btn-secondary"
           height="37"
           width="120"
-          @click="$router.push('/auctions/my-auctions')"
+          @click="$router.back()"
           >Cancelar</v-btn
         >
         <v-btn
@@ -61,6 +61,7 @@ const componentProps = defineProps<{ edit: boolean; auction?: Auction }>();
 const router = useRouter();
 const auctionStore = useAuctionsStore();
 const snackBarStore = useSnackbarStore();
+const userStore = useUserStore();
 const auction = toRef(componentProps.auction);
 const validate = ref<boolean>(false);
 const specificationValidation = ref<boolean>(false);
@@ -117,6 +118,7 @@ function changeValidate() {
 
 function updateAuctionSpecification() {
   if (auction.value && specification.value) {
+    auction.value.seller_id = userStore.currentUser!.id!;
     auction.value.title = specification.value.title!;
     auction.value.description = specification.value.description!;
     auction.value.min_increment = specification.value.min_increment!;
