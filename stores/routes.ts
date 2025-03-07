@@ -34,6 +34,7 @@ export const useRoutesStore = defineStore(
         menu: true,
       },
       { icon: "mdi-forum", label: "Conversas", to: "/chats", menu: true },
+      { label: "Troca de mensagens", to: "/chats/[id]", menu: false },
     ];
 
     const routesByUserType: RoutesByUserType = {

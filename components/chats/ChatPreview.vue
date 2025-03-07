@@ -2,6 +2,7 @@
   <div
     class="bg-primary-60 py-5 px-6 d-flex justify-space-between align-center cursor-pointer preview"
     :class="{ 'border-b-md border-font-60': !isLastChat, shadow: isLastChat }"
+    @click="$router.push(`/chats/${chat.id}`)"
   >
     <div class="d-flex">
       <div

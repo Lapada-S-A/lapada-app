@@ -177,7 +177,7 @@ async function refreshAuction(status: AuctionStatus) {
 <style scoped>
 .v-btn--variant-plain {
   padding: 0 !important;
-  opacity: 80%;
+  opacity: 1 !important;
 }
 
 .text-bid {
