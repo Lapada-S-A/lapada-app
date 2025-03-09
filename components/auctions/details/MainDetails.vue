@@ -49,6 +49,7 @@
               width="320"
               color="primary"
               elevation="1"
+              @click="createChatWithBuyer"
             >
               Falar com comprador
             </v-btn>
@@ -82,7 +83,6 @@
 
 <script setup lang="ts">
 import CreateBidDialog from "@/components/auctions/details/CreateBidDialog.vue";
-import { useUserStore } from "@/stores/user";
 import ConfirmationDialog from "~/components/common/ConfirmationDialog.vue";
 import DualButton from "~/components/common/DualButton.vue";
 import { AuctionStatus, UserTypes } from "~/stores/enum";
@@ -106,10 +106,12 @@ const emits = defineEmits(["refresh-auction-details"]);
 const currentBid = ref<string>(props.currentBid);
 const auctionStatus = ref<AuctionStatus>(props.auctionStatus);
 const { currentBidBuyerId, isSeller, hasBids } = toRefs(props);
+const router = useRouter();
 
 const userStore = useUserStore();
 const auctionStore = useAuctionsStore();
 const snackbarStore = useSnackbarStore();
+const chatsStore = useChatsStore();
 const currentUser = userStore.currentUser;
 
 const leftButtonText = computed(() => {
@@ -220,6 +222,29 @@ const message = computed(() => {
       return "";
   }
 });
+
+async function createChatWithBuyer() {
+  let chatId;
+  await chatsStore.getChatsByUserId(userStore.currentUser!.id!);
+  const chat = chatsStore.chats.find((chat) =>
+    chat.users.includes(currentBidBuyerId.value)
+  );
+  if (chat === undefined) {
+    const newChat = await chatsStore.addChat([
+      currentBidBuyerId.value,
+      userStore.currentUser!.id!,
+    ]);
+    if (newChat) {
+      chatId = newChat?.chat_id;
+    }
+  } else {
+    chatId = chat.chat_id;
+  }
+
+  if (chatId !== undefined) {
+    router.push(`/chats/${chatId}`);
+  }
+}
 </script>
 
 <style scoped>

@@ -76,7 +76,7 @@
         </table>
       </div>
       <div v-if="hasWinnerBid" class="ml-10">
-        <SellerActions />
+        <SellerActions :seller-id="auction.seller_id" />
       </div>
     </div>
   </v-expansion-panel-text>

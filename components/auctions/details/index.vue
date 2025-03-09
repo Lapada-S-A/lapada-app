@@ -151,7 +151,7 @@ onMounted(async () => {
 });
 
 const currentBidBuyerId = computed(() => {
-  return bids.value?.find((bid) => bid.bid_status === BidStatus.ACTIVE)
+  return bids.value?.find((bid) => bid.bid_status !== BidStatus.EXPIRED)
     ?.buyer_id;
 });
 

@@ -4,6 +4,7 @@ import AuctionService from "~/services/auction";
 import AuthService from "~/services/auth";
 import BidService from "~/services/bid";
 import CategoryService from "~/services/category";
+import ChatService from "~/services/chat";
 import DocumentService from "~/services/document";
 import ReviewService from "~/services/review";
 import TypeService from "~/services/type";
@@ -32,6 +33,7 @@ export default defineNuxtPlugin(() => {
     auth: new AuthService(apiFetcher),
     bid: new BidService(apiFetcher),
     category: new CategoryService(apiFetcher),
+    chat: new ChatService(apiFetcher),
     document: new DocumentService(apiFetcher),
     type: new TypeService(apiFetcher),
     user: new UserService(apiFetcher),

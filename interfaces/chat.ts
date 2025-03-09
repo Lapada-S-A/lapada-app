@@ -1,12 +1,13 @@
 export interface Chat {
-  id: number;
-  users: { id: number; name: string }[];
+  chat_id: number;
+  users: number[];
   last_message: Message;
 }
 
 export interface Message {
-  id: number;
+  id?: number;
+  chat_id: number;
   sender_id: number;
   content: string;
-  date: string;
+  date?: string;
 }

@@ -1,8 +1,9 @@
 <template>
   <div
+    v-if="receiver"
     class="bg-primary-60 py-5 px-6 d-flex justify-space-between align-center cursor-pointer preview"
     :class="{ 'border-b-md border-font-60': !isLastChat, shadow: isLastChat }"
-    @click="$router.push(`/chats/${chat.id}`)"
+    @click="$router.push(`/chats/${chat.chat_id}`)"
   >
     <div class="d-flex">
       <div
@@ -10,11 +11,11 @@
       >
         {{ receiver ? getUserInitials(receiver.name).toUpperCase() : "-" }}
       </div>
-      <div class="ml-4">
+      <div class="ml-4 d-flex flex-column justify-center">
         <div class="font-subtitle font-weight-bold">
           {{ receiver ? receiver.name : "-" }}
         </div>
-        <div class="font-normal text-font-60">
+        <div v-if="chat.last_message" class="font-normal text-font-60">
           {{
             chat.last_message.sender_id === userStore.currentUser!.id
               ? "Você"
@@ -34,9 +35,17 @@ import type { Chat } from "~/interfaces/chat";
 
 const componentProps = defineProps<{ chat: Chat; isLastChat: boolean }>();
 const userStore = useUserStore();
-const receiver = componentProps.chat.users.find(
-  (user) => user.id !== userStore.currentUser?.id
-);
+const receiver = ref<{ id: number; name: string }>();
+
+onBeforeMount(async () => {
+  const receiverId = componentProps.chat.users.find(
+    (userId) => userId !== userStore.currentUser?.id
+  )!;
+  const response = await userStore.getClientById(receiverId);
+  if (response) {
+    receiver.value = { id: receiverId, name: response.username };
+  }
+});
 </script>
 
 <style scoped>
