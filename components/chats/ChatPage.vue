@@ -1,7 +1,11 @@
 <template>
   <CommonMainCard>
-    <div class="bg-primary-60 h-100 rounded d-flex flex-column justify-space-between ">
-      <div class="bg-primary rounded-t py-3 pl-4 pr-8 d-flex align-center ga-4 shadow">
+    <div
+      class="bg-primary-60 h-100 rounded d-flex flex-column justify-space-between"
+    >
+      <div
+        class="bg-primary rounded-t py-3 pl-4 pr-8 d-flex align-center ga-4 shadow"
+      >
         <v-icon size="24" class="cursor-pointer" @click="$router.back()"
           >mdi-arrow-left</v-icon
         >
@@ -56,158 +60,50 @@
 
 <script setup lang="ts">
 const userStore = useUserStore();
-const messages = [
-  {
-    id: 1,
-    sender_id: 1,
-    content: "olá, bom dia",
-    date: "22-02-2025-03-00-00",
-  },
-  {
-    id: 2,
-    sender_id: 2,
-    content: "olá",
-    date: "22-02-2025-03-01-00",
-  },
-  {
-    id: 3,
-    sender_id: 1,
-    content: "vi que você fez o maior lance",
-    date: "22-02-2025-03-01-34",
-  },
-  {
-    id: 4,
-    sender_id: 1,
-    content: "onde você mora?",
-    date: "22-02-2025-03-02-45",
-  },
-  {
-    id: 5,
-    sender_id: 2,
-    content: "Eu moro em São Paulo. E você?",
-    date: "22-02-2025-03-03-10",
-  },
-  {
-    id: 6,
-    sender_id: 1,
-    content: "Eu sou do Rio de Janeiro.",
-    date: "22-02-2025-03-03-50",
-  },
-  {
-    id: 7,
-    sender_id: 1,
-    content: "Você já fez alguma compra no site?",
-    date: "22-02-2025-03-04-15",
-  },
-  {
-    id: 8,
-    sender_id: 2,
-    content: "Sim, comprei um item semana passada. Foi bem rápido!",
-    date: "22-02-2025-03-04-55",
-  },
-  {
-    id: 9,
-    sender_id: 1,
-    content: "Que bom! Eu também comprei uma coisa ontem.",
-    date: "22-02-2025-03-05-25",
-  },
-  {
-    id: 10,
-    sender_id: 2,
-    content: "Que legal, o que você comprou?",
-    date: "22-02-2025-03-05-55",
-  },
-  {
-    id: 11,
-    sender_id: 1,
-    content: "Comprei um livro. Estou começando a ler mais.",
-    date: "22-02-2025-03-06-30",
-  },
-  {
-    id: 12,
-    sender_id: 2,
-    content: "Ah, eu adoro ler também! Que tipo de livros você gosta?",
-    date: "22-02-2025-03-07-00",
-  },
-  {
-    id: 13,
-    sender_id: 1,
-    content: "Gosto de romances históricos. E você?",
-    date: "22-02-2025-03-07-30",
-  },
-  {
-    id: 14,
-    sender_id: 2,
-    content: "Eu gosto de ficção científica, mas também leio romances.",
-    date: "22-02-2025-03-08-00",
-  },
-  {
-    id: 15,
-    sender_id: 1,
-    content: "Ficção científica é ótimo, sempre me fascina!",
-    date: "22-02-2025-03-08-30",
-  },
-  {
-    id: 16,
-    sender_id: 2,
-    content:
-      "Sim, é incrível como eles conseguem imaginar futuros tão complexos.",
-    date: "22-02-2025-03-09-00",
-  },
-  {
-    id: 17,
-    sender_id: 1,
-    content: "Concordo! É impressionante a criatividade desses autores.",
-    date: "22-02-2025-03-09-30",
-  },
-  {
-    id: 18,
-    sender_id: 2,
-    content:
-      "Bom, foi ótimo conversar com você. Precisamos marcar algo em breve.",
-    date: "22-02-2025-03-10-00",
-  },
-  {
-    id: 19,
-    sender_id: 1,
-    content: "Com certeza! Vamos marcar sim. Até logo!",
-    date: "22-02-2025-03-10-30",
-  },
-];
-
-const sortedMessages = ref(
-  [...messages].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  )
-);
-
 const newMessage = ref("");
-
 const messagesContainer = ref<HTMLElement | null>(null);
+const sortedMessages = ref<
+  { id: number; sender_id: number; content: string; date: string }[]
+>([]);
+let ws: WebSocket;
 
 onMounted(() => {
-  if (messagesContainer.value) {
-    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-  }
+  ws = new WebSocket("ws://localhost:5000");
+
+  ws.onmessage = (event) => {
+    const receivedMessage = {
+      id: sortedMessages.value.length + 1,
+      sender_id: 2,
+      content: event.data,
+      date: convertDate(new Date()),
+    };
+    sortedMessages.value.push(receivedMessage);
+    nextTick(() => {
+      if (messagesContainer.value) {
+        messagesContainer.value.scrollTop =
+          messagesContainer.value.scrollHeight;
+      }
+    });
+  };
 });
 
-const sendMessage = async () => {
+const sendMessage = () => {
   if (newMessage.value.trim()) {
     const newMsg = {
-      id: messages.length + 1,
+      id: sortedMessages.value.length + 1,
       sender_id: userStore.currentUser!.id!,
       content: newMessage.value,
       date: convertDate(new Date()),
     };
-    messages.push(newMsg);
-    sortedMessages.value = [...messages].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-    await nextTick();
+    sortedMessages.value.push(newMsg);
+    // ws.send(newMessage.value);
     newMessage.value = "";
-    if (messagesContainer.value) {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    }
+    nextTick(() => {
+      if (messagesContainer.value) {
+        messagesContainer.value.scrollTop =
+          messagesContainer.value.scrollHeight;
+      }
+    });
   }
 };
 
@@ -218,7 +114,6 @@ const convertDate = (date: Date) => {
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
   const seconds = String(date.getSeconds()).padStart(2, "0");
-
   return `${day}-${month}-${year}-${hours}-${minutes}-${seconds}`;
 };
 </script>
