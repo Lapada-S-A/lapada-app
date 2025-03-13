@@ -1,8 +1,8 @@
 import "@/assets/scss/vuetify/main.scss";
 import "@mdi/font/css/materialdesignicons.css";
 import { createVuetify } from "vuetify";
-import { pt } from 'vuetify/locale';
-import { VFileUpload } from 'vuetify/labs/VFileUpload'
+import { pt } from "vuetify/locale";
+import { VFileUpload } from "vuetify/labs/VFileUpload";
 
 export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
@@ -10,7 +10,7 @@ export default defineNuxtPlugin((app) => {
       defaultSet: "mdi",
     },
     locale: {
-      locale: 'pt', 
+      locale: "pt",
       messages: { pt },
     },
     theme: {
@@ -29,7 +29,9 @@ export default defineNuxtPlugin((app) => {
             success: "#6BB851",
             error: "#DA5E5E",
             warning: "#FDBB41",
-            info: "#29B2B0"
+            info: "#29B2B0",
+            "table-row-even": "#F8F8F8",
+            "table-row-odd": "#FFFFFF",
           },
         },
       },
@@ -44,8 +46,8 @@ export default defineNuxtPlugin((app) => {
       },
     },
     components: {
-      VFileUpload
-    }
+      VFileUpload,
+    },
   });
   app.vueApp.use(vuetify);
 });

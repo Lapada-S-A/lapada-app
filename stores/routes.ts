@@ -81,13 +81,13 @@ export const useRoutesStore = defineStore(
         {
           icon: "mdi-tag-multiple",
           label: "Tipos de leilões",
-          to: "/auction-types",
+          to: "/types",
           menu: true,
         },
         {
           icon: "mdi-shape",
           label: "Categorias de itens",
-          to: "/item-categories",
+          to: "/categories",
           menu: true,
         },
       ],

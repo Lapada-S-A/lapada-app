@@ -48,7 +48,7 @@ const buttons = ref([
     width: "200",
     icon: "mdi-badge-account",
     text: "Tornar-se vendedor",
-    disabled: userStore.currentUser?.type_user === UserTypes.Seller,
+    disabled: userStore.currentUser?.type_user !== UserTypes.Buyer,
     click: () => {
       promoterToSellerDialog.value = true;
     },
