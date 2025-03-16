@@ -1,12 +1,22 @@
 <template>
   <v-dialog opacity="0.4" max-width="500" persistent>
     <template #activator="{ props: activatorProps }">
-      <v-btn class="btn btn-secondary" :class="{'btn-disabled': !isEnabled}" width="225" v-bind="activatorProps">
-        <template #prepend>
-          <v-icon class="mr-2">mdi-star</v-icon>
-        </template>
-        <div>Avaliar vendedor</div>
-      </v-btn>
+      <div>
+        <v-btn
+          class="btn btn-secondary"
+          :class="{ 'btn-disabled': !isEnabled }"
+          width="225"
+          v-bind="activatorProps"
+        >
+          <template #prepend>
+            <v-icon class="mr-2">mdi-star</v-icon>
+          </template>
+          <div>Avaliar vendedor</div>
+        </v-btn>
+        <v-tooltip v-if="!isEnabled" activator="parent">
+          Você já avaliou esse vendedor
+        </v-tooltip>
+      </div>
     </template>
 
     <template #default="{ isActive }">
@@ -56,7 +66,7 @@
             class="btn btn-primary px-6 ml-2"
             @click="
               isActive.value = false;
-              sendReview;
+              sendReview();
             "
             >Confirmar</v-btn
           >
@@ -68,13 +78,25 @@
 
 <script setup lang="ts">
 const emit = defineEmits(["review"]);
-const componentProps = defineProps<{ sellerId: number, isEnabled: boolean}>();
+const componentProps = defineProps<{
+  sellerId: number;
+  auctionId: number;
+}>();
 const userStore = useUserStore();
 const reviewStore = useReviewStore();
 const snackbarStore = useSnackbarStore();
 const rating = ref(0);
 const hoverRating = ref(0);
-const isEnabled = ref(componentProps.isEnabled)
+const isEnabled = ref<boolean>(true);
+
+onMounted(async () => {
+  const response = await reviewStore.getReviewOfAuction(
+    componentProps.auctionId
+  );
+  if (response && Object.keys(response).length > 0) {
+    isEnabled.value = false;
+  }
+});
 
 const setRating = (starIndex: number) => {
   rating.value = starIndex;
@@ -86,6 +108,7 @@ const sendReview = async () => {
     comment: "",
     buyer_id: userStore.currentUser!.id!,
     seller_id: componentProps.sellerId,
+    auction_id: componentProps.auctionId,
   });
   if (response)
     snackbarStore.showSnackbar(

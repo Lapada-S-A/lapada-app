@@ -6,14 +6,14 @@
       </template>
       <div>Falar com vendedor</div>
     </v-btn>
-    <SellerReviewDialog :seller-id="sellerId" :is-enabled="true"/>
+    <SellerReviewDialog :seller-id="sellerId" :auction-id="auctionId"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import SellerReviewDialog from "./SellerReviewDialog.vue";
 
-const componentProps = defineProps<{ sellerId: number }>();
+const componentProps = defineProps<{ auctionId: number, sellerId: number }>();
 const router = useRouter();
 const chatsStore = useChatsStore();
 const userStore = useUserStore();

@@ -97,7 +97,7 @@ const fetchAuctions = async () => {
   );
   if (response) {
     auctionResponses.value = response.items;
-    totalPages.value = response.pages;
+    totalPages.value = response.pagination.pages;
   }
 };
 

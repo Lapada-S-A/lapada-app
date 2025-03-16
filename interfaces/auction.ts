@@ -47,14 +47,8 @@ export interface AuctionPaginatedResponse {
     page: number;
     per_page: number;
     total: number;
+    pages: number
   };
-}
-export interface AuctionByBuyerPaginatedResponse {
-  items: AuctionResponse[];
-  page: number;
-  pages: number;
-  per_page: number;
-  total: number;
 }
 
 export interface AuctionByIdResponse {

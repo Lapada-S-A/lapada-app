@@ -20,6 +20,10 @@ export default class ReviewService extends BaseService {
     return await this.request(this.RESOURCE + `list/buyer/${buyerId}`, "GET");
   }
 
+  async getReviewOfAuction(auctionId: number): Promise<Review | undefined> {
+    return await this.request(this.RESOURCE + `list/auction/${auctionId}`, "GET");
+  }
+
   async getAllReviews(): Promise<Review[] | undefined> {
     return await this.request(this.RESOURCE + `list`, "GET");
   }

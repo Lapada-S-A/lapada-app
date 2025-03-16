@@ -1,6 +1,5 @@
 import type {
   Auction,
-  AuctionByBuyerPaginatedResponse,
   AuctionByIdResponse,
   AuctionPaginatedResponse,
 } from "~/interfaces/auction";
@@ -94,7 +93,7 @@ export const useAuctionsStore = defineStore("auctions", () => {
     params: {
       [key: string]: string;
     }
-  ): Promise<AuctionByBuyerPaginatedResponse | undefined> => {
+  ): Promise<AuctionPaginatedResponse | undefined> => {
     loading.value = true;
     try {
       return await $api.auction.getAuctionsByBuyer(buyerId, params);
@@ -156,7 +155,7 @@ export const useAuctionsStore = defineStore("auctions", () => {
       loading.value = false;
     }
   };
-  
+
   const rejectAuction = async (
     auctionId: number
   ): Promise<Auction | undefined> => {
@@ -183,6 +182,6 @@ export const useAuctionsStore = defineStore("auctions", () => {
     finishAuction,
     cancelAuction,
     approveAuction,
-    rejectAuction
+    rejectAuction,
   };
 });

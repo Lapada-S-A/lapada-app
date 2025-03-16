@@ -44,6 +44,16 @@ export const useReviewStore = defineStore("review", () => {
     }
   };
 
+  const getReviewOfAuction = async (auctionId: number): Promise<Review | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.review.getReviewOfAuction(auctionId);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const getAllReviews = async (): Promise<Review[] | undefined> => {
     loading.value = true;
     try {
@@ -79,6 +89,7 @@ export const useReviewStore = defineStore("review", () => {
     getAverageRatingOfSeller,
     getReviewsOfSeller,
     getReviewsOfBuyer,
+    getReviewOfAuction,
     getAllReviews,
     deleteReview,
     updateReview,
