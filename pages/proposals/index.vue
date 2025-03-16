@@ -1,6 +1,6 @@
 <template>
   <div class="h-100">
-    <AuctionList />
+    <AuctionList :is-curator="true" />
   </div>
 </template>
 

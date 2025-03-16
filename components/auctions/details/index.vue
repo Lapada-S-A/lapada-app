@@ -99,7 +99,7 @@ const props = defineProps({
   currentBid: { type: String, required: true },
   minIncrement: { type: String, required: true },
   remainingTime: { type: Number, required: true },
-  images: { type: Array as () => string[], required: true },
+  images: { type: Array as () => Buffer[], required: true },
   description: { type: String, required: true },
   bids: {
     type: Array as () => Bid[],
@@ -121,16 +121,16 @@ const auctionStatus = ref<AuctionStatus>(props.auctionStatus);
 const bids = ref<Bid[]>(props.bids);
 
 onMounted(async () => {
-  const auction = await auctionsStore.getAuctionById(props.auctionId);
+  const auctionByIdResponse = await auctionsStore.getAuctionById(props.auctionId);
 
-  if (auction?.seller_id !== undefined) {
+  if (auctionByIdResponse?.auction.seller_id !== undefined) {
     const allAuctions = await auctionsStore.getAuctionsBySeller(
-      auction.seller_id
+      auctionByIdResponse.auction.seller_id
     );
-    isSeller.value = auction.seller_id === userStore.currentUser?.id;
-    const sellerInfo = await userStore.getClientById(auction.seller_id);
+    isSeller.value = auctionByIdResponse.auction.seller_id === userStore.currentUser?.id;
+    const sellerInfo = await userStore.getClientById(auctionByIdResponse.auction.seller_id);
     const sellerRating = await reviewStore.getAverageRatingOfSeller(
-      auction.seller_id
+      auctionByIdResponse.auction.seller_id
     );
 
     if (sellerInfo !== undefined) {

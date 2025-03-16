@@ -82,10 +82,13 @@ const bidsStore = useBidsStore();
 const auctionStore = useAuctionsStore();
 const snackBarStore = useSnackbarStore();
 
-const auction = ref(await auctionStore.getAuctionById(props.auctionId));
+const auction = ref();
 
 const fetchAuction = async () => {
-  auction.value = await auctionStore.getAuctionById(props.auctionId);
+  const response = await auctionStore.getAuctionById(props.auctionId);
+  if (response) {
+    auction.value = response.auction
+  }
 };
 
 const bidRules = computed(() => [

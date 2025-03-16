@@ -4,8 +4,3 @@ export interface Header {
   sortable?: boolean;
   align?: "center" | "start" | "end" | undefined;
 }
-
-export interface Item {
-    id: number;
-    [key: string]: any;
-  }

@@ -1,7 +1,7 @@
 <template>
   <v-dialog opacity="0.4" max-width="500" persistent>
     <template #activator="{ props: activatorProps }">
-      <v-btn class="btn btn-secondary" width="225" v-bind="activatorProps">
+      <v-btn class="btn btn-secondary" :class="{'btn-disabled': !isEnabled}" width="225" v-bind="activatorProps">
         <template #prepend>
           <v-icon class="mr-2">mdi-star</v-icon>
         </template>
@@ -20,7 +20,7 @@
               variant="plain"
               :ripple="false"
               size="22"
-              @click="isActive.value = false;"
+              @click="isActive.value = false"
               ><v-icon> mdi-close</v-icon></v-btn
             >
           </v-card-title>
@@ -54,7 +54,10 @@
 
           <v-btn
             class="btn btn-primary px-6 ml-2"
-            @click="isActive.value = false"
+            @click="
+              isActive.value = false;
+              sendReview;
+            "
             >Confirmar</v-btn
           >
         </v-card-actions>
@@ -64,11 +67,32 @@
 </template>
 
 <script setup lang="ts">
+const emit = defineEmits(["review"]);
+const componentProps = defineProps<{ sellerId: number, isEnabled: boolean}>();
+const userStore = useUserStore();
+const reviewStore = useReviewStore();
+const snackbarStore = useSnackbarStore();
 const rating = ref(0);
 const hoverRating = ref(0);
+const isEnabled = ref(componentProps.isEnabled)
 
 const setRating = (starIndex: number) => {
   rating.value = starIndex;
+};
+
+const sendReview = async () => {
+  const response = await reviewStore.createReview({
+    rate: rating.value,
+    comment: "",
+    buyer_id: userStore.currentUser!.id!,
+    seller_id: componentProps.sellerId,
+  });
+  if (response)
+    snackbarStore.showSnackbar(
+      "success",
+      "Avaliação de vendedor enviada com successo!"
+    );
+  emit("review");
 };
 </script>
 

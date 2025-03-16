@@ -22,7 +22,14 @@ export default class UserService extends BaseService {
     return await this.request(`auth/user/promote/${userId}`, "PATCH");
   }
 
-  async updatePassword( password: string, userId: number,): Promise<User | undefined> {
-    return await this.request(`auth/user/update/${userId}`, "PUT", { password });
+  async updatePassword(
+    currentPassword: string,
+    password: string,
+    userId: number
+  ): Promise<User | undefined> {
+    return await this.request(`auth/user/change-password/${userId}`, "PATCH", {
+      current_password: currentPassword,
+      new_password: password,
+    });
   }
 }

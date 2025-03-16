@@ -3,7 +3,7 @@
     <div class="d-flex py-8 px-4">
       <div class="mr-16">
         <v-img
-          src="https://picsum.photos/210/245"
+          :src="auctionImage!"
           class="mb-1 rounded cursor-pointer"
           height="210"
           width="245"
@@ -84,12 +84,14 @@
 
 <script setup lang="ts">
 import SellerActions from "./SellerActions.vue";
-import type { Auction } from "~/interfaces/auction";
+import type { Auction, AuctionPhotosResponse } from "~/interfaces/auction";
 import type { Bid } from "~/interfaces/bid";
 import { BidStatus } from "~/stores/enum";
+import { Buffer } from "buffer";
 
 const componentProps = defineProps<{
   auction: Auction;
+  photo: AuctionPhotosResponse;
 }>();
 const userStore = useUserStore();
 const bidsStore = useBidsStore();
@@ -119,6 +121,17 @@ onMounted(async () => {
 
 const hasWinnerBid = computed(() => {
   return bids.value.find((bid) => bid.bid_status === BidStatus.WINNER);
+});
+
+const auctionImage = computed(() => {
+  if (componentProps.photo) {
+    const base64String = Buffer.from(
+      componentProps.photo.pdfData.data as unknown as string,
+      "binary"
+    ).toString("base64");
+    return `data:image/png;base64,${base64String}`;
+  }
+  return null;
 });
 </script>
 

@@ -8,5 +8,15 @@ export interface Submission {
     id: number;
     name: string;
   };
-  documents: File[];
+  documents: {
+    id: number;
+    name: string;
+    pdfData: {
+      type: string;
+      data: Buffer;
+    };
+    createdAt: string;
+    clientId: number;
+    isIdentityDocument: boolean;
+  }[];
 }

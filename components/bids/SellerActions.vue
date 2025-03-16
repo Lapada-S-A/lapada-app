@@ -6,7 +6,7 @@
       </template>
       <div>Falar com vendedor</div>
     </v-btn>
-    <SellerReviewDialog />
+    <SellerReviewDialog :seller-id="sellerId" :is-enabled="true"/>
   </div>
 </template>
 

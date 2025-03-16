@@ -63,7 +63,7 @@
           for="birth-date-field"
           class="text-font-100 font-weight-semibold mb-2 ml-1"
         >
-          Data de Nascimento
+          Data de nascimento
         </v-label>
         <v-menu
           v-model="dateMenu"
@@ -79,7 +79,7 @@
               id="birth-date-field"
               :value="formatDatePickerDate(personalInfo.birthDate)"
               readonly
-              placeholder="Data de Nascimento"
+              placeholder="Data de nascimento"
               append-inner-icon="mdi-calendar-month"
               clearable
               :error-messages="birthDateError"

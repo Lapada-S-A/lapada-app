@@ -7,17 +7,18 @@
     height="80"
   >
     <AuctionPanelTitle :auction="auction" :is-opened="isOpened" />
-    <AuctionPanelText :auction="auction" />
+    <AuctionPanelText :auction="auction" :photo="photo" />
   </v-expansion-panel>
 </template>
 
 <script setup lang="ts">
 import AuctionPanelTitle from "~/components/bids/AuctionPanelTitle.vue";
 import AuctionPanelText from "~/components/bids/AuctionPanelText.vue";
-import type { Auction } from "~/interfaces/auction";
+import type { Auction, AuctionPhotosResponse } from "~/interfaces/auction";
 
 defineProps<{
   auction: Auction;
+  photo: AuctionPhotosResponse;
   isOpened: boolean;
 }>();
 </script>

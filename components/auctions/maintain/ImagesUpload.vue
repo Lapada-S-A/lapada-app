@@ -8,7 +8,7 @@
     </div>
     <div class="d-flex align-center">
       <v-file-upload
-        v-model="images"
+        v-model="uploadedimages"
         max-width="75"
         max-height="75"
         browse-text=""
@@ -18,7 +18,7 @@
         multiple
         clearable
         @change="
-          images = images.slice(0, 4);
+          uploadedimages = uploadedimages.slice(0, 4);
           showErrorMessage = false;
         "
       >
@@ -49,10 +49,41 @@
 </template>
 
 <script setup lang="ts">
-const componentProps = defineProps<{ validate: boolean }>();
-const emit = defineEmits(["update:validation"]);
-const images = ref<File[]>([]);
+import type {
+  AuctionPhotos,
+  AuctionPhotosResponse,
+} from "~/interfaces/auction";
+import { Buffer } from "buffer";
+
+
+const componentProps = defineProps<{
+  validate: boolean;
+  auctionImages?: AuctionPhotosResponse[];
+}>();
+const emit = defineEmits(["update:validation", "update:images"]);
+const uploadedimages = ref<File[]>([]);
+const photos = ref<AuctionPhotos>({
+  photo1: null,
+  photo2: null,
+  photo3: null,
+  photo4: null,
+});
 const showErrorMessage = ref<boolean>(false);
+
+onMounted(() => {
+  if (componentProps.auctionImages) {
+    componentProps.auctionImages.forEach((img, index) => {
+      const base64String = Buffer.from(
+        img.pdfData.data as unknown as string,
+        "binary"
+      ).toString("base64");
+
+      const file = base64ToFile(base64String, `image${index + 1}.png`);
+
+      uploadedimages.value.push(file);
+    });
+  }
+});
 
 function getImagePreview(file: File) {
   if (file && file.type.startsWith("image/")) {
@@ -61,10 +92,31 @@ function getImagePreview(file: File) {
   return "";
 }
 
+function base64ToFile(base64String: string, fileName: string): File {
+  const byteCharacters = atob(base64String);
+  const byteArrays = new Uint8Array(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteArrays[i] = byteCharacters.charCodeAt(i);
+  }
+
+  const blob = new Blob([byteArrays], { type: "image/png" });
+  return new File([blob], fileName, { type: "image/png" });
+}
+
 watch(
   () => componentProps.validate,
   () => {
-    if (images.value.length > 0) {
+    uploadedimages.value.forEach((file, index) => {
+      photos.value[`photo${index + 1}` as keyof AuctionPhotos] = file;
+    });
+
+    const filteredPhotos = Object.fromEntries(
+      Object.entries(photos.value).filter(([_, value]) => value !== null)
+    );
+
+    if (uploadedimages.value.length > 0) {
+      emit("update:images", filteredPhotos);
       emit("update:validation", true);
     } else {
       showErrorMessage.value = true;

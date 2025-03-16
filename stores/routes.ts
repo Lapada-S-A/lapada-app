@@ -69,6 +69,7 @@ export const useRoutesStore = defineStore(
           to: "/proposals",
           menu: true,
         },
+        { label: "Detalhes de leilão", to: "/auctions/[id]", menu: false },
       ],
       [UserTypes.Administrator]: [
         ...globalRoutes,

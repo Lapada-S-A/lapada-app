@@ -32,13 +32,14 @@
       <div v-else class="d-flex flex-column justify-space-between h-100">
         <v-expansion-panels v-model="openedAuctionId" variant="accordion">
           <div
-            v-for="auction in filteredAuctions"
-            :key="auction.id"
+            v-for="auctionResponse in filteredAuctions"
+            :key="auctionResponse.auction.id"
             class="w-100 mb-1"
           >
             <AuctionPanel
-              :auction="auction"
-              :is-opened="openedAuctionId === auction.id"
+              :auction="auctionResponse.auction"
+              :photo="auctionResponse.document"
+              :is-opened="openedAuctionId === auctionResponse.auction.id"
             />
           </div>
         </v-expansion-panels>
@@ -74,14 +75,14 @@
 
 <script setup lang="ts">
 import AuctionPanel from "~/components/bids/AuctionPanel.vue";
-import type { Auction } from "~/interfaces/auction";
+import type { AuctionResponse } from "~/interfaces/auction";
 
 const componentProps = defineProps<{ statusId?: number }>();
 const typesStore = useTypesStore();
 const auctionsStore = useAuctionsStore();
 const userStore = useUserStore();
 const openedAuctionId = ref<number | null>(null);
-const auctions = ref<Auction[]>([]);
+const auctionResponses = ref<AuctionResponse[]>([]);
 const auctionsPerPage = ref<number>(10);
 const currentPage = ref<number>(1);
 const totalPages = ref<number>(1);
@@ -95,7 +96,7 @@ const fetchAuctions = async () => {
     }
   );
   if (response) {
-    auctions.value = response.auctions;
+    auctionResponses.value = response.items;
     totalPages.value = response.pages;
   }
 };
@@ -107,10 +108,10 @@ onMounted(() => {
 
 const filteredAuctions = computed(() => {
   return componentProps.statusId !== undefined
-    ? auctions.value.filter(
-        (auction: Auction) => auction.status === componentProps.statusId!
+    ? auctionResponses.value.filter(
+        (auctionResponse: AuctionResponse) => auctionResponse.auction.status === componentProps.statusId!
       )
-    : auctions.value;
+    : auctionResponses.value;
 });
 
 const isLastPage = computed(() => currentPage.value >= totalPages.value);

@@ -23,6 +23,7 @@
     <CuratorDialog
       v-model="curatorDialog"
       :info-uploaded="infosUploaded"
+      :register="true"
       @confirmed="confirmCuratorSelection"
     />
   </div>

@@ -11,13 +11,28 @@
     <div class="font-large text-font-60">
       cadastro em: {{ formatDatePickerDate(user ? user.created_at! : "") }}
     </div>
+      <div v-if="userType" class="text-primary text-center font-weight-bold mt-1">{{ userType }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { User } from "~/interfaces/user";
+import { UserTypes } from "~/stores/enum";
 
-defineProps<{ user: User | null }>();
+const props = defineProps<{ user: User | null }>();
+
+const userType = computed(() => {
+  switch (props.user?.type_user) {
+    case UserTypes.Seller:
+      return "Vendedor";
+    case UserTypes.Curator:
+      return "Curador";
+    case UserTypes.Administrator:
+      return "Administrador";
+    default:
+      return "";
+  }
+});
 </script>
 
 <style scoped>

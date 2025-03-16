@@ -1,7 +1,32 @@
 <template>
-  <div>
+  <div class="h-100">
+    <div
+      v-if="
+        !submissionsStore.loading && submissionsStore.submissions.length === 0
+      "
+      class="d-flex flex-column align-center justify-center h-100 mt-n16"
+    >
+      <v-icon class="mt-n16" size="125" color="secondary">mdi-file-remove-outline</v-icon>
+      <div
+        class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
+      >
+        Nenhuma submissão encontrada
+      </div>
+    </div>
+    <div
+      v-if="submissionsStore.loading"
+      class="d-flex h-100 justify-center align-center mt-n8"
+    >
+      <v-progress-circular
+        indeterminate
+        color="secondary"
+        size="55"
+        width="5"
+      />
+    </div>
+
     <SubmissionsSubmissionCard
-      v-for="sub in submissions"
+      v-for="sub in submissionsStore.submissions"
       :key="sub.id"
       :submission="sub"
       class="my-2"
@@ -18,14 +43,17 @@
 </template>
 
 <script setup lang="ts">
-import type { Submission } from "~/interfaces/submission";
-
 const snackbarStore = useSnackbarStore();
+const submissionsStore = useSubmissionsStore();
 const confirmDialog = ref<boolean>(false);
 const confirmText = ref<string>("");
 const confirmHighlight = ref<string>("");
 const approve = ref<boolean>(false);
 const analysedSubmissionId = ref<number>();
+
+onMounted(async () => {
+  await submissionsStore.getAllSubmissions();
+});
 
 function openConfirmationDialog(
   text: string,
@@ -40,34 +68,26 @@ function openConfirmationDialog(
   confirmDialog.value = true;
 }
 
-function confirmAction() {
+async function confirmAction() {
   const status = approve.value ? "aprovada" : "rejeitada";
   const color = approve.value ? "success" : "error";
-  submissions = submissions.filter(
-    (sub) => sub.id !== analysedSubmissionId.value
-  );
+  let response;
 
-  snackbarStore.showSnackbar(color, `A submissão foi ${status}.`);
+  if (approve.value) {
+    response = await submissionsStore.approveSubmission(
+      analysedSubmissionId.value!
+    );
+  } else {
+    response = await submissionsStore.rejectSubmission(
+      analysedSubmissionId.value!
+    );
+  }
+
+  if (response) {
+    submissionsStore.submissions = submissionsStore.submissions.filter(
+      (sub) => sub.id !== analysedSubmissionId.value
+    );
+    snackbarStore.showSnackbar(color, `A submissão foi ${status}.`);
+  }
 }
-
-let submissions: Submission[] = [
-  {
-    id: 1,
-    user: { id: 1, username: "Juan Farias" },
-    category: { id: 1, name: "Automóvel" },
-    documents: [],
-  },
-  {
-    id: 2,
-    user: { id: 2, username: "Maria Oliveira" },
-    category: { id: 2, name: "Tecnologia" },
-    documents: [],
-  },
-  {
-    id: 3,
-    user: { id: 3, username: "Carlos Souza" },
-    category: { id: 3, name: "Educação" },
-    documents: [],
-  },
-];
 </script>

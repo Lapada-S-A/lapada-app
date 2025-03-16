@@ -67,7 +67,7 @@ export const useUserStore = defineStore(
       } finally {
         loading.value = false;
       }
-    }
+    };
 
     const promoterToSeller = async (userId: number): Promise<void> => {
       loading.value = true;
@@ -77,16 +77,24 @@ export const useUserStore = defineStore(
       } finally {
         loading.value = false;
       }
-    }
+    };
 
-    const updateUserPassword = async ( newPassword: string, userId:number): Promise<void> => {
+    const updateUserPassword = async (
+      currentPassword: string,
+      newPassword: string,
+      userId: number
+    ): Promise<User | undefined> => {
       loading.value = true;
       try {
-        await $api.user.updatePassword(newPassword, userId);
+        return await $api.user.updatePassword(
+          currentPassword,
+          newPassword,
+          userId
+        );
       } finally {
         loading.value = false;
       }
-    }
+    };
 
     return {
       currentUser,
@@ -96,7 +104,7 @@ export const useUserStore = defineStore(
       getClientById,
       deleteAccount,
       promoterToSeller,
-      updateUserPassword
+      updateUserPassword,
     };
   },
   {
