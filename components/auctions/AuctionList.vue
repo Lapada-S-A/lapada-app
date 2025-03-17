@@ -1,6 +1,6 @@
 <template>
   <div class="h-100 d-flex flex-column justify-space-between">
-    <div>
+    <div class="h-75">
       <div v-if="!isCurator">
         <div v-if="!isSeller">
           <AuctionSearch
@@ -31,40 +31,28 @@
         v-if="
           auctionsStore.loading || typesStore.loading || categoriesStore.loading
         "
-        class="d-flex justify-center align-center"
+        class="d-flex align-center justify-center h-100"
       >
-        <v-progress-circular
-          indeterminate
-          class="mt-16 pt-16"
-          color="secondary"
-          size="70"
-          width="6"
-        />
+        <CommonLoading :size="70" :width="6" />
       </div>
 
-      <div v-else>
+      <div v-else class="h-100">
         <div
           v-if="filteredAuctions.length === 0 && !auctionsStore.loading"
-          class="d-flex justify-center mt-16"
+          class="d-flex justify-center h-100"
         >
-          <div
-            class="d-flex flex-column align-center justify-center pa-6 mt-8"
-            max-width="400"
-          >
-            <v-icon size="125" color="secondary"
-              >mdi-shopping-search-outline</v-icon
-            >
-            <div
-              class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
-            >
-              Nenhum leilão encontrado
-            </div>
-          </div>
+          <CommonNoItemsFound
+            :icon="'mdi-shopping-search-outline'"
+            :message="'Nenhum leilão encontrado'"
+          />
         </div>
 
         <div v-else>
           <div class="d-flex flex-wrap ga-4">
-            <div v-for="auction in filteredAuctions" :key="auction.auction.title">
+            <div
+              v-for="auction in filteredAuctions"
+              :key="auction.auction.title"
+            >
               <AuctionCard
                 :auction="auction.auction"
                 :photo="auction.document"
@@ -143,7 +131,9 @@ const filteredAuctions = computed(() => {
   if (!componentProps.isCurator) {
     filtered = filtered.filter(
       (auctionResponse: AuctionResponse) =>
-        auctionResponse.auction.title.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+        auctionResponse.auction.title
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase()) &&
         (!componentProps.isSeller
           ? auctionResponse.auction.status === AuctionStatus.OPEN
           : true) &&
@@ -154,7 +144,8 @@ const filteredAuctions = computed(() => {
 
     if (auctionStatusIdSelected.value) {
       filtered = filtered.filter(
-        (auctionResponse: AuctionResponse) => +auctionResponse.auction.status === auctionStatusIdSelected.value
+        (auctionResponse: AuctionResponse) =>
+          +auctionResponse.auction.status === auctionStatusIdSelected.value
       );
     }
   }
@@ -213,8 +204,11 @@ watch(
     if (searchTimeout) clearTimeout(searchTimeout);
 
     searchTimeout = setTimeout(async () => {
-      const localResults = auctions.value.filter((auctionResponse: AuctionResponse) =>
-        auctionResponse.auction.title.toLowerCase().includes(newQuery.toLowerCase())
+      const localResults = auctions.value.filter(
+        (auctionResponse: AuctionResponse) =>
+          auctionResponse.auction.title
+            .toLowerCase()
+            .includes(newQuery.toLowerCase())
       );
 
       if (localResults.length > 0) {

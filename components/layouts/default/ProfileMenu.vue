@@ -10,9 +10,7 @@
         width="35"
         height="35"
       >
-        <div class="font-normal text-font-10">
-          {{ userInitials }}
-        </div>
+      <CommonUserInitials :username="userStore.currentUser?.username!" :size="35" :font-size="14"/>
       </v-btn>
     </template>
 
@@ -77,12 +75,6 @@ const menuItems = ref([
     buttonId: "logout-btn",
   },
 ]);
-
-const userInitials = computed(() => {
-  return getUserInitials(
-    userStore.currentUser ? userStore.currentUser.username : ""
-  ).toUpperCase();
-});
 
 function logout() {
   authStore.disauthenticate();

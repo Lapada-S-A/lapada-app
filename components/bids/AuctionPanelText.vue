@@ -19,11 +19,7 @@
         </div>
         <div class="d-flex justify-space-between align-center mt-2">
           <div class="d-flex align-center font-small ga-1">
-            <div
-              class="d-flex align-center justify-center bg-secondary rounded-circle seller-initials text-font-10"
-            >
-              {{ getUserInitials(sellerName ? sellerName : "") }}
-            </div>
+            <CommonUserInitials :username="sellerName!" :size="27" :font-size="12"/>
             <div class="text-font-60">{{ sellerName }}</div>
           </div>
           <div class="font-small text-font-60">
@@ -76,7 +72,10 @@
         </table>
       </div>
       <div v-if="hasWinnerBid" class="ml-10">
-        <SellerActions :seller-id="auction.seller_id" :auction-id="auction.id!"/>
+        <SellerActions
+          :seller-id="auction.seller_id"
+          :auction-id="auction.id!"
+        />
       </div>
     </div>
   </v-expansion-panel-text>
@@ -138,11 +137,6 @@ const auctionImage = computed(() => {
 <style scoped>
 td {
   width: 180px;
-}
-
-.seller-initials {
-  width: 27px;
-  height: 27px;
 }
 
 .title-truncate {

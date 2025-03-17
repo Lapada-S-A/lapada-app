@@ -1,33 +1,14 @@
 <template>
   <div class="h-100">
-    <div
-      v-if="auctionsStore.loading || typesStore.loading"
-      class="d-flex justify-center align-center"
-    >
-      <v-progress-circular
-        indeterminate
-        class="mt-16 pt-16"
-        color="secondary"
-        size="70"
-        width="6"
-      />
+    <div v-if="auctionsStore.loading || typesStore.loading" class="h-75 d-flex align-center justify-center">
+      <CommonLoading :size="70" :width="6" />
     </div>
     <div v-else class="h-100">
       <div
         v-if="filteredAuctions.length === 0"
-        class="d-flex justify-center mt-16"
+        class="d-flex justify-center h-75"
       >
-        <div
-          class="no-results-card d-flex flex-column align-center justify-center pa-6 mt-8"
-          max-width="400"
-        >
-          <v-icon size="125" color="secondary">mdi-thumb-down-outline</v-icon>
-          <div
-            class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
-          >
-            Nenhum lance encontrado
-          </div>
-        </div>
+        <CommonNoItemsFound :icon="'mdi-thumb-down-outline'" :message="'Nenhum lance encontrado'" />
       </div>
       <div v-else class="d-flex flex-column justify-space-between h-100">
         <v-expansion-panels v-model="openedAuctionId" variant="accordion">
@@ -109,7 +90,8 @@ onMounted(() => {
 const filteredAuctions = computed(() => {
   return componentProps.statusId !== undefined
     ? auctionResponses.value.filter(
-        (auctionResponse: AuctionResponse) => auctionResponse.auction.status === componentProps.statusId!
+        (auctionResponse: AuctionResponse) =>
+          auctionResponse.auction.status === componentProps.statusId!
       )
     : auctionResponses.value;
 });

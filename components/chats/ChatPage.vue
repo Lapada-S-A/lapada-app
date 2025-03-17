@@ -1,13 +1,7 @@
 <template>
   <CommonMainCard>
-    <div v-if="loading" class="d-flex justify-center align-center h-100 mt-n16">
-      <v-progress-circular
-        indeterminate
-        class="mt-16 pt-16"
-        color="secondary"
-        size="55"
-        width="5"
-      />
+    <div v-if="loading" class="d-flex justify-center align-center h-100">
+      <CommonLoading :size="70" :width="6" />
     </div>
 
     <div v-else class="h-100">
@@ -18,14 +12,17 @@
           v-if="receiver"
           class="bg-primary rounded-t py-3 pl-4 pr-8 d-flex align-center ga-4 shadow"
         >
-          <v-icon size="24" class="cursor-pointer" @click="$router.push('/chats')"
+          <v-icon
+            size="24"
+            class="cursor-pointer"
+            @click="$router.push('/chats')"
             >mdi-arrow-left</v-icon
           >
-          <div
-            class="d-flex justify-center align-center user-initials font-subtitle font-weight-bold bg-secondary text-font-10 rounded-circle"
-          >
-            {{ getUserInitials(receiver.name).toUpperCase() }}
-          </div>
+          <CommonUserInitials
+            :username="receiver.name"
+            :size="50"
+            :font-size="20"
+          />
           <div class="font-title font-weight-bold">{{ receiver.name }}</div>
         </div>
         <div class="d-flex flex-column justify-space-between">
@@ -175,11 +172,6 @@ const sendMessage = async () => {
 </script>
 
 <style scoped>
-.user-initials {
-  height: 50px;
-  width: 50px;
-}
-
 .bg-message {
   background-color: #e0e0e0;
   max-width: 50%;

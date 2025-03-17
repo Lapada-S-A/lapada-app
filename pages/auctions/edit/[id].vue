@@ -1,13 +1,7 @@
 <template>
-  <div>
-    <div v-if="loading" class="d-flex justify-center align-center">
-      <v-progress-circular
-        indeterminate
-        class="mt-16 pt-16"
-        color="secondary"
-        size="70"
-        width="6"
-      />
+  <div class="h-100">
+    <div v-if="loading" class="d-flex justify-center align-center h-75">
+      <CommonLoading :size="70" :width="6" />
     </div>
     <div v-else>
       <AuctionsMaintain :auction="auction" :photos="photos" :edit="true" />
@@ -30,7 +24,7 @@ onBeforeMount(async () => {
   const response = await auctionsStore.getAuctionById(+id);
   if (response) {
     auction.value = response.auction;
-    photos.value = response.documents
+    photos.value = response.documents;
   }
   loading.value = false;
 });

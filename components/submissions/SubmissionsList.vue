@@ -4,25 +4,19 @@
       v-if="
         !submissionsStore.loading && submissionsStore.submissions.length === 0
       "
-      class="d-flex flex-column align-center justify-center h-100 mt-n16"
+      class="h-100"
     >
-      <v-icon class="mt-n16" size="125" color="secondary">mdi-file-remove-outline</v-icon>
-      <div
-        class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
-      >
-        Nenhuma submissão encontrada
-      </div>
+      <CommonNoItemsFound
+        :icon="'mdi-file-remove-outline'"
+        :message="'Nenhuma submissão encontrada'"
+      />
     </div>
+
     <div
       v-if="submissionsStore.loading"
-      class="d-flex h-100 justify-center align-center mt-n8"
+      class="d-flex h-75 justify-center align-center"
     >
-      <v-progress-circular
-        indeterminate
-        color="secondary"
-        size="55"
-        width="5"
-      />
+      <CommonLoading :size="70" :width="6" />
     </div>
 
     <SubmissionsSubmissionCard

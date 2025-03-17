@@ -6,11 +6,11 @@
     @click="$router.push(`/chats/${chat.chat_id}`)"
   >
     <div class="d-flex">
-      <div
-        class="d-flex justify-center align-center user-initials font-subtitle font-weight-bold bg-secondary text-font-10 rounded-circle"
-      >
-        {{ receiver ? getUserInitials(receiver.name).toUpperCase() : "-" }}
-      </div>
+      <CommonUserInitials
+        :username="receiver.name"
+        :size="50"
+        :font-size="20"
+      />
       <div class="ml-4 d-flex flex-column justify-center">
         <div class="font-subtitle font-weight-bold">
           {{ receiver ? receiver.name : "-" }}
@@ -49,11 +49,6 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped>
-.user-initials {
-  height: 50px;
-  width: 50px;
-}
-
 .text-truncate {
   max-width: 200px;
   overflow: hidden;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-100">
     <AuctionDetails
       v-if="auction && !loading"
       :title="auction.title"
@@ -32,14 +32,8 @@
       :auction-status="auction.status"
       :show-back-button="true"
     />
-    <div v-else class="d-flex justify-center align-center">
-      <v-progress-circular
-        indeterminate
-        class="mt-16 pt-16"
-        color="secondary"
-        size="70"
-        width="6"
-      />
+    <div v-else class="d-flex justify-center align-center h-75">
+      <CommonLoading :size="70" :width="6" />
     </div>
   </div>
 </template>
