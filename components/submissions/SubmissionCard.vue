@@ -1,5 +1,5 @@
 <template>
-  <v-card class="d-flex pa-6" height="160">
+  <v-card class="d-flex pa-6 my-1" height="160">
     <v-row justify="space-between">
       <v-col>
         <div>
@@ -11,13 +11,23 @@
           </div>
         </div>
       </v-col>
-      <v-col>
+      <v-col v-if="(submission as Submission).category">
         <div>
           <div class="font-weight-semibold text-primary font-normal mb-2">
             Categoria
           </div>
           <div class="font-subtitle font-weight-bold">
-            {{ submission.category.name }}
+            {{ (submission as Submission).category.name }}
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <div>
+          <div class="font-weight-semibold text-primary font-normal mb-2">
+            Data de submissão
+          </div>
+          <div class="font-subtitle font-weight-bold">
+            {{ formatDatePickerDate(submission.createdAt) }}
           </div>
         </div>
       </v-col>
@@ -34,7 +44,7 @@
           >
         </div>
       </v-col>
-      <v-col>
+      <v-col v-if="(submission as Submission).category">
         <div>
           <div class="font-weight-semibold text-primary font-normal mb-2">
             Certificado de conhecimento
@@ -81,8 +91,9 @@
 import type { Submission } from "~/interfaces/submission";
 
 import ViewDocumentDialog from "./ViewDocumentDialog.vue";
+import type { Promotion } from "~/interfaces/promotion";
 
-const componentProps = defineProps<{ submission: Submission }>();
+const componentProps = defineProps<{ submission: Submission | Promotion }>();
 const emit = defineEmits(["openConfirmationDialog"]);
 const approve = ref<boolean>(true);
 const viewDocumentDialog = ref<boolean>(false);

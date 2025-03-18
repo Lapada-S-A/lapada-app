@@ -63,14 +63,18 @@
           <div class="font-weight-semibold">Categorias</div>
           <div class="text-font-60">
             {{
-              categoriesStore.categories
-                .filter((category) => user!.categoryIds!.includes(category.id!))
-                .map((category, index, array) => {
-                  return index === array.length - 1
-                    ? category.name
-                    : category.name + ", ";
-                })
-                .join("")
+              user.categoryIds!.length > 0
+                ? categoriesStore.categories
+                    .filter((category) =>
+                      user!.categoryIds!.includes(category.id!)
+                    )
+                    .map((category, index, array) => {
+                      return index === array.length - 1
+                        ? category.name
+                        : category.name + ", ";
+                    })
+                    .join("")
+                : "___"
             }}
           </div>
         </v-col>

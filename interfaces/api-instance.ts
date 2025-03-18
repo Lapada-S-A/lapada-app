@@ -4,6 +4,7 @@ import type BidService from "~/services/bid";
 import type CategoryService from "~/services/category";
 import type ChatService from "~/services/chat";
 import type DocumentService from "~/services/document";
+import type PromotionService from "~/services/promotion";
 import type ReviewService from "~/services/review";
 import type SubmissionService from "~/services/submission";
 import type TypeService from "~/services/type";
@@ -16,6 +17,7 @@ export interface ApiInstance {
   category: CategoryService;
   chat: ChatService;
   document: DocumentService;
+  promotion: PromotionService;
   review: ReviewService;
   submission: SubmissionService;
   type: TypeService;

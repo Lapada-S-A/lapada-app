@@ -1,12 +1,8 @@
-export interface Submission {
+export interface Promotion {
   id: number;
   user: {
     id: number;
     username: string;
-  };
-  category: {
-    id: number;
-    name: string;
   };
   createdAt: string;
   documents: {
