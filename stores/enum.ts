@@ -19,3 +19,8 @@ export enum BidStatus {
   WINNER = 3,
   CANCELED = 4,
 }
+
+export enum SubmissionTypes {
+  CURATOR = 1,
+  SELLER = 2,
+}

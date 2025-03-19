@@ -10,7 +10,7 @@ export interface User {
   phone_number: string;
   type_user: UserTypes;
   birthdate: string;
-  categories?: number[];
+  categoryIds?: number[];
   created_at?: string;
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" opacity="0.4" max-width="500" persistent>
+  <v-dialog v-model="show" opacity="0.4" max-width="590" persistent>
     <v-card class="rounded-lg pa-4">
       <div>
         <v-card-title class="d-flex justify-space-between align-center">
@@ -19,8 +19,9 @@
 
       <v-card-text class="px-4 py-2">
         <div class="font-normal text-font-60">
-          *Envie uma foto sua segurando um documento de identificação e anexe um
-          documento que certifique seu conhecimento na área escolhida.
+          *Envie uma foto sua segurando um documento de identificação e anexe a
+          imagem de um documento que certifique seu conhecimento na área
+          escolhida.
         </div>
 
         <div class="d-flex flex-column py-4">
@@ -42,7 +43,7 @@
             />
           </div>
 
-          <div class="w-100 mt-2">
+          <div v-if="register" class="w-100 mt-2">
             <v-label
               for="photo-upload"
               class="text-font-100 font-weight-semibold mb-2 ml-1"
@@ -73,13 +74,16 @@
             <v-file-input
               id="document-upload"
               v-model="curatorInfo.certification"
-              accept=".pdf,.doc,.docx,.jpg,.png"
+              accept="image/*"
               variant="outlined"
               color="primary"
               clear-icon="mdi-close"
             >
               <template #prepend-inner>
-                <div v-if="!curatorInfo.certification" class="file-input-placeholder">
+                <div
+                  v-if="!curatorInfo.certification"
+                  class="file-input-placeholder"
+                >
                   Certificado de conhecimento
                 </div></template
               >
@@ -115,6 +119,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  register: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const show = computed({
@@ -137,7 +145,7 @@ onMounted(async () => {
 const confirmEnabled = computed(() => {
   return (
     curatorInfo.value.category &&
-    curatorInfo.value.photo &&
+    (props.register ? curatorInfo.value.photo : true) &&
     curatorInfo.value.certification
   );
 });
@@ -145,15 +153,20 @@ const confirmEnabled = computed(() => {
 function confirmCuratorSelection() {
   show.value = false;
   emit("confirmed", curatorInfo.value);
+  if (!props.register) clear();
 }
 
 function cancelCuratorSelection() {
   show.value = false;
   if (!props.infoUploaded) {
-    curatorInfo.value.category = null;
-    curatorInfo.value.photo = null;
-    curatorInfo.value.certification = null;
+    clear();
   }
+}
+
+function clear() {
+  curatorInfo.value.category = null;
+  curatorInfo.value.photo = null;
+  curatorInfo.value.certification = null;
 }
 </script>
 

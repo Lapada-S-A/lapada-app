@@ -59,10 +59,23 @@
           </v-hover>
           <div class="text-font-60">{{ user ? user.phone_number : "" }}</div>
         </v-col>
-        <v-col cols="5">
-          <div class="font-weight-semibold">Tipo de usuário</div>
+        <v-col v-if="user && user.type_user === UserTypes.Curator" cols="5">
+          <div class="font-weight-semibold">Categorias</div>
           <div class="text-font-60">
-            {{ getUserTypeName(user ? user.type_user : 1) }}
+            {{
+              user.categoryIds!.length > 0
+                ? categoriesStore.categories
+                    .filter((category) =>
+                      user!.categoryIds!.includes(category.id!)
+                    )
+                    .map((category, index, array) => {
+                      return index === array.length - 1
+                        ? category.name
+                        : category.name + ", ";
+                    })
+                    .join("")
+                : "___"
+            }}
           </div>
         </v-col>
       </v-row>
@@ -82,7 +95,7 @@ import { UserTypes } from "~/stores/enum";
 import EditInfoDialog from "./EditInfoDialog.vue";
 const emit = defineEmits(["updateUser"]);
 const componentProps = defineProps<{ user: User | null }>();
-
+const categoriesStore = useCategoriesStore();
 const userToEdit = ref({
   id: componentProps.user ? componentProps.user.id : "",
   username: componentProps.user ? componentProps.user.username : "",
@@ -91,19 +104,6 @@ const userToEdit = ref({
 const showEditDialog = ref(false);
 const editField = ref("");
 const editInfo = ref("");
-
-function getUserTypeName(typeId: UserTypes) {
-  switch (typeId) {
-    case UserTypes.Buyer:
-      return "Comprador";
-    case UserTypes.Seller:
-      return "Vendedor";
-    case UserTypes.Curator:
-      return "Curador";
-    case UserTypes.Administrator:
-      return "Administrador";
-  }
-}
 
 function editName() {
   editField.value = "Nome";

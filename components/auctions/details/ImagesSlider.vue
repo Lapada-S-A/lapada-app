@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="2">
       <v-slide-group class="side-image-carousel" direction="vertical">
-        <v-slide-group-item v-for="(image, index) in images" :key="index">
+        <v-slide-group-item v-for="(image, index) in base64images" :key="index">
           <v-card class="rounded-lg" elevation="0">
             <v-img
               :src="image"
@@ -24,19 +24,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { Buffer } from "buffer";
 
 const props = defineProps({
-  images: { type: Array as () => string[], required: true },
+  images: { type: Array as () => Buffer[], required: true },
 });
 
+const base64images = ref<string[]>([]);
 const mainImage = ref("");
 
 watch(
   () => props.images,
   (newImages) => {
     if (newImages.length > 0) {
-      mainImage.value = newImages[0];
+      newImages.forEach((img) => {
+        const base64String = Buffer.from(
+          img as unknown as string,
+          "binary"
+        ).toString("base64");
+        base64images.value.push(`data:image/png;base64,${base64String}`);
+      });
+      mainImage.value = base64images.value[0];
     }
   },
   { immediate: true }

@@ -13,6 +13,15 @@ export interface Auction {
   min_increment: number;
   seller_id: number;
   status: AuctionStatus;
+  photo1?: File;
+  photo2?: File;
+  photo3?: File;
+  photo4?: File;
+}
+
+export interface AuctionResponse {
+  auction: Auction;
+  document: AuctionPhotosResponse;
 }
 
 export interface AuctionSpecification {
@@ -25,18 +34,28 @@ export interface AuctionSpecification {
   description: string | null;
 }
 
+export interface AuctionPhotos {
+  photo1: File | null;
+  photo2?: File | null;
+  photo3?: File | null;
+  photo4?: File | null;
+}
+
 export interface AuctionPaginatedResponse {
-  items: Auction[];
+  items: AuctionResponse[];
   pagination: {
     page: number;
     per_page: number;
     total: number;
+    pages: number
   };
 }
-export interface AuctionByBuyerPaginatedResponse {
-  auctions: Auction[];
-  page: number;
-  pages: number;
-  per_page: number;
-  total: number;
+
+export interface AuctionByIdResponse {
+  auction: Auction;
+  documents: AuctionPhotosResponse[];
+}
+
+export interface AuctionPhotosResponse {
+  pdfData: { data: Buffer };
 }

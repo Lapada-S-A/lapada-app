@@ -155,11 +155,17 @@ function toggleConfirmPasswordVisibility() {
   confirmPasswordVisible.value = !confirmPasswordVisible.value;
 }
 
-function changePassword() {
+async function changePassword() {
   if (validatePasswords()) {
     if (userStore.currentUser?.id !== undefined) {
-      userStore.updateUserPassword(newPassword.value, userStore.currentUser.id);
-      snackBarStore.showSnackbar("success", "Senha alterada com sucesso!");
+      const response = await userStore.updateUserPassword(
+        currentPassword.value,
+        newPassword.value,
+        userStore.currentUser.id
+      );
+      if (response) {
+        snackBarStore.showSnackbar("success", "Senha alterada com sucesso!");
+      }
     }
     show.value = false;
     reset();

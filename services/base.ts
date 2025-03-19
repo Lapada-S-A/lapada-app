@@ -22,7 +22,7 @@ export default class BaseService {
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      let message = "Falha na conexão do servidor."
+      let message = "Falha na conexão do servidor"
       if (error.message) message = error.message;
       if (error.data) message = error.data.message;
       this.nuxtApp.callHook("app:error", { message, originalError: error });

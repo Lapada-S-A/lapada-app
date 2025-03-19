@@ -4,8 +4,11 @@ import AuctionService from "~/services/auction";
 import AuthService from "~/services/auth";
 import BidService from "~/services/bid";
 import CategoryService from "~/services/category";
+import ChatService from "~/services/chat";
 import DocumentService from "~/services/document";
+import PromotionService from "~/services/promotion";
 import ReviewService from "~/services/review";
+import SubmissionService from "~/services/submission";
 import TypeService from "~/services/type";
 import UserService from "~/services/user";
 
@@ -17,7 +20,12 @@ export default defineNuxtPlugin(() => {
       let url = config.public.apiBaseUrl;
 
       const requestStr = request.toString();
-      if (requestStr.includes("auth") || requestStr.includes("client") || requestStr.includes("documents")) {
+      if (
+        requestStr.includes("auth") ||
+        requestStr.includes("client") ||
+        requestStr.includes("documents") ||
+        requestStr.includes("curator")
+      ) {
         url = config.public.authBaseUrl;
       }
 
@@ -32,10 +40,13 @@ export default defineNuxtPlugin(() => {
     auth: new AuthService(apiFetcher),
     bid: new BidService(apiFetcher),
     category: new CategoryService(apiFetcher),
+    chat: new ChatService(apiFetcher),
     document: new DocumentService(apiFetcher),
+    promotion: new PromotionService(apiFetcher),
+    review: new ReviewService(apiFetcher),
+    submission: new SubmissionService(apiFetcher),
     type: new TypeService(apiFetcher),
     user: new UserService(apiFetcher),
-    review: new ReviewService(apiFetcher)
   };
 
   return {

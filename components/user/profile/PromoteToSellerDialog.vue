@@ -82,6 +82,7 @@ const photo = ref();
 function confirmCuratorSelection() {
   show.value = false;
   emit("confirmed", photo.value);
+  photo.value = null;
 }
 
 function cancel() {

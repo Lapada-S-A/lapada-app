@@ -3,7 +3,7 @@
     <div class="d-flex py-8 px-4">
       <div class="mr-16">
         <v-img
-          src="https://picsum.photos/210/245"
+          :src="auctionImage!"
           class="mb-1 rounded cursor-pointer"
           height="210"
           width="245"
@@ -19,11 +19,7 @@
         </div>
         <div class="d-flex justify-space-between align-center mt-2">
           <div class="d-flex align-center font-small ga-1">
-            <div
-              class="d-flex align-center justify-center bg-secondary rounded-circle seller-initials text-font-10"
-            >
-              {{ getUserInitials(sellerName ? sellerName : "") }}
-            </div>
+            <CommonUserInitials :username="sellerName!" :size="27" :font-size="12"/>
             <div class="text-font-60">{{ sellerName }}</div>
           </div>
           <div class="font-small text-font-60">
@@ -76,7 +72,10 @@
         </table>
       </div>
       <div v-if="hasWinnerBid" class="ml-10">
-        <SellerActions />
+        <SellerActions
+          :seller-id="auction.seller_id"
+          :auction-id="auction.id!"
+        />
       </div>
     </div>
   </v-expansion-panel-text>
@@ -84,12 +83,14 @@
 
 <script setup lang="ts">
 import SellerActions from "./SellerActions.vue";
-import type { Auction } from "~/interfaces/auction";
+import type { Auction, AuctionPhotosResponse } from "~/interfaces/auction";
 import type { Bid } from "~/interfaces/bid";
 import { BidStatus } from "~/stores/enum";
+import { Buffer } from "buffer";
 
 const componentProps = defineProps<{
   auction: Auction;
+  photo: AuctionPhotosResponse;
 }>();
 const userStore = useUserStore();
 const bidsStore = useBidsStore();
@@ -120,16 +121,22 @@ onMounted(async () => {
 const hasWinnerBid = computed(() => {
   return bids.value.find((bid) => bid.bid_status === BidStatus.WINNER);
 });
+
+const auctionImage = computed(() => {
+  if (componentProps.photo) {
+    const base64String = Buffer.from(
+      componentProps.photo.pdfData.data as unknown as string,
+      "binary"
+    ).toString("base64");
+    return `data:image/png;base64,${base64String}`;
+  }
+  return null;
+});
 </script>
 
 <style scoped>
 td {
   width: 180px;
-}
-
-.seller-initials {
-  width: 27px;
-  height: 27px;
 }
 
 .title-truncate {

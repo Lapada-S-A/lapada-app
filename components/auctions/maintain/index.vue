@@ -9,10 +9,12 @@
           :auction="auction"
           :edit="edit"
         />
-
+        
         <ImagesUpload
+          v-model:images="images"
           v-model:validation="imagesValidation"
           :validate="validate"
+          :auction-images="photos"
         />
       </div>
 
@@ -55,9 +57,18 @@
 import MainCard from "~/components/common/MainCard.vue";
 import Specification from "./Specification.vue";
 import ImagesUpload from "./ImagesUpload.vue";
-import type { Auction, AuctionSpecification } from "~/interfaces/auction";
+import type {
+  Auction,
+  AuctionPhotos,
+  AuctionPhotosResponse,
+  AuctionSpecification,
+} from "~/interfaces/auction";
 
-const componentProps = defineProps<{ edit: boolean; auction?: Auction }>();
+const componentProps = defineProps<{
+  edit: boolean;
+  auction?: Auction;
+  photos?: AuctionPhotosResponse[];
+}>();
 const router = useRouter();
 const auctionStore = useAuctionsStore();
 const snackBarStore = useSnackbarStore();
@@ -67,6 +78,7 @@ const validate = ref<boolean>(false);
 const specificationValidation = ref<boolean>(false);
 const specification = ref<AuctionSpecification>();
 const imagesValidation = ref<boolean>(false);
+const images = ref<AuctionPhotos>();
 
 const isFormValidated = computed(() => {
   return specificationValidation.value && imagesValidation.value;
@@ -84,6 +96,7 @@ watch(
 async function submitForm() {
   let result = false;
   updateAuctionSpecification();
+  updateAuctionPhotos();
   if (auction.value) {
     let response;
     let message = "";
@@ -126,6 +139,18 @@ function updateAuctionSpecification() {
     auction.value.categories = specification.value.categories!;
     auction.value.type_id = specification.value.type_id!;
     auction.value.end_date = specification.value.end_date!;
+  }
+}
+
+function updateAuctionPhotos() {
+  if (auction.value && images.value) {
+    Object.keys(images.value).forEach((key) => {
+      if (images.value![key as keyof AuctionPhotos]) {
+        auction.value![key as keyof Auction] = images.value![
+          key as keyof AuctionPhotos
+        ] as never;
+      }
+    });
   }
 }
 </script>

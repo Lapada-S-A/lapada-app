@@ -1,4 +1,4 @@
-import type { Type } from "~/interfaces/type";
+import type { Type, TypePaginatedResponse } from "~/interfaces/type";
 
 export const useTypesStore = defineStore("types", () => {
   const { $api } = useNuxtApp();
@@ -22,10 +22,57 @@ export const useTypesStore = defineStore("types", () => {
     return type;
   };
 
+  const getTypesPaginated = async (params: {
+    [key: string]: string;
+  }): Promise<TypePaginatedResponse | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.type.getPaginated(params);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const addType = async (type: Type): Promise<Type | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.type.add(type);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const updateType = async (type: Type): Promise<Type | undefined> => {
+    const { id, ...typeWithoutId } = type;
+    loading.value = true;
+    try {
+      const response = await $api.type.update(typeWithoutId, id!);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const deleteType = async (typeId: number): Promise<Type | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.type.delete(typeId);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     types,
     getAllTypes,
     getTypeById,
+    getTypesPaginated,
+    addType,
+    updateType,
+    deleteType,
   };
 });

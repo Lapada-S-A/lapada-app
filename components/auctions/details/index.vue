@@ -71,6 +71,7 @@
             :rating="sellerData?.rating"
             :auctions-count="sellerData?.auctionsCreated.length || 0"
             :since="new Date(sellerData?.created_at || '').getFullYear()"
+            :loading="sellerLoading"
             class="py-5"
           />
         </v-col>
@@ -99,7 +100,7 @@ const props = defineProps({
   currentBid: { type: String, required: true },
   minIncrement: { type: String, required: true },
   remainingTime: { type: Number, required: true },
-  images: { type: Array as () => string[], required: true },
+  images: { type: Array as () => Buffer[], required: true },
   description: { type: String, required: true },
   bids: {
     type: Array as () => Bid[],
@@ -119,18 +120,23 @@ const isSeller = ref<boolean>(false);
 const sellerData = ref<UserSellerData>();
 const auctionStatus = ref<AuctionStatus>(props.auctionStatus);
 const bids = ref<Bid[]>(props.bids);
+const sellerLoading = ref<boolean>(true);
 
 onMounted(async () => {
-  const auction = await auctionsStore.getAuctionById(props.auctionId);
-
-  if (auction?.seller_id !== undefined) {
+  const auctionByIdResponse = await auctionsStore.getAuctionById(
+    props.auctionId
+  );
+  if (auctionByIdResponse?.auction.seller_id !== undefined) {
     const allAuctions = await auctionsStore.getAuctionsBySeller(
-      auction.seller_id
+      auctionByIdResponse.auction.seller_id
     );
-    isSeller.value = auction.seller_id === userStore.currentUser?.id;
-    const sellerInfo = await userStore.getClientById(auction.seller_id);
+    isSeller.value =
+      auctionByIdResponse.auction.seller_id === userStore.currentUser?.id;
+    const sellerInfo = await userStore.getClientById(
+      auctionByIdResponse.auction.seller_id
+    );
     const sellerRating = await reviewStore.getAverageRatingOfSeller(
-      auction.seller_id
+      auctionByIdResponse.auction.seller_id
     );
 
     if (sellerInfo !== undefined) {
@@ -148,10 +154,11 @@ onMounted(async () => {
       };
     }
   }
+  sellerLoading.value = false;
 });
 
 const currentBidBuyerId = computed(() => {
-  return bids.value?.find((bid) => bid.bid_status === BidStatus.ACTIVE)
+  return bids.value?.find((bid) => bid.bid_status !== BidStatus.EXPIRED)
     ?.buyer_id;
 });
 
@@ -177,7 +184,7 @@ async function refreshAuction(status: AuctionStatus) {
 <style scoped>
 .v-btn--variant-plain {
   padding: 0 !important;
-  opacity: 80%;
+  opacity: 1 !important;
 }
 
 .text-bid {

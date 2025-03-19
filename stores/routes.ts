@@ -34,6 +34,7 @@ export const useRoutesStore = defineStore(
         menu: true,
       },
       { icon: "mdi-forum", label: "Conversas", to: "/chats", menu: true },
+      { label: "Troca de mensagens", to: "/chats/[id]", menu: false },
     ];
 
     const routesByUserType: RoutesByUserType = {
@@ -68,6 +69,7 @@ export const useRoutesStore = defineStore(
           to: "/proposals",
           menu: true,
         },
+        { label: "Detalhes de leilão", to: "/auctions/[id]", menu: false },
       ],
       [UserTypes.Administrator]: [
         ...globalRoutes,
@@ -80,13 +82,13 @@ export const useRoutesStore = defineStore(
         {
           icon: "mdi-tag-multiple",
           label: "Tipos de leilões",
-          to: "/auction-types",
+          to: "/types",
           menu: true,
         },
         {
           icon: "mdi-shape",
           label: "Categorias de itens",
-          to: "/item-categories",
+          to: "/categories",
           menu: true,
         },
       ],

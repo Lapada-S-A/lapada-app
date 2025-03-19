@@ -40,7 +40,7 @@
         </div>
 
         <div v-else>
-          <div>
+          <div v-if="!isCuratorPendingApproval">
             <v-btn
               v-if="isSeller && isAuctionFinished && hasBids"
               id="open-buyer-chat-btn"
@@ -49,6 +49,7 @@
               width="320"
               color="primary"
               elevation="1"
+              @click="createChatWithBuyer"
             >
               Falar com comprador
             </v-btn>
@@ -63,6 +64,7 @@
             <DualButton
               :left-button-text="leftButtonText"
               :right-button-text="rightButtonText"
+              :right-button-color="'success'"
               @left-click="confirmAction(leftClickActions, leftButtonText)"
               @right-click="confirmAction(rightClickActions, rightButtonText)"
             />
@@ -74,7 +76,7 @@
     <ConfirmationDialog
       v-model="showConfirmDialog"
       :text="'Tem certeza que deseja '"
-      :highlight="actionText"
+      :highlight="actionText.toLowerCase() + ' este leilão'"
       @confirm="executeConfirmedAction"
     />
   </div>
@@ -82,7 +84,6 @@
 
 <script setup lang="ts">
 import CreateBidDialog from "@/components/auctions/details/CreateBidDialog.vue";
-import { useUserStore } from "@/stores/user";
 import ConfirmationDialog from "~/components/common/ConfirmationDialog.vue";
 import DualButton from "~/components/common/DualButton.vue";
 import { AuctionStatus, UserTypes } from "~/stores/enum";
@@ -106,20 +107,22 @@ const emits = defineEmits(["refresh-auction-details"]);
 const currentBid = ref<string>(props.currentBid);
 const auctionStatus = ref<AuctionStatus>(props.auctionStatus);
 const { currentBidBuyerId, isSeller, hasBids } = toRefs(props);
+const router = useRouter();
 
 const userStore = useUserStore();
 const auctionStore = useAuctionsStore();
 const snackbarStore = useSnackbarStore();
+const chatsStore = useChatsStore();
 const currentUser = userStore.currentUser;
 
 const leftButtonText = computed(() => {
-  if (currentUser?.type_user === UserTypes.Curator) return "Aprovar";
+  if (currentUser?.type_user === UserTypes.Curator) return "Rejeitar";
   if (currentUser?.type_user === UserTypes.Seller) return "Cancelar";
   return "Cancelar";
 });
 
 const rightButtonText = computed(() => {
-  if (currentUser?.type_user === UserTypes.Curator) return "Rejeitar";
+  if (currentUser?.type_user === UserTypes.Curator) return "Aprovar";
   if (currentUser?.type_user === UserTypes.Seller) return "Encerrar";
   return "Encerrar";
 });
@@ -147,7 +150,9 @@ const leftClickActions = async () => {
   let message: string = "";
 
   if (currentUser.type_user === UserTypes.Curator) {
-    await auctionStore.changeStatusOfAuction(props.auctionId, "open");
+    response = await auctionStore.rejectAuction(props.auctionId);
+    router.push("/proposals");
+    message = "O leilão foi rejeitado.";
   } else if (currentUser.type_user === UserTypes.Seller) {
     response = await auctionStore.cancelAuction(props.auctionId);
     auctionStatus.value = AuctionStatus.CANCELED;
@@ -155,7 +160,7 @@ const leftClickActions = async () => {
   }
 
   if (response) {
-    snackbarStore.showSnackbar("success", message);
+    snackbarStore.showSnackbar("error", message);
   }
 };
 
@@ -165,7 +170,9 @@ const rightClickActions = async () => {
   let message: string = "";
 
   if (currentUser.type_user === UserTypes.Curator) {
-    await auctionStore.changeStatusOfAuction(props.auctionId, "reject");
+    response = await auctionStore.approveAuction(props.auctionId);
+    router.push("/proposals");
+    message = "O leilão foi aprovado.";
   } else if (currentUser.type_user === UserTypes.Seller) {
     response = await auctionStore.finishAuction(props.auctionId);
     auctionStatus.value = AuctionStatus.FINISHED;
@@ -181,7 +188,7 @@ const refreshAuctionDetails = async () => {
   try {
     const updatedAuction = await auctionStore.getAuctionById(props.auctionId);
     if (updatedAuction) {
-      const bidValue = updatedAuction.highest_bid ?? 0;
+      const bidValue = updatedAuction.auction.highest_bid ?? 0;
       currentBid.value = `R$ ${bidValue.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
@@ -202,7 +209,7 @@ const isAuctionFinished = computed(
 const isCuratorPendingApproval = computed(
   () =>
     auctionStatus.value === AuctionStatus.PENDING &&
-    currentUser?.id === UserTypes.Curator
+    currentUser?.type_user === UserTypes.Curator
 );
 const isCurrentUserBidder = computed(
   () => currentBidBuyerId.value === currentUser?.id
@@ -216,10 +223,35 @@ const message = computed(() => {
       return "Este leilão foi encerrado.";
     case AuctionStatus.CANCELED:
       return "Este leilão foi cancelado.";
+    case AuctionStatus.REJECTED:
+      return "Este leilão foi rejeitado.";
     default:
       return "";
   }
 });
+
+async function createChatWithBuyer() {
+  let chatId;
+  await chatsStore.getChatsByUserId(userStore.currentUser!.id!);
+  const chat = chatsStore.chats.find((chat) =>
+    chat.users.includes(currentBidBuyerId.value)
+  );
+  if (chat === undefined) {
+    const newChat = await chatsStore.addChat([
+      currentBidBuyerId.value,
+      userStore.currentUser!.id!,
+    ]);
+    if (newChat) {
+      chatId = newChat?.chat_id;
+    }
+  } else {
+    chatId = chat.chat_id;
+  }
+
+  if (chatId !== undefined) {
+    router.push(`/chats/${chatId}`);
+  }
+}
 </script>
 
 <style scoped>

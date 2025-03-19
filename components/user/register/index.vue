@@ -59,7 +59,7 @@ import type { User, UserPersonalInfo, CuratorInfo } from "~/interfaces/user";
 const router = useRouter();
 const snackBarStore = useSnackbarStore();
 const authStore = useAuthStore();
-const documentsStore = useDocumentsStore();
+const submissionsStore = useSubmissionsStore();
 const userStore = useUserStore();
 const user = ref<User>();
 const userPersonalInfo = ref<UserPersonalInfo>();
@@ -91,13 +91,11 @@ async function submitForm() {
     if (response) {
       result = true;
       if (curatorInfo.value && response.id) {
-        await documentsStore.sendDocument(
+        await submissionsStore.addSubmission(
+          response.id,
+          curatorInfo.value.category!,
           curatorInfo.value.certification!,
-          response.id
-        );
-        await documentsStore.sendDocument(
-          curatorInfo.value.photo!,
-          response.id
+          curatorInfo.value.photo!
         );
       }
     }
@@ -121,10 +119,6 @@ function updateUser() {
       password: userPassword.value,
       type_user: userTypeId.value,
     };
-
-    if (userTypeId.value === UserTypes.Curator && curatorInfo.value && curatorInfo.value.category) {
-      user.value.categories = [curatorInfo.value.category];
-    }
   }
 }
 

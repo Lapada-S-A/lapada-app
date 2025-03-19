@@ -1,44 +1,26 @@
 <template>
   <div class="h-100">
-    <div
-      v-if="auctionsStore.loading || typesStore.loading"
-      class="d-flex justify-center align-center"
-    >
-      <v-progress-circular
-        indeterminate
-        class="mt-16 pt-16"
-        color="secondary"
-        size="70"
-        width="6"
-      />
+    <div v-if="auctionsStore.loading || typesStore.loading" class="h-75 d-flex align-center justify-center">
+      <CommonLoading :size="70" :width="6" />
     </div>
     <div v-else class="h-100">
       <div
         v-if="filteredAuctions.length === 0"
-        class="d-flex justify-center mt-16"
+        class="d-flex justify-center h-75"
       >
-        <div
-          class="no-results-card d-flex flex-column align-center justify-center pa-6 mt-8"
-          max-width="400"
-        >
-          <v-icon size="125" color="secondary">mdi-thumb-down-outline</v-icon>
-          <div
-            class="mt-4 font-subtitle font-weight-semibold text-secondary text-center"
-          >
-            Nenhum lance encontrado
-          </div>
-        </div>
+        <CommonNoItemsFound :icon="'mdi-thumb-down-outline'" :message="'Nenhum lance encontrado'" />
       </div>
       <div v-else class="d-flex flex-column justify-space-between h-100">
         <v-expansion-panels v-model="openedAuctionId" variant="accordion">
           <div
-            v-for="auction in filteredAuctions"
-            :key="auction.id"
+            v-for="auctionResponse in filteredAuctions"
+            :key="auctionResponse.auction.id"
             class="w-100 mb-1"
           >
             <AuctionPanel
-              :auction="auction"
-              :is-opened="openedAuctionId === auction.id"
+              :auction="auctionResponse.auction"
+              :photo="auctionResponse.document"
+              :is-opened="openedAuctionId === auctionResponse.auction.id"
             />
           </div>
         </v-expansion-panels>
@@ -74,14 +56,14 @@
 
 <script setup lang="ts">
 import AuctionPanel from "~/components/bids/AuctionPanel.vue";
-import type { Auction } from "~/interfaces/auction";
+import type { AuctionResponse } from "~/interfaces/auction";
 
 const componentProps = defineProps<{ statusId?: number }>();
 const typesStore = useTypesStore();
 const auctionsStore = useAuctionsStore();
 const userStore = useUserStore();
 const openedAuctionId = ref<number | null>(null);
-const auctions = ref<Auction[]>([]);
+const auctionResponses = ref<AuctionResponse[]>([]);
 const auctionsPerPage = ref<number>(10);
 const currentPage = ref<number>(1);
 const totalPages = ref<number>(1);
@@ -95,8 +77,8 @@ const fetchAuctions = async () => {
     }
   );
   if (response) {
-    auctions.value = response.auctions;
-    totalPages.value = response.pages;
+    auctionResponses.value = response.items;
+    totalPages.value = response.pagination.pages;
   }
 };
 
@@ -107,10 +89,11 @@ onMounted(() => {
 
 const filteredAuctions = computed(() => {
   return componentProps.statusId !== undefined
-    ? auctions.value.filter(
-        (auction: Auction) => auction.status === componentProps.statusId!
+    ? auctionResponses.value.filter(
+        (auctionResponse: AuctionResponse) =>
+          auctionResponse.auction.status === componentProps.statusId!
       )
-    : auctions.value;
+    : auctionResponses.value;
 });
 
 const isLastPage = computed(() => currentPage.value >= totalPages.value);

@@ -1,6 +1,6 @@
 import type {
   Auction,
-  AuctionByBuyerPaginatedResponse,
+  AuctionByIdResponse,
   AuctionPaginatedResponse,
 } from "~/interfaces/auction";
 
@@ -32,7 +32,7 @@ export const useAuctionsStore = defineStore("auctions", () => {
 
   const getAuctionById = async (
     auctionId: number
-  ): Promise<Auction | undefined> => {
+  ): Promise<AuctionByIdResponse | undefined> => {
     loading.value = true;
     try {
       const response = await $api.auction.getById(auctionId);
@@ -93,10 +93,28 @@ export const useAuctionsStore = defineStore("auctions", () => {
     params: {
       [key: string]: string;
     }
-  ): Promise<AuctionByBuyerPaginatedResponse | undefined> => {
+  ): Promise<AuctionPaginatedResponse | undefined> => {
     loading.value = true;
     try {
       return await $api.auction.getAuctionsByBuyer(buyerId, params);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const getPendingAuctionsByCategories = async (
+    params: {
+      [key: string]: string;
+    },
+    categories_ids: number[]
+  ): Promise<AuctionPaginatedResponse | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.auction.getPendingAuctionsByCategories(
+        params,
+        categories_ids
+      );
+      if (response) return response;
     } finally {
       loading.value = false;
     }
@@ -126,6 +144,30 @@ export const useAuctionsStore = defineStore("auctions", () => {
     }
   };
 
+  const approveAuction = async (
+    auctionId: number
+  ): Promise<Auction | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.auction.approve(auctionId);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const rejectAuction = async (
+    auctionId: number
+  ): Promise<Auction | undefined> => {
+    loading.value = true;
+    try {
+      const response = await $api.auction.reject(auctionId);
+      if (response) return response;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     getAuctionsPaginated,
@@ -136,7 +178,10 @@ export const useAuctionsStore = defineStore("auctions", () => {
     changeStatusOfAuction,
     getAuctionsBySeller,
     getAuctionsByBuyer,
+    getPendingAuctionsByCategories,
     finishAuction,
-    cancelAuction
+    cancelAuction,
+    approveAuction,
+    rejectAuction,
   };
 });
