@@ -71,6 +71,7 @@
             :rating="sellerData?.rating"
             :auctions-count="sellerData?.auctionsCreated.length || 0"
             :since="new Date(sellerData?.created_at || '').getFullYear()"
+            :loading="sellerLoading"
             class="py-5"
           />
         </v-col>
@@ -119,16 +120,21 @@ const isSeller = ref<boolean>(false);
 const sellerData = ref<UserSellerData>();
 const auctionStatus = ref<AuctionStatus>(props.auctionStatus);
 const bids = ref<Bid[]>(props.bids);
+const sellerLoading = ref<boolean>(true);
 
 onMounted(async () => {
-  const auctionByIdResponse = await auctionsStore.getAuctionById(props.auctionId);
-
+  const auctionByIdResponse = await auctionsStore.getAuctionById(
+    props.auctionId
+  );
   if (auctionByIdResponse?.auction.seller_id !== undefined) {
     const allAuctions = await auctionsStore.getAuctionsBySeller(
       auctionByIdResponse.auction.seller_id
     );
-    isSeller.value = auctionByIdResponse.auction.seller_id === userStore.currentUser?.id;
-    const sellerInfo = await userStore.getClientById(auctionByIdResponse.auction.seller_id);
+    isSeller.value =
+      auctionByIdResponse.auction.seller_id === userStore.currentUser?.id;
+    const sellerInfo = await userStore.getClientById(
+      auctionByIdResponse.auction.seller_id
+    );
     const sellerRating = await reviewStore.getAverageRatingOfSeller(
       auctionByIdResponse.auction.seller_id
     );
@@ -148,6 +154,7 @@ onMounted(async () => {
       };
     }
   }
+  sellerLoading.value = false;
 });
 
 const currentBidBuyerId = computed(() => {

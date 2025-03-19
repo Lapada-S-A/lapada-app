@@ -1,7 +1,8 @@
 <template>
   <div class="mt-5">
     <div class="font-weight-semibold text-primary">Vendedor</div>
-    <v-row class="mt-1">
+    <div v-if="!loading">
+      <v-row class="mt-1">
       <v-col cols="2" class="text-center">
         <div
           class="d-flex justify-center align-center seller-initials font-weight-bold bg-secondary text-font-10 rounded-circle"
@@ -27,6 +28,10 @@
     <div class="mt-2 text-font-60 font-small">
       *Operações de pagamento e logística devem ser acordadas entre as partes.
     </div>
+    </div>
+    <div v-else class="mt-12">
+      <CommonLoading :size="30" :width="4"/>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -43,6 +48,7 @@ const props = defineProps({
   },
   auctionsCount: { type: Number, required: true },
   since: { type: Number, required: true },
+  loading: { type: Boolean, default: false },
 });
 
 const avatarInitials = computed(() => {

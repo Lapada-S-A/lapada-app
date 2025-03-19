@@ -15,7 +15,7 @@
     </div>
 
     <div
-      v-if="submissionsStore.loading"
+      v-if="submissionsStore.loading || promotionsStore.loading"
       class="d-flex h-100 justify-center align-center"
     >
       <CommonLoading :size="70" :width="6" />

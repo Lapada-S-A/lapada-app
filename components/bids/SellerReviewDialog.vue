@@ -115,6 +115,7 @@ const sendReview = async () => {
       "success",
       "Avaliação de vendedor enviada com successo!"
     );
+  isEnabled.value = false;
   emit("review");
 };
 </script>
